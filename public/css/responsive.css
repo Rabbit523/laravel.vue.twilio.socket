@@ -1,0 +1,645 @@
+/*Mobile--Version*/
+	
+ @media screen and (min-width: 320px) and (max-width: 767px) {
+/* pages */
+.main-header {flex-direction: column;}
+.user-profile { justify-content: start!important;}
+.img-fluid.navic {float: right;}
+footer.d-flex.footer-section { flex-direction: column;}
+.content-wrapper.adminprof {padding: 14px!important;}
+.page-list .pages-top-sec .form {width: 100%;}
+/*/pages */	 
+
+/*single-pages */
+.page-seting-content .link-input {flex-direction: column;}
+.page-setting .page-seting-content .link-input input { width: 100%;}
+.page-seting-content .link-input a {margin-bottom: 7px;}
+.multiple-buttons{flex-direction: column;}
+.single-page .save-btn {width: 100%;}
+.single-page .qus-btn {width: 100%;}
+/*/single-pages */	
+
+/* categories */
+.cate-top.pages-top-sec input[type=text] {
+    font-size: 13px;
+    background-position: 6px 17px;
+    padding: 17px 13px 11px 30px;
+}
+/*/categories */
+
+/*consultant */
+.pages-top-sec.consult-top.cate-top {
+    flex-direction: column;
+}
+.page-list .pages-top-sec.consult-top .form {
+    width: 92%;
+}
+/*/consultant */
+
+/* footer */
+.footer-section h6 {margin-top: 15px;}
+/*/footer */
+
+/* create account */
+.navbar-expand-lg.navbar-light .end-nav{flex-direction:column;}
+.navbar .container-fluid.wraper {padding: 0px;padding-left: 8px;}
+.create-account{flex-direction: column;}
+.login-sec.create-acc.d-flex {
+  margin: 0px auto; 
+}
+.create-account.d-flex {
+    padding: 50px 0px;
+}
+.c-a-bottom.bottom-link.d-flex {
+    margin: 0px auto;
+}
+/*/create account */
+
+/* login */
+.login-sec.d-flex {
+    max-width: 96%;
+}
+.bottom-link.d-flex {
+    max-width: 96%;
+}
+.info-footer-sec {
+ flex-direction:column;
+}
+.info-footer-sec .foot-start {
+    width: 100%;
+    margin-right: 0;
+	margin-bottom: 60px;
+}
+.info-footer-sec .info-consult {
+    padding-right: 0;
+    margin-bottom: 60px;
+}
+.info-footer-sec .info-cate{
+    padding-right: 0;
+    margin-bottom: 60px;
+}
+.info-footer .info-footer-sec img, .info-footer .info-footer-sec label {
+    margin-bottom: 20px;
+}
+.end-nav button.btn {
+    margin-right: 0;
+    align-self: start;
+}
+.end-nav a.login-but {
+    color: #fff;
+    align-self: start;
+}
+.navbar.bg-light.navbar-expand-lg .btn.btn-primary {
+    padding-left: 0;
+}
+.sub-footer {
+    flex-direction: column;
+}
+.sub-footer p {
+    margin-left: initial!important;
+}
+/* categories */
+.cate-info-page.d-flex {
+    flex-direction: column;
+}
+.ham-content.d-flex {
+    padding-top: 30px;
+}
+.pages-list-l {
+    flex-direction: column;
+}
+.pages-list-l .pages-right {
+    margin-left: initial;
+}
+.btn.p-l {
+    width: 100%;
+    text-align: left;
+}
+.dropdown-toggle::after {
+    float: right;
+}
+.pages-right span:before {
+    content: '';
+	display:none;
+}
+.dropdown-menu.show {
+    width: 100%;
+}
+.cart-full.d-flex {
+    flex-direction: column;
+}
+.cart-section.d-flex {
+    width: 100%;
+}
+.end-button {
+    justify-content: center;
+}
+.end-button .btn-mid {
+    margin: 0px 10px;
+}
+.four-sec.d-flex {
+    flex-direction: column;
+}
+.sec-words.d-flex {
+    width: 100%;
+}
+.explore-cate-cart{
+    flex-direction: column;
+}
+.explore-carts.d-flex {
+    width: 100% !important;
+}
+.explore-carts.d-flex:nth-child(2) {
+    margin: 20px 0px;
+}
+.explore-carts.d-flex:nth-child(3) {
+    margin-bottom: 20px;
+}
+.sec-words.d-flex:nth-child(2) {
+    margin: 20px 0px;
+}
+.sec-words.d-flex:nth-child(3) {
+    margin-bottom: 20px;
+}
+.cart-full .cart-section:nth-child(2) {
+    margin-top: 20px;
+	margin-bottom: 20px;
+}
+.cart-full .cart-section:nth-child(3) {
+	margin-bottom: 20px;
+}
+/*/categories */
+
+/* private policy */
+.center-content.d-flex {
+    padding: 35px 25px 50px 25px;
+}
+/*/private policy */
+
+/* faq */
+.faq-content.d-flex.wrap {
+    flex-direction: column;
+}
+.p-p-faq .left-accordion {
+    width: 100%;
+    padding-right: 0px;
+}
+.p-p-faq .right-faq {
+    width: 100%;
+    padding-left: 0px;
+	margin-top: 20px;
+}
+.panel-heading h4 {
+    display: none;
+}
+/*/faq */
+
+/* my-consult */
+.full-chat-section .chat-left {
+    width: 100%;
+}
+.full-chat-section {
+    flex-direction: column;
+}
+.full-chat-section .chatter-pro.d-flex {
+    width: 100%;
+	display:none;
+}
+.full-chat-section .chat-right {
+    width: 100%;
+}
+.full-chat-section .chat-profile {
+    justify-content: center;
+}
+.full-chat-section .end-chat-right {
+    margin-left: initial;
+	margin-top: 15px;
+}
+.user-profile.d-flex {
+    flex-wrap: wrap;
+	margin-top: 13px;
+}
+.full-chat-section #chat-right-top {
+    float: left;
+    width: 100%;
+}
+.full-chat-section .chat-left-top {
+    float: left;
+    width: 100%;
+}
+#chat-right-top{display:none;}
+/*/my-consult */
+
+/* prepaid */
+.prepaid-card-full.d-flex {
+    flex-direction: column;
+}
+.method-image.d-flex {
+    flex-direction: column;
+}
+.prepaid-card-full .prepaid-card-left {
+    width: 100%;
+}
+.prepaid-card-full .pay-method .method-image img:nth-child(2) {
+    margin: 20px 0px;
+}
+.prepaid-card-full .pay-method .method-image img {
+    padding: 9%;
+}
+.prepaid-card-full .pay-cust-info div {
+    width: 100%;
+	margin-bottom:17px;
+}
+.prepaid-card-full .prepaid-form .last {
+    padding-left: 0px;
+}
+.prepaid-card-full .pre-pay-info .expiry.expiry-month {
+    margin-left: 0;
+    margin-right: 0;
+}
+.content_holesecion .prepaid-card-full .prepaid-card-right {
+    width: 100%;
+    padding-left: 0;
+	margin-top:20px;
+}
+.prepaid-card-full .pay-cust-info {
+    padding-top: 5px;
+}
+/*/prepaid */
+
+/* login-setting */
+.setting-uploader .three-uploader.d-flex {
+    flex-direction: column;
+}
+.setting-uploader .up-one, .setting-uploader .up-two, .setting-uploader .up-three {
+    width: 100%;
+}
+/*/login-setting */
+
+}/*mobile end */
+
+
+/*Tab--Version*/
+@media screen and (min-width: 768px) and (max-width: 991px) {
+.sidebar-mini.sidebar-collapse .content-wrapper{
+margin-left: 70px !important;}
+.content-wrapper .pages-top-sec .form {
+    width: 84%;
+}	
+.info-footer .foot-start {
+    width: 50%;
+    margin-right: 12%;
+	margin-bottom: 50px;
+}
+.info-footer .info-footer-sec {
+    max-width: 90%;
+    margin: 0px auto;
+    flex-wrap: wrap;
+    padding-left: 5%;
+}	
+/* create account */
+.create-account{flex-direction: column;}
+.create-account-left { margin: 0px auto;}
+.create-account .create-account-right {
+    margin-left: 0;
+    padding-top: 70px;
+    margin: 0px auto;
+}
+/*/create account */
+.sub-footer {
+    flex-direction: column;
+}
+.sub-footer p {
+    margin-left: initial!important;
+}
+
+/* info-categories */
+.navbar.bg-light.navbar-expand-lg .btn.btn-primary {
+    padding-left: 0;
+}
+.cart-section.d-flex {
+    width: 42%;
+}
+.cart-full {
+    justify-content: center;
+}
+.cart-full .cart-section {
+    margin: 20px;
+}
+.full-cart .cart-full .cart-section:last-child {
+    margin-right: 20px; 
+}
+.four-sec.d-flex {
+    flex-direction: column;
+}
+.four-sec .sec-words {
+    width: 100%;
+}
+.four-sec .sec-words:nth-child(2) {
+    margin: 20px 0px;
+}
+.four-sec .sec-words:nth-child(3) {
+    margin-bottom: 20px;
+}
+.explore-cate-cart {
+    justify-content: center;
+}
+.explore-carts.d-flex {
+    width: 42%;
+    margin: 20px;
+}
+/*/info-categories */
+
+/* faq */
+.faq-content.d-flex.wrap {
+    flex-direction: column;
+}
+.p-p-faq .left-accordion {
+    width: 100%;
+    padding-right: 0px;
+}
+.p-p-faq .right-faq {
+    width: 100%;
+    padding-left: 0px;
+	margin-top: 20px;
+}
+
+/*/ faq */
+
+/* my-consult */
+.full-chat-section .chat-left {
+    width: 100%;
+}
+.full-chat-section {
+    flex-direction: column;
+}
+.full-chat-section .chatter-pro.d-flex {
+    width: 100%;
+	display:none;
+}
+.full-chat-section .chat-right {
+    width: 100%;
+}
+.full-chat-section .chat-profile {
+    justify-content: center;
+}
+.full-chat-section .end-chat-right {
+    margin-left: initial;
+	margin-top: 15px;
+}
+.full-chat-section .chat-left-top {
+    float: left;
+    width: 100%;
+}
+.full-chat-section #chat-right-top {
+    float: left;
+    width: 100%;
+}
+.full-chat-section .chat-right .chat-heading span:before {
+    width: 38%;
+}
+.full-chat-section .chat-right .chat-heading span:after {
+    width: 38%;
+}
+/*/my-consult */
+
+/* prepaid */
+.prepaid-card-full.d-flex {
+    flex-direction: column;
+}
+.method-image.d-flex {
+    flex-direction: column;
+}
+.prepaid-card-full .prepaid-card-left {
+    width: 100%;
+}
+.content_holesecion .prepaid-card-full .prepaid-card-right {
+    width: 100%;
+    padding-left: 0;
+    margin-top: 20px;
+}
+.prepaid-card-full .pay-method .method-image img {
+    padding: 9%;
+}
+.prepaid-card-full .pay-method .method-image img:nth-child(2) {
+    margin: 20px 0px;
+}
+/*/prepaid */
+
+/* login-setting */
+.setting-uploader .three-uploader.d-flex {
+    flex-direction: column;
+}
+.setting-uploader .up-one, .setting-uploader .up-two, .setting-uploader .up-three {
+    width: 100%;
+}
+/*/login-setting */
+
+}/*END*/	 
+/*Lap--Version*/
+@media screen and (min-width: 992px) and (max-width: 1028px) {
+/* create account */
+.create-account{flex-direction: column;}
+.create-account-left { margin: 0px auto;}
+.create-account .create-account-right {
+    margin-left: 0;
+    padding-top: 70px;
+    margin: 0px auto;
+}
+.login-sec.create-acc {
+    max-width: 100%;
+}
+/*/create account */	
+	.container-fluid.wraper a.navbar-brand {
+    margin: 0px auto;
+	    margin-bottom: 15px;
+}
+.navbar-expand-lg>.container-fluid {
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+.cart-full {
+    justify-content: center;
+}
+
+.cart-full {
+    justify-content: center;
+}
+.cart-full .cart-section {
+    margin: 20px; 
+}
+.full-cart .cart-full .cart-section:last-child {
+    margin-right: 20px; 
+}
+.end-button.d-flex  {
+    justify-content: center;
+}	
+.explore-carts h3 {
+    min-height: 69px;
+    max-height: 70px;
+}
+.end-button.d-flex .btn-mid {
+    margin: 0px 21px;
+}
+/* my-consult */
+.full-chat-section .chat-left {
+    width: 100%;
+}
+.full-chat-section {
+    flex-direction: column;
+}
+.full-chat-section .chatter-pro.d-flex {
+    width: 100%;
+	display:none;
+}
+.full-chat-section .chat-right {
+    width: 100%;
+}
+.full-chat-section .chat-profile {
+    justify-content: center;
+}
+.full-chat-section .end-chat-right {
+    margin-left: initial;
+	margin-top: 15px;
+}
+.full-chat-section .chat-left-top {
+    float: left;
+    width: 100%;
+}
+.full-chat-section #chat-right-top {
+    float: left;
+    width: 100%;
+}
+.full-chat-section .chat-right .chat-heading span:before {
+    width: 38%;
+}
+.full-chat-section .chat-right .chat-heading span:after {
+    width: 38%;
+}
+/*/my-consult */
+/* prepaid */
+.prepaid-card-full.d-flex {
+    flex-direction: column;
+}
+.method-image.d-flex {
+    flex-direction: column;
+}
+.prepaid-card-full .prepaid-card-left {
+    width: 100%;
+}
+.content_holesecion .prepaid-card-full .prepaid-card-right {
+    width: 100%;
+    padding-left: 0;
+    margin-top: 20px;
+}
+.prepaid-card-full .pay-method .method-image img {
+    padding: 9%;
+}
+.prepaid-card-full .pay-method .method-image img:nth-child(2) {
+    margin: 20px 0px;
+}
+/*/prepaid */
+
+/* login-setting */
+.setting-uploader .three-uploader.d-flex {
+    flex-direction: column;
+}
+.setting-uploader .up-one, .setting-uploader .up-two, .setting-uploader .up-three {
+    width: 100%;
+}
+/*/login-setting */
+
+}
+/* end  */
+/*L-Lap--Version*/
+
+@media screen and (min-width: 1850px) and (max-width: 1920px) {
+.single-page .page-seting-content .link-input input { width: 86%;}
+.cate table th:last-child { width: 10%;}
+.cate table th:nth-child(2) { width: 39%;}
+.cate table th:nth-child(3) { width: 30%;}
+/* create account */
+.navbar .container-fluid.wraper {padding: 0px 105px;}
+.navbar-nav .nav-item {padding-right: 10px;}
+.navbar-nav .nav-item:last-child {padding-right: 0px;}
+/* create account */
+/* categories*/
+.wrap{max-width:75%!important;justify-content:center!important;margin:0px auto;!important}
+.pages-list .pages-list-l {
+    max-width: 75%;
+    margin: 0px auto;
+    justify-content: center;
+}
+/*/categories*/
+
+/* my consultant */
+.full-chat-section .chat-right .chat-profile h2{padding-right:8px;}
+.full-chat-section .chat-right span {
+    padding-left: 28px;
+    font-size: 13px;
+}
+.full-chat-section .end-chat-right img {
+    margin-left: 13px;
+}
+.full-chat-section .chat-records {
+    padding: 18px 15px 22px 15px;
+}
+.full-chat-section .chat-drop .dropdown .btn {
+    padding: 13px 15px;
+}
+.full-chat-section .chat-drop .dropdown-toggle::after {
+    right: 25px;
+}
+.full-chat-section .chat-right .chat-heading span:before {
+    width: 42%;
+}
+.full-chat-section .chat-right .chat-heading span:after {
+    width: 42%;
+}
+/* my consultant */
+
+/* prepaid */
+.prepaid-card-full .pay-method .method-image img {
+    padding: 70px 75px;
+}
+.prepaid-card-full .prepaid-card-full .prepaid-card-right {
+    width: 25%;
+    padding-left: 21px;
+}
+.prepaid-card-full .prepaid-card-right .current-bal {
+    background: #fff;
+    padding: 22px;
+}
+/*/prepaid */
+
+/* footer */
+.info-footer .info-footer-sec {
+    max-width: 75%;
+    margin: 0px auto;
+	justify-content: space-between;
+}
+.info-footer .info-cate { padding-right: 90px;}
+.info-footer .foot-start {margin-right: 15%;}
+.sub-footer.d-flex {
+	padding-left: 13.6%;
+    padding-right: 12%;
+    margin: 0px auto;
+    justify-content: center;
+	margin-top: -1px;
+}
+
+/*/footer */
+.setting-uploader .up-one, .setting-uploader .up-two, .setting-uploader .up-three {
+    width: 18%;
+}
+} /*END*/	
+
+
+@media screen and (min-width: 992px) and (max-width: 1028px) {
+
+} /*END*/	
+
+@media screen and (min-width: 992px) and (max-width: 1200px) {
+
+
+} /*END*/	
