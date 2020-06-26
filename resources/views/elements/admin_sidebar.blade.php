@@ -1,34 +1,64 @@
 <?php $lang = app()->getLocale();?>
 <aside class="main-sidebar">
     <section class="sidebar">
-        <ul class="sidebar-menu" data-widget="tree">
-            <li id="customer_menu" class="{{ $active == '0' ? 'active' : '' }}">
+        <ul class="sidebar-menu admin" data-widget="tree">
+            <li class="{{$active =='0'?'active':''}}">
+				<a href="{{ $lang == 'en' ? url('/admin-dashboard') : url('/no/admin-dashbord') }}">
+					@if($active == '0')
+					<img src="{{ asset('images/dashboard-icon-w.svg')}}" alt="Dashboard" />
+					@else
+					<img src="{{ asset('images/dashboard-icon.svg')}}" alt="Dashboard" />
+					@endif
+					<span>Dashboard</span>
+				</a>
+			</li>
+            <li class="{{ $active == '1' ? 'active' : '' }}">
                 <a href="{{ $lang == 'en' ? url('/customers') : url('/no/kunder') }}">
-                    <i class="fa fa-users"></i>
+                    @if($active == '1')
+					<img src="{{ asset('images/profile-icon-w.svg')}}" alt="profile" />
+					@else
+					<img src="{{ asset('images/profile-icon.svg')}}" alt="profile" />
+					@endif
                     <span>@lang('admin_sidebar.customers')</span>
                 </a>
             </li>
-            <li class="{{ $active == '1' ? 'active' : '' }}">
+            <li class="{{ $active == '2' ? 'active' : '' }}">
                 <a href="{{ $lang == 'en' ? url('/consultants') : url('/no/konsulenter') }}">
-                    <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                    @if($active == '2')
+					<img src="{{ asset('images/star-icon-w.svg')}}" alt="profile" />
+					@else
+					<img src="{{ asset('images/star-icon.svg')}}" alt="profile" />
+					@endif
                     <span>@lang('admin_sidebar.consultants')</span>
                 </a>
             </li>
-            <li class="{{ $active == '2' ? 'active' : '' }}">
+            <li class="{{ $active == '3' ? 'active' : '' }}">
                 <a href="{{ $lang == 'en' ? url('/categories') : url('/no/kategorier') }}">
-                    <i class="fa fa-server" aria-hidden="true"></i>
+                    @if($active == '3')
+					<img src="{{ asset('images/list-icon-w.svg')}}" alt="profile" />
+					@else
+					<img src="{{ asset('images/list-icon.svg')}}" alt="profile" />
+					@endif
                     <span>@lang('admin_sidebar.categories')</span>
                 </a>
             </li>
-            <li class="{{ $active == '3' ? 'active' : '' }}">
+            <li class="{{ $active == '4' ? 'active' : '' }}">
                 <a href="{{ $lang == 'en' ? url('/pages') : url('/no/sider') }}">
-                    <i class="fa fa-book" aria-hidden="true"></i>
+                    @if($active == '4')
+					<img src="{{ asset('images/page-icon-w.svg')}}" alt="profile" />
+					@else
+					<img src="{{ asset('images/page-icon.svg')}}" alt="profile" />
+					@endif
                     <span>@lang('admin_sidebar.pages')</span>
                 </a>
             </li>
-            <li class="{{ $active == '4' ? 'active' : '' }}">
+            <li class="{{ $active == '5' ? 'active' : '' }}">
                 <a href="{{ $lang == 'en' ? url('/settings') : url('/no/innstillinger') }}">
-                    <i class="fa fa-cogs" aria-hidden="true"></i>
+                    @if($active == '5')
+					<img src="{{ asset('images/settings-icon-w.svg')}}" alt="settings" />
+					@else
+					<img src="{{ asset('images/settings-icon.svg')}}" alt="settings" />
+					@endif
                     <span>@lang('admin_sidebar.settings')</span>
                 </a>
             </li>

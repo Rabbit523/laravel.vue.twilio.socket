@@ -1,8 +1,7 @@
 <?php 
   return [
-    "faq" => "FAQ",
-    "about_us" => "About us",
-    "become_consultant" => "Become a Consultant",
+    "about_us" => "About",
+    "become_consultant" => "Become Consultant",
     "categories" => "Categories",
     "find_consultant" => "Find a Consultant",
     "log_out" => "Logout",
@@ -12,9 +11,11 @@
     "my_consultants" => "My Consultants",
     "my_customers" => "My Customers",    
     "login" => "Login",
+    'register' => 'Sign up',
     "customers" => "Customers",
     "consultants" => "Consultants",
     "categories" => "Categories",
-    "pages" => "Pages"
+    "pages" => "Pages",
+    "features" => "Features"
   ]
 ?>

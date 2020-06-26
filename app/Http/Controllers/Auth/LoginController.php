@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\Page;
+use App\User;
 use App;
 
 class LoginController extends Controller
@@ -54,6 +55,9 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
+        $user = User::where('id', Auth::user()->id)->first();
+        $user->status = 'Offline';
+        $user->save();
         Auth::logout();
         $lang = App::getLocale();
         if ($lang == 'en') {
@@ -69,23 +73,26 @@ class LoginController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
-            return $lang == 'en' ? Redirect::to('/login')->withErrors($validator)->withInput(Input::except('password')) : Redirect::to('/no/logg-inn')->withErrors($validator)->withInput(Input::except('password'));
+            return $lang == 'en' ? Redirect::to('/login')->withErrors($validator) : Redirect::to('/no/logg-inn')->withErrors($validator);
         } else {
             // create our user data for the authentication
             $userdata = array(
                 'password'  => $request->password,
                 'email'     => $request->email
             );
-            if (Auth::attempt($userdata,true)) {
-                if (Auth::user()->role == "admin") {
-                    return $lang == 'en' ? redirect('/pages') : redirect('/no/sider');
-                } else if (Auth::user()->role == "customer") {
-                    return $lang == 'en' ? redirect("/find-consultant") : redirect("/no/finn-konsulent");
+            $user = User::where('email', $request->email)->first();
+            if ($user->active == 1) {
+                if (Auth::attempt($userdata,true)) {
+                    if (Auth::user()->role == "admin") {
+                        return $lang == 'en' ? redirect('/pages') : redirect('/no/sider');
+                    } else {
+                        return $lang == 'en' ? redirect("/sessions") : redirect("/no/moter");
+                    }
                 } else {
-                    return $lang == 'en' ? redirect("/find-customer") : redirect("/no/finn-kunde");
+                    return $lang == 'en' ? Redirect::to('/login')->with('alert-success', 'Enter Correct Email and Password') : Redirect::to('/no/logg-inn')->with('alert-success', 'Enter Correct Email and Password');
                 }
             } else {
-                return $lang == 'en' ? Redirect::to('/login')->with('alert-success', 'Enter Correct Email and Password') : Redirect::to('/no/logg-inn')->with('alert-success', 'Enter Correct Email and Password');
+                return $lang == 'en' ? Redirect::to('/login')->with('alert-success', 'Your consultant application is under process. We will inform you once your account is activated.') : Redirect::to('/no/logg-inn')->with('alert-success', 'Din konsulentsøknad er under behandling. Vi vil informere deg når kontoen din er aktivert.');
             }
         }
     }

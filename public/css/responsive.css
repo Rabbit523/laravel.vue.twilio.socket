@@ -1,645 +1,1389 @@
 /*Mobile--Version*/
-	
- @media screen and (min-width: 320px) and (max-width: 767px) {
-/* pages */
-.main-header {flex-direction: column;}
-.user-profile { justify-content: start!important;}
-.img-fluid.navic {float: right;}
-footer.d-flex.footer-section { flex-direction: column;}
-.content-wrapper.adminprof {padding: 14px!important;}
-.page-list .pages-top-sec .form {width: 100%;}
-/*/pages */	 
+@media (min-width: 320px) {
+	/*Header*/
+	.navbar .navbar-brand img {
+		width: 45px;
+	}
+	.navbar .navbar-toggler {
+		width: 35px;
+		height: 35px;
+		display: flex;
+		flex-direction: column;
+		padding: 0;
+		justify-content: space-around;
+		z-index: 35;
+	}
+	.navbar .navbar-toggler:focus {
+		outline: 0;
+	}
+	.navbar .navbar-toggler span{
+		height: 4px;
+		width: 30px;
+		background: #000;
+	}
+	.navbar .nav-link, .navbar .dropdown {
+		display: none;
+	}
+	.navbar .collapse.mobile {
+		position: absolute;
+		top: 55px;
+		left: 0;
+		background: #fff;
+		width: 100%;
+		padding: 20px 30px;
+	}
+	.navbar .collapse.mobile .nav-item .nav-link.disabled{
+		color: #000;
+	}
+	.navigation__nav {
+	    right: -100%;
+		width: 100%;
+		height: 100vh;
+		border: none;
+	}
+	.navigation__nav.collapsed {
+		transform: translateX(-100%);
+	}
+	/*Footer*/
+	.info-footer .footer {
+		flex-direction: column;
+	}
+	.info-footer .footer .foot-start {
+		width: 100%;
+		margin: 0;
+	}
+	.info-footer .footer .footer-item {
+		margin: 25px 0;
+	}
+	.info-footer .footer-bottom {
+	    flex-direction: column;
+	    align-items: flex-start;
+	}
+	.info-footer .footer-bottom .copyright {
+	    padding: 0 1rem;
+    	margin-bottom: 15px;
+	    font-family: 'Poppins Regular';
+	}
+	/*Home Page*/
+	.banner-head {
+		width: 100%;
+	}
+	.banner-head h1{
+		font-size: 25px;
+	}
+	.slick-dots li {
+	    width: 10px;
+	    height: 10px;
+	}
+	.inner-footer h2 {
+	    font-size: 36px;
+	}
+	.inner-footer p {
+	    font-size: 16px;
+	}
+	.full-cart.search-consult .content h2, .gd-ppl-words h2, .benefits h2, .full-cart.feature-service h2, .full-cart.abs-img .text-section h2, .full-cart.normal-img .text-section h2, .full-cart.our_story h2, .consult-steps h2 {
+	    font-size: 36px;
+	}
+	.benefits .benefit-item p, .full-cart.search-consult .content p, .full-cart.feature-service p, .benefits .benefit-item p, .full-cart.abs-img .text-section p, .full-cart.normal-img .text-section p, .full-cart.our_story p, .consult-steps p {
+		font-size: 16px;
+	}
+	.banner-head .btn-group {
+		flex-direction: column;
+	}
+	.banner-head .btn-group a{
+		width: 100%;
+	}
+	.banner-head .btn-group a:first-child{
+		margin: 15px 0 !important;
+	}
+	.full-cart.search-consult .search-item {
+		flex-direction: column;
+	}
+	.full-cart.search-consult .search-item .mobile {
+		text-align: center;
+	}
+	.full-cart.search-consult .search-item .desktop {
+		display: none;
+	}
+	.benefits .benefit-group {
+	  display: flex;
+	  flex-direction: column;
+	  justify-content: space-around;
+	}
+	.benefits .benefit-group:last-child {
+		margin-top: 0;
+	}
+	.benefits .benefit-group .benefit-item {
+	    width: 100%;
+		padding: 25px 50px;
+	}
+	.inner-footer .home-info-footer {
+		width: 100%;
+	}
+	.inner-footer .home-info-footer .btn-group{
+	  flex-direction: column;
+	  width: 100%;
+	}
+	.inner-footer .home-info-footer .btn-group a{
+		width: 100%;
+	}
+	.inner-footer .home-info-footer .btn-group a:first-child {
+		margin-bottom: 15px;
+	}
+	/*Feature Page*/
+	.full-cart.feature-service .feature-service-group .feature-service-item{
+	    display: flex;
+	    flex-direction: column;
+	    align-items: center;
+	    padding: 25px;
+	}
+	.full-cart.abs-img .abs-item, .full-cart.normal-img .abs-item {
+	  flex-direction: column;
+	  text-align: center;
+	}
+	.full-cart.abs-img .abs-item .img-section {
+		margin: 0;
+	}
+	.full-cart.normal-img .abs-item .text-section.desktop {
+		display: none;
+	}
+	.full-cart.abs-img.transaction .text-section {
+	    width: 100%;
+	}
+	/*About Page*/
+	.full-cart.our_story .story_item {
+		display: flex;
+		flex-direction: column;
+	}
+	.full-cart.our_story .des-sec.desktop {
+		display: none;
+	}
+	.full-cart.our_team .team_item {
+		display: flex;
+	    flex-direction: column;
+    	align-items: center;
+    	width: 100%;
+	}
+	.full-cart.our_team .team_item .item {
+		margin-bottom: 50px;
+	}
+	.consult-steps .step-group {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+	.consult-steps .step-group .item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	    text-align: center;
+        margin-bottom: 40px;
+	}
+	/*Category Page*/
+	.full-cart.category .category-header {
+		display: flex;
+		flex-direction: column;
+	}
+	.full-cart.category .category-header .des-sec {
+	    display: flex;
+	    flex-direction: column;
+	    margin-right: 0;
+	}
+	.full-cart.consultant-search .cart-full {
+		display: flex;
+		flex-wrap: wrap;
+		flex-direction: column;
+	}
+	.full-cart.consultant-search .cart-full .cart-section {
+		width: 100%;
+	    margin: 25px 0;
+	}
+	.full-cart.consultant-search .pages-top-sec {
+		display: none;
+	}
+	.full-cart.consultant-search .filter-sec {
+		display: flex;
+	}
+	/*Become a consultant*/
+	.full-consultant .consultant-page {
+		display: flex;
+		flex-direction: column;
+	}
+	.full-consultant .form-box {
+	    flex: 1;
+	    margin-right: 0px;
+	}
+	.full-consultant form .group-box {
+	    display: flex;
+	    flex-direction: column;
+	}
+	.full-consultant form .group-box .form-group:first-child {
+	    margin-right: 0px;
+	}
+	.full-consultant form .group-box.three .form-group:nth-child(2) {
+	    margin-right: 0px;
+	}
+	.full-consultant form .step .image-upload {
+		display: flex;
+		flex-direction: column;
+	    align-items: flex-start;
+	}
+	.full-consultant form .step .des-profile {
+		display: flex;
+		flex-direction: column;
+	}
+	.full-consultant form .step .des-profile-photo.following .d-flex.flex-column {
+	    padding-right: 0px;
+	}
+	.full-consultant .modal-dialog {
+		height: 500px;
+		width: 100%;
+		margin: 15px;
+	    overflow-y: overlay;
+	}
+	.full-consultant .modal-dialog .modal-content form .upload-profile p {
+		text-align: left;
+	}
+	.full-consultant .modal-dialog .modal-header h3 {
+	    font-size: 25px;
+	}
+	.full-consultant form .step .ability {
+		display: flex;
+    	flex-direction: column;
+    	align-items: center;
+	}
+	.benefit .consultant-benefit-item {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	    text-align: center;
+    	padding: 25px;
+	}
+	/*Customer Portal*/
+	/*Find Consultant*/
+	.main-sidebar {
+		display: none;
+	}
+	.content-wrapper.adminprof {
+		margin: 0;
+	}
+	.content-wrapper.adminprof .pages-top-sec {
+		display: none;
+	}
+	.filter-sec {
+		display: flex;
+		flex-direction: column;
+	}
+	.filter-sec .filter-header {
+		display: flex;
+		align-items: center;
+    	justify-content: space-between;
+    	background: #fff;
+		padding: 25px;
+	}
+	.filter-sec .filter-header p{
+	    margin: 0;
+    	font-size: 18px;
+	    padding-right: 15px;
+	}
+	.filter-sec .filter-header button{
+		padding: 8px 15px;
+	    color: #f764a8;
+	    border: 2px solid #f764a8;
+	    border-radius: 25px;
+	    background: #fff;
+        width: 135px;
+        font-size: 16px;
+	}
+	.filter-sec .filter-header button:focus{
+		outline: none;
+	}
+	.filter-sec .filter-body {
+		display: none;
+		flex-direction: column;
+		padding: 25px;
+	}
+	.filter-sec .filter-body input {
+	    width: 100%;
+	    box-sizing: border-box;
+	    border: none;
+	    border-bottom: 3px solid #dedede;
+	    height: 44px;
+	    border-radius: 4px;
+	    font-size: 16px;
+	    background-color: transparent;
+	    background-image: url(../images/search-icon.png);
+	    background-position: 10px 14px;
+	    background-repeat: no-repeat;
+	    padding: 12px 20px 12px 40px;
+	}
+	.filter-sec .filter-body .dropdown-box {
+		display: flex;
+    	padding: 15px 0;
+	}
+	.filter-sec .filter-body .dropdown-box label{
+		margin: 0;
+	}
+	.filter-sec .filter-body .dropdown-box select {
+		border: none;
+	    background: transparent;
+	    color: #b1b1b1;
+	    width: 100%;
+	}
+	.filter-sec .filter-body .dropdown-box select:focus {
+		outline: none;
+	}
+	.page-dashboard .page-border.recommend .cart-full {
+		flex-direction: column;
+	}
+	.page-dashboard .page-border.recommend .cart-section {
+		width: 100%;
+	}
+	/*Member Settings*/
+	.setting-page {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+	    margin: 0;
+	}
+	.setting-page .setting-content {
+        flex-direction: column;
+	}
+	/*wallet page*/
+	.prepaid-card-full .prepaid-card-left {
+	  width: 100%;
+	}
+	.content-wrapper.member-content {
+		margin-left: 0;
+	}
+	.pay-method .payment-option .container {
+		padding: 25px 0;
+	}
+	.prepaid-card-full .prepaid-card-right {
+		display: none;
+	}
+	.prepaid-card-full .prepaid-card-left .pay-method.table {
+		display: none;
+	}
+	.mobile-wallet-payment {
+		background: #fff;
+		padding: 35px;
+		border-bottom: 2px solid #e8e8e8;
+	}
+	.mobile-wallet-payment .processing-question{
+		position: relative;
+	}
+	.mobile-wallet-payment .processing-question img{
+	    width: 15px;
+	    position: absolute;
+	    top: 4px;
+	    right: -20px;
+	}
+	.mobile-wallet-payment .next-btn {
+	    background: #f764a8;
+	    color: #fff;
+	    width: 100%;
+	    padding: 10px 0px;
+        align-self: center;
+	    border-radius: 20px;
+	}
+	.mobile-step2 {
+		display: none;
+		background: #fff;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 25px;
+		width: 100%;
+	}
+	.mobile-step2 img{
+		width: 80px;
+	}
+	.mobile-step2 .underline-bar {
+	    width: 40px;
+	    height: 1px;
+	    background-color: #333;
+	    margin-bottom: 10px;
+	}
+	.mobile-step2 .btn {
+		background: #fff;
+	    color: #f764a8;
+	    width: 170px;
+	    padding: 10px 0px;
+        align-self: center;
+        border-radius: 25px;
+	    border: 2px solid #f764a8;
+	    margin-top: 15px;
+	}
+	.mobile-wallet-transaction {
+		background: #fff;
+		padding: 15px;
+		border-bottom: 2px solid #e8e8e8;
+		display: none;
+	}
+	.mobile-wallet-transaction .mobile-transaction-table .table-item {
+		display: flex;
+	    justify-content: space-between;
+	    border-bottom: 1px solid #ddd;
+	    padding: 20px 0;
+	}
+	.mobile-wallet-transaction .mobile-transaction-table .table-item:last-child {
+		border: none;
+	}
+	.mobile-wallet-transaction .mobile-transaction-table .table-item .pay-des{
+		display: flex;
+    	align-items: center;
+	}
+	.mobile-wallet-transaction .mobile-transaction-table .table-item .pay-des .card-info{
+		padding-left: 15px;
+	}
+	.mobile-wallet-transaction .mobile-transaction-table .table-item .pay-des .card-info p{
+		margin: 0;
+	}
+	.mobile-wallet-transaction .mobile-transaction-table .table-item .pay-des .card-info p.title{
+		font-style: 25px;
+	}
+	.mobile-wallet-transaction .mobile-transaction-table .table-item .pay-result p.amount{
+	    font-size: 25px;
+	    margin: 0;
+	    color: #f764a8;
+	    text-transform: capitalize;
+	}
+	.mobile-wallet-transaction .mobile-transaction-table .table-item .pay-result p.status{
+		color: #54dab1;
+		text-transform: capitalize;
+	}
+	.mobile-wallet-transaction .filter-tag {
+	    flex-direction: column;
+	}
+	.mobile-wallet-transaction .filter-tag button{
+		width: 100%;
+	}
+	/*Dashboard*/
+	.page-dashboard.admin {
+		flex-direction: column;
+	}
+	.page-dashboard h3 {
+		padding-top: 15px;
+	}
+	.page-dashboard .profile-header {
+		display: flex;
+		flex-direction: column;
+	}
+	.page-dashboard .profile-header .profile-sec {
+		flex-direction: column;
+	    align-items: center;
+	    margin-right: 0;
+	}
+	.page-dashboard .profile-header .profile-sec .detail-profile {
+		display: flex;
+		flex-direction: column;
+	}
+	.page-dashboard .profile-header .profile-sec .detail-info {
+    	align-items: center;
+	}
+	.page-dashboard .profile-header .profile-sec .avatar-pic {
+		margin-right: 0;
+	}
+	.page-dashboard .profile-header .current-bal {
+		display: none;
+	}
+	.page-dashboard .page-border.recommend {
+		flex-direction: column;
+	}
+	.page-dashboard .mobile-step2 {
+		display: flex;
+	    margin-top: 15px;
+	}
+	.page-dashboard.admin .current-bal {
+		display: none;
+	}
+	.pages-heading {
+		flex-direction: column;
+	}
+	.filter-tag.dashboard {
+		display: flex;
+		flex-direction: column;
+	}
+	.filter-tag.dashboard .form-group input {
+		background: transparent !important;
+	}
+	.filter-tag.dashboard button {
+	    align-self: center;
+	    padding: 5px 15px;
+	    color: #f764a8;
+	    border: 2px solid #f764a8;
+	    border-radius: 15px;
+	    text-align: center;
+    	background: transparent;
+    	width: 100%;
+	}
+	.filter-tag.dashboard button:hover, .filter-tag.dashboard button:focus, .filter-tag.dashboard button:active {
+		background: #f764a8;
+		border-color: #f764a8;
+		color: #fff;
+		outline: none;
+	}
+	/*Transaction Page*/
+	.filter-tag.transaction {
+		display: flex;
+		flex-direction: column;
+	}
+	.filter-tag.transaction .form-group input, .filter-tag.transaction .form-group select {
+		background: transparent;
+		height: 40px;
+	}
+	.filter-tag.transaction button {
+	    align-self: center;
+	    padding: 5px 15px;
+	    color: #f764a8;
+	    border: 2px solid #f764a8;
+	    border-radius: 15px;
+	    text-align: center;
+	    margin-left: 15px;
+    	background: transparent;
+    	width: 100%;
+	}
+	.filter-tag.transaction button:hover, .filter-tag.transaction button:focus, .filter-tag.transaction button:active {
+		background: #f764a8;
+		border-color: #f764a8;
+		color: #fff;
+		outline: none;
+	}
+	.filter-tag.transaction .group-forms {
+		display: flex;
+		flex-direction: column;
+	}
+	.filter-tag.transaction .form-group .search {
+	    width: 100%;
+	    box-sizing: border-box;
+	    border: none;
+	    border-bottom: 3px solid #dedede;
+	    height: 44px;
+	    border-radius: 4px;
+	    font-size: 16px;
+	    background-color: transparent;
+	    background-image: url(../images/search-icon.png);
+	    background-position: 10px 14px;
+	    background-repeat: no-repeat;
+	    padding: 12px 20px 12px 40px;
+	}
+	.status-section.transaction.desktop {
+		display: none;
+	}
+	.status-section.transaction.mobile .transaction-item{
+		display: flex;
+	    padding: 15px 0;
+	    border-top: 1px solid #dedede;
+	}
+	.status-section.transaction.mobile .transaction-item .avatar-sec {
+		flex: 1;
+	}
+	.status-section.transaction.mobile .transaction-item .profile-detail {
+		flex: 2;
+	}
+	.status-section.transaction.mobile .transaction-item .transaction-detail {
+		flex: 1;
+	}
+	.status-section.transaction.mobile .transaction-item .avatar-sec img {
+		width: 50px;
+    	border-radius: 50%;
+	}
+	.status-section.transaction.mobile .transaction-item p{
+		margin: 0;
+	}
+	.status-section.transaction.mobile .transaction-item p.name{
+		font-size: 20px;
+	}
+	.status-section.transaction.mobile .transaction-item p.amount{
+		font-size: 20px;
+		color: #f764a8;
+	}
+	/*Profile Page*/
+	.profile-card-left {
+		width: 100%;
+	}
+	.profile-card-left .profile-card.about, .profile-card-left .profile-card.sessions, .profile-card-left .profile-card.reviews {
+		display: none;
+	}
+	.profile-card-left .profile-card.profile-sub-header {
+		flex-direction: column;
+	    margin-bottom: 0;
+	}
+	.profile-card-left .profile-card.profile-sub-header .avatar-pic {
+		margin-top: -60px;
+	}
+	.profile-card-left .profile-card.profile-sub-header .detail-info {
+	    margin-left: 0px;
+        align-items: center;
+	}
+	.profile-card-left .profile-card.profile-sub-header .detail-info .details span {
+	    font-size: 12px;
+	}
+	.profile-card-left .profile-card .header {
+		flex-direction: column;
+	}
+	.profile-card-left .profile-card .review-sec .review-group {
+	  display: flex;
+	  flex-direction: column;
+	}
+	.profile-card-left .profile-card .review-sec .review-group .review{
+		padding: 0px;
+		margin-bottom: 15px;
+    	margin-right: 0rem;
+    	width: 100%;
+	}
+	.profile-card-left .profile-card .body .review-group .review .review-header {
+		flex-direction: column;
+	}
+	.profile-card-left .profile-card .body .review-group .review .review-body {
+		padding: 1rem;
+	    font-family: "Poppins Regular";
+	}
+	.profile-card-left .profile-header .mobile-tab-view {
+		border-top: 1px solid #e1e1e1;
+		border-bottom: 1px solid #e1e1e1;
+		display: flex;
+	    background: #fff;
+	}
+	.profile-card-left .profile-header .mobile-tab-view .tab {
+		color: #666666;
+		flex: 1;
+		border-right: 1px solid #e1e1e1;
+	    display: flex;
+	    padding: 10px;
+	    text-transform: capitalize;
+	}
+	.profile-card-left .profile-header .mobile-tab-view .tab:last-child {
+		border-right: 0;
+	}
+	.profile-card-left .profile-header .mobile-tab-view .tab img{
+		width: 20px;
+		margin-right: 5px;
+	}
+	.profile-card-left .profile-header .mobile-tab-view .tab.active{
+		background: #333333;
+		color: #fff;
+	}
+	.profile-card-left #edit-profile-modal .modal-dialog {
+		max-width: 100%;
+	}
+	.profile-card-left #edit-profile-modal .modal-dialog .modal-body .basic-info {
+		margin-right: 0px;
+	}
+	.profile-card-left #edit-profile-modal .modal-dialog .modal-body .basic-info .row .form-group {
+		width: 100%;
+	}
+	.profile-card-left #edit-profile-modal .modal-dialog .modal-body .basic-info .row .form-group:first-child {
+		margin-right: 0;
+	}
+	.profile-card-left #edit-profile-modal .modal-dialog .modal-body .basic-info .form-group input {
+		width: 100%;
+	}
+	.profile-card-left .profile-card .rate-charts {
+		flex-direction: column;
+	}
+	/*Login Page*/
+	.login-sec, .login-sec.create-acc {
+		width: 100%;
+	}
+	.create-account	{
+		flex-direction: column;
+	}
+	.create-account .create-account-right {
+	    margin: 3rem 0;
+	}
+	.create-account .create-account-right .figure-div {
+	    flex-direction: column;
+	    align-items: center;
+	    text-align: center;
+        margin-bottom: 35px;
+	}
+	/*Member Session page*/
+	.chat-left {
+		flex: 1;
+		min-height: 500px;
+	}
+	.select-box {
+	    padding-top: 50px;
+	}
+	.select-box .step .mobile-session {
+		width: 100%;
+	}
+	.select-box .step .mobile-session h2{
+		text-align: left;
+	    padding: 0 25px;
+	}
+	.select-box .step .mobile-session .rate-session img{
+		width: 100px;
+	}
+	.select-box .step .mobile-session .rate-session .absol-span{
+		right: 110px;
+	}
+	.select-box .step .mobile-session .rate-session p {
+		text-transform: capitalize;
+	    color: #7c7c7c;
+    	font-size: 18px;
+	}
+	.select-box .step .mobile-session .rate-session small {
+	    color: #7c7c7c;
+    	font-size: 18px;
+	}
+	.select-box .step .mobile-session .rate-session .mobile-prev-step {
+	    position: absolute;
+    	left: 25px;
+	    background: #fff;
+	    width: 40px;
+	    height: 40px;
+	    border: 1px solid #dcdcdc;
+	}
+	.select-box .step .mobile-session .rate-session .mobile-prev-step:focus {
+		outline: none;
+	}
+	.select-box .step .mobile-session .rate-session .mobile-prev-step i{
+		position: absolute;
+		top: 12px;
+		left: 12px;
+	}
+	.select-box .step .mobile-session .rate-session .rate-stars {
+		padding-top: 5px;
+	}
+	.select-box .step .mobile-session .rate-session .rate-stars img{
+		width: 25px;
+	}
+	.select-box .step .mobile-session .rate-session .button-group .btn img{
+		width: 80px;
+	}
+	.chat-drop select {
+		margin: 0 20px;
+	}
+	.v-modal.session .modal-container {
+		width: 320px;
+	}
+}
+@media (min-width: 375px) {
+	.banner-head h1{
+		font-size: 30px;
+	}
+	.full-cart.search-consult .content h2, .gd-ppl-words h2, .benefits h2, .full-cart.feature-service h2, .full-cart.abs-img .text-section h2, .full-cart.normal-img .text-section h2, .full-cart.our_story h2, .consult-steps h2 {
+	    font-size: 44px;
+	}
+	.full-cart.search-consult .content p, .full-cart.feature-service p, .benefits .benefit-item p, .full-cart.abs-img .text-section p, .full-cart.normal-img .text-section p, .full-cart.our_story p, .consult-steps p {
+		font-size: 18px;
+	}
+}
+@media (min-width: 411px) {
+	/*Home Page*/
+	.slick-dots li {
+	    width: 20px;
+	    height: 20px;
+	}
+}
+@media (min-width: 414px) {
+	/*Header*/
+	.navbar .navbar-toggler {
+		height: 35px;
+	}
+	.navbar .navbar-toggler span{
+		height: 5px;
+	}
+	/*Home Page*/
+	.inner-footer h2 {
+	    font-size: 44px;
+	}
+	.inner-footer p {
+	    font-size: 18px;
+	}
+}
 
-/*single-pages */
-.page-seting-content .link-input {flex-direction: column;}
-.page-setting .page-seting-content .link-input input { width: 100%;}
-.page-seting-content .link-input a {margin-bottom: 7px;}
-.multiple-buttons{flex-direction: column;}
-.single-page .save-btn {width: 100%;}
-.single-page .qus-btn {width: 100%;}
-/*/single-pages */	
 
-/* categories */
-.cate-top.pages-top-sec input[type=text] {
-    font-size: 13px;
-    background-position: 6px 17px;
-    padding: 17px 13px 11px 30px;
-}
-/*/categories */
-
-/*consultant */
-.pages-top-sec.consult-top.cate-top {
-    flex-direction: column;
-}
-.page-list .pages-top-sec.consult-top .form {
-    width: 92%;
-}
-/*/consultant */
-
-/* footer */
-.footer-section h6 {margin-top: 15px;}
-/*/footer */
-
-/* create account */
-.navbar-expand-lg.navbar-light .end-nav{flex-direction:column;}
-.navbar .container-fluid.wraper {padding: 0px;padding-left: 8px;}
-.create-account{flex-direction: column;}
-.login-sec.create-acc.d-flex {
-  margin: 0px auto; 
-}
-.create-account.d-flex {
-    padding: 50px 0px;
-}
-.c-a-bottom.bottom-link.d-flex {
-    margin: 0px auto;
-}
-/*/create account */
-
-/* login */
-.login-sec.d-flex {
-    max-width: 96%;
-}
-.bottom-link.d-flex {
-    max-width: 96%;
-}
-.info-footer-sec {
- flex-direction:column;
-}
-.info-footer-sec .foot-start {
-    width: 100%;
-    margin-right: 0;
-	margin-bottom: 60px;
-}
-.info-footer-sec .info-consult {
-    padding-right: 0;
-    margin-bottom: 60px;
-}
-.info-footer-sec .info-cate{
-    padding-right: 0;
-    margin-bottom: 60px;
-}
-.info-footer .info-footer-sec img, .info-footer .info-footer-sec label {
-    margin-bottom: 20px;
-}
-.end-nav button.btn {
-    margin-right: 0;
-    align-self: start;
-}
-.end-nav a.login-but {
-    color: #fff;
-    align-self: start;
-}
-.navbar.bg-light.navbar-expand-lg .btn.btn-primary {
-    padding-left: 0;
-}
-.sub-footer {
-    flex-direction: column;
-}
-.sub-footer p {
-    margin-left: initial!important;
-}
-/* categories */
-.cate-info-page.d-flex {
-    flex-direction: column;
-}
-.ham-content.d-flex {
-    padding-top: 30px;
-}
-.pages-list-l {
-    flex-direction: column;
-}
-.pages-list-l .pages-right {
-    margin-left: initial;
-}
-.btn.p-l {
-    width: 100%;
-    text-align: left;
-}
-.dropdown-toggle::after {
-    float: right;
-}
-.pages-right span:before {
-    content: '';
-	display:none;
-}
-.dropdown-menu.show {
-    width: 100%;
-}
-.cart-full.d-flex {
-    flex-direction: column;
-}
-.cart-section.d-flex {
-    width: 100%;
-}
-.end-button {
-    justify-content: center;
-}
-.end-button .btn-mid {
-    margin: 0px 10px;
-}
-.four-sec.d-flex {
-    flex-direction: column;
-}
-.sec-words.d-flex {
-    width: 100%;
-}
-.explore-cate-cart{
-    flex-direction: column;
-}
-.explore-carts.d-flex {
-    width: 100% !important;
-}
-.explore-carts.d-flex:nth-child(2) {
-    margin: 20px 0px;
-}
-.explore-carts.d-flex:nth-child(3) {
-    margin-bottom: 20px;
-}
-.sec-words.d-flex:nth-child(2) {
-    margin: 20px 0px;
-}
-.sec-words.d-flex:nth-child(3) {
-    margin-bottom: 20px;
-}
-.cart-full .cart-section:nth-child(2) {
-    margin-top: 20px;
-	margin-bottom: 20px;
-}
-.cart-full .cart-section:nth-child(3) {
-	margin-bottom: 20px;
-}
-/*/categories */
-
-/* private policy */
-.center-content.d-flex {
-    padding: 35px 25px 50px 25px;
-}
-/*/private policy */
-
-/* faq */
-.faq-content.d-flex.wrap {
-    flex-direction: column;
-}
-.p-p-faq .left-accordion {
-    width: 100%;
-    padding-right: 0px;
-}
-.p-p-faq .right-faq {
-    width: 100%;
-    padding-left: 0px;
-	margin-top: 20px;
-}
-.panel-heading h4 {
-    display: none;
-}
-/*/faq */
-
-/* my-consult */
-.full-chat-section .chat-left {
-    width: 100%;
-}
-.full-chat-section {
-    flex-direction: column;
-}
-.full-chat-section .chatter-pro.d-flex {
-    width: 100%;
-	display:none;
-}
-.full-chat-section .chat-right {
-    width: 100%;
-}
-.full-chat-section .chat-profile {
-    justify-content: center;
-}
-.full-chat-section .end-chat-right {
-    margin-left: initial;
-	margin-top: 15px;
-}
-.user-profile.d-flex {
-    flex-wrap: wrap;
-	margin-top: 13px;
-}
-.full-chat-section #chat-right-top {
-    float: left;
-    width: 100%;
-}
-.full-chat-section .chat-left-top {
-    float: left;
-    width: 100%;
-}
-#chat-right-top{display:none;}
-/*/my-consult */
-
-/* prepaid */
-.prepaid-card-full.d-flex {
-    flex-direction: column;
-}
-.method-image.d-flex {
-    flex-direction: column;
-}
-.prepaid-card-full .prepaid-card-left {
-    width: 100%;
-}
-.prepaid-card-full .pay-method .method-image img:nth-child(2) {
-    margin: 20px 0px;
-}
-.prepaid-card-full .pay-method .method-image img {
-    padding: 9%;
-}
-.prepaid-card-full .pay-cust-info div {
-    width: 100%;
-	margin-bottom:17px;
-}
-.prepaid-card-full .prepaid-form .last {
-    padding-left: 0px;
-}
-.prepaid-card-full .pre-pay-info .expiry.expiry-month {
-    margin-left: 0;
-    margin-right: 0;
-}
-.content_holesecion .prepaid-card-full .prepaid-card-right {
-    width: 100%;
-    padding-left: 0;
-	margin-top:20px;
-}
-.prepaid-card-full .pay-cust-info {
-    padding-top: 5px;
-}
-/*/prepaid */
-
-/* login-setting */
-.setting-uploader .three-uploader.d-flex {
-    flex-direction: column;
-}
-.setting-uploader .up-one, .setting-uploader .up-two, .setting-uploader .up-three {
-    width: 100%;
-}
-/*/login-setting */
-
-}/*mobile end */
-
-
-/*Tab--Version*/
-@media screen and (min-width: 768px) and (max-width: 991px) {
-.sidebar-mini.sidebar-collapse .content-wrapper{
-margin-left: 70px !important;}
-.content-wrapper .pages-top-sec .form {
-    width: 84%;
-}	
-.info-footer .foot-start {
-    width: 50%;
-    margin-right: 12%;
-	margin-bottom: 50px;
-}
-.info-footer .info-footer-sec {
-    max-width: 90%;
-    margin: 0px auto;
-    flex-wrap: wrap;
-    padding-left: 5%;
-}	
-/* create account */
-.create-account{flex-direction: column;}
-.create-account-left { margin: 0px auto;}
-.create-account .create-account-right {
-    margin-left: 0;
-    padding-top: 70px;
-    margin: 0px auto;
-}
-/*/create account */
-.sub-footer {
-    flex-direction: column;
-}
-.sub-footer p {
-    margin-left: initial!important;
-}
-
-/* info-categories */
-.navbar.bg-light.navbar-expand-lg .btn.btn-primary {
-    padding-left: 0;
-}
-.cart-section.d-flex {
-    width: 42%;
-}
-.cart-full {
-    justify-content: center;
-}
-.cart-full .cart-section {
-    margin: 20px;
-}
-.full-cart .cart-full .cart-section:last-child {
-    margin-right: 20px; 
-}
-.four-sec.d-flex {
-    flex-direction: column;
-}
-.four-sec .sec-words {
-    width: 100%;
-}
-.four-sec .sec-words:nth-child(2) {
-    margin: 20px 0px;
-}
-.four-sec .sec-words:nth-child(3) {
-    margin-bottom: 20px;
-}
-.explore-cate-cart {
-    justify-content: center;
-}
-.explore-carts.d-flex {
-    width: 42%;
-    margin: 20px;
-}
-/*/info-categories */
-
-/* faq */
-.faq-content.d-flex.wrap {
-    flex-direction: column;
-}
-.p-p-faq .left-accordion {
-    width: 100%;
-    padding-right: 0px;
-}
-.p-p-faq .right-faq {
-    width: 100%;
-    padding-left: 0px;
-	margin-top: 20px;
-}
-
-/*/ faq */
-
-/* my-consult */
-.full-chat-section .chat-left {
-    width: 100%;
-}
-.full-chat-section {
-    flex-direction: column;
-}
-.full-chat-section .chatter-pro.d-flex {
-    width: 100%;
-	display:none;
-}
-.full-chat-section .chat-right {
-    width: 100%;
-}
-.full-chat-section .chat-profile {
-    justify-content: center;
-}
-.full-chat-section .end-chat-right {
-    margin-left: initial;
-	margin-top: 15px;
-}
-.full-chat-section .chat-left-top {
-    float: left;
-    width: 100%;
-}
-.full-chat-section #chat-right-top {
-    float: left;
-    width: 100%;
-}
-.full-chat-section .chat-right .chat-heading span:before {
-    width: 38%;
-}
-.full-chat-section .chat-right .chat-heading span:after {
-    width: 38%;
-}
-/*/my-consult */
-
-/* prepaid */
-.prepaid-card-full.d-flex {
-    flex-direction: column;
-}
-.method-image.d-flex {
-    flex-direction: column;
-}
-.prepaid-card-full .prepaid-card-left {
-    width: 100%;
-}
-.content_holesecion .prepaid-card-full .prepaid-card-right {
-    width: 100%;
-    padding-left: 0;
-    margin-top: 20px;
-}
-.prepaid-card-full .pay-method .method-image img {
-    padding: 9%;
-}
-.prepaid-card-full .pay-method .method-image img:nth-child(2) {
-    margin: 20px 0px;
-}
-/*/prepaid */
-
-/* login-setting */
-.setting-uploader .three-uploader.d-flex {
-    flex-direction: column;
-}
-.setting-uploader .up-one, .setting-uploader .up-two, .setting-uploader .up-three {
-    width: 100%;
-}
-/*/login-setting */
-
-}/*END*/	 
-/*Lap--Version*/
-@media screen and (min-width: 992px) and (max-width: 1028px) {
-/* create account */
-.create-account{flex-direction: column;}
-.create-account-left { margin: 0px auto;}
-.create-account .create-account-right {
-    margin-left: 0;
-    padding-top: 70px;
-    margin: 0px auto;
-}
-.login-sec.create-acc {
-    max-width: 100%;
-}
-/*/create account */	
-	.container-fluid.wraper a.navbar-brand {
-    margin: 0px auto;
-	    margin-bottom: 15px;
-}
-.navbar-expand-lg>.container-fluid {
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-}
-.cart-full {
-    justify-content: center;
+/*Tablet--Version*/
+@media (min-width: 768px) {
+	/*Header*/
+	.navbar .navbar-brand img {
+		width: 200px;
+	}
+	.navigation__nav {
+		width: 301px;
+		height: calc(var(--vh, 1vh) * 100);
+		right: -301px;
+	}
+	.navigation__nav.collapsed {
+		transform: translateX(-301px);
+	}
+	/*Home Page*/
+	.banner-head h1{
+		font-size: 44px;
+	}
+	/*Wallet Page*/
+	.pay-method .payment-option .container {
+	    padding: 15px 0;
+	}
+	/*Transaction Page*/
+	.status-section.transaction.desktop {
+		display: block;
+	}
+	.status-section.transaction.desktop table thead .dynatable-head{
+	    text-align: left;
+	}
+	.status-section.transaction.desktop table tbody .table-item {
+		vertical-align: middle;
+	    text-align: left !important;
+	}
+	.status-section.transaction.desktop table tbody .table-item.avatar img {
+	    display: inline-block;
+		width: 40px;
+		height: auto;
+		margin-right: 5px;
+		border-radius: 50%;
+	}
+	.status-section.transaction.mobile {
+		display: none;
+	}
+	/*Profile Page*/
+	.profile-card-left .profile-card.profile-sub-header .detail-info .details span {
+	    font-size: 20px;
+	}
+	/*Login Page*/
+	.login-sec {
+		width: 400px;
+	}
+	.login-sec.create-acc {
+		width: 600px;
+	}
+	.create-account .create-account-right {
+	    margin: 3rem;
+	}
+	/*Session Page*/
+	.content-wrapper.chat, .select-box {
+		min-height: 580px;
+	}
+	.select-box {
+		padding: 0;
+	}
+	.v-modal.session .modal-container {
+		width: 400px;
+	}
+}
+@media (min-width: 1024px) {
+	/*Header*/
+	.navbar .navbar-toggler {
+		display: none;
+	}
+	.navbar .nav-link {
+		display: block;
+	}
+	.navbar .dropdown {
+		display: flex;
+	}
+	.navbar .collapse.mobile {
+		display: none !important;
+	}
+	/*Footer*/
+	.info-footer .footer {
+		flex-direction: row;
+	}
+	.info-footer .footer .foot-start {
+		width: 27%;
+		margin-right: 12%;
+	}
+	.info-footer .footer .footer-item {
+		margin: 0;
+	}
+	.info-footer .footer-bottom {
+	    flex-direction: row;
+	    align-items: center;
+	    padding: 0 1rem;
+	}
+	.info-footer .footer-bottom .copyright {
+	    padding: 0;
+    	margin: 0;
+	}
+	/*Home Page*/
+	.banner-head {
+		width: 700px;
+	}
+	.banner-head h1{
+		font-size: 64px;
+	}
+	.banner-head p {
+	    font-size: 20px;
+	}
+	.banner-head .btn-group {
+		flex-direction: row;
+	}
+	.banner-head .btn-group a{
+		width: 260px;
+	}
+	.banner-head .btn-group a:first-child{
+		margin: 0px 15px 0px 0px!important;
+	}
+	.full-cart.search-consult .search-item {
+		flex-direction: row;
+	}
+	.full-cart.search-consult .search-item .desktop {
+		display: block;
+	}
+	.full-cart.search-consult .search-item .mobile {
+		display: none;
+	}
+	.benefits .benefit-group {
+	  flex-direction: row;
+	}
+	.benefits .benefit-group .benefit-item {
+	    width: 20%;
+		padding: 0;
+	}
+	.benefits .benefit-group:last-child {
+		margin-top: 3rem;
+	}
+	.inner-footer .home-info-footer {
+		width: 600px;
+		margin-top: 100px;
+	}
+	.inner-footer .home-info-footer .btn-group{
+		flex-direction: row;
+		justify-content: space-around;
+	}
+	.inner-footer .home-info-footer .btn-group a{
+		width: 250px;
+	}
+	.inner-footer .home-info-footer .btn-group a:first-child {
+		margin-bottom: 0px;
+	}
+	/*Feature Page*/
+	.full-cart.feature-service .feature-service-groups {
+		flex-direction: column;
+		justify-content: space-between;
+	}
+	.full-cart.feature-service .feature-service-group {
+		display: flex;
+	}
+	.full-cart.abs-img .abs-item, .full-cart.normal-img .abs-item {
+		flex-direction: row;
+    	text-align: left;
+	}
+	.full-cart.abs-img .abs-item .img-section {
+ 	    margin-left: 100px;
+    	margin-right: 0px;
+	}
+	.full-cart.abs-img .abs-item .img-section.profile {
+  		margin-left: 220px;
+	  	margin-right: -250px;
+	}
+	.full-cart.abs-img .abs-item .img-section.profile img{
+		width: 60%;
+	}
+	.full-cart.normal-img .abs-item .text-section.mobile {
+		display: none;
+	}
+	.full-cart.normal-img .abs-item .text-section.desktop {
+		display: flex;
+	}
+	.full-cart.abs-img.transaction .text-section {
+	    width: 40%;
+	}
+	.full-cart.abs-img.transaction .abs-item .img-section {
+		margin: 0;
+	}
+	/*About Page*/
+	.full-cart.our_story .story_item {
+		flex-direction: row;
+	}
+	.full-cart.our_story .des-sec.mobile {
+		display: none;
+	}
+	.full-cart.our_story .des-sec.desktop {
+		display: flex;
+		flex-direction: column;
+	}
+	.full-cart.our_team .team_item {
+	    flex-direction: row;
+    	justify-content: space-around;
+	}
+	.full-cart.our_team .team_item .item {
+		margin-bottom: 0px;
+	}
+	.consult-steps .step-group {
+		flex-direction: row;
+		justify-content: space-around;
+	}
+	.consult-steps .step-group .item {
+		flex-direction: row;
+		align-items: flex-start;
+    	text-align: left;
+	    margin-bottom: 0px;
+	}
+	/*Category Page*/
+	.full-cart.category .category-header {
+		flex-direction: row;
+		align-items: center;
+	}
+	.full-cart.category .category-header .des-sec {
+	    margin-right: 300px;
+	}
+	.full-cart.consultant-search .cart-full {
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
+	.full-cart.consultant-search .cart-full .cart-section {
+		width: 20%;
+		margin: 0;
+	}
+	.full-cart.consultant-search .pages-top-sec {
+		display: flex;
+	}
+	.full-cart.consultant-search .filter-sec {
+		display: none;
+	}
+	/*Become a consultant*/
+	.full-consultant .consultant-page {
+		flex-direction: row;
+	}
+	.full-consultant .form-box {
+	    flex: 3;
+	    margin-right: 10px;
+	}
+	.full-consultant form .group-box {
+	    flex-direction: row;
+	}
+	.full-consultant form .group-box .form-group:first-child {
+	    margin-right: 15px;
+	}
+	.full-consultant form .group-box.three .form-group:nth-child(2) {
+	    margin-right: 15px;
+	}
+	.full-consultant form .step .image-upload {
+		flex-direction: row;
+	    align-items: center;
+	}
+	.full-consultant form .step .des-profile {
+		flex-direction: row;
+	}
+	.full-consultant form .step .des-profile-photo {
+		margin-right: 3rem;
+	}
+	.full-consultant form .step .des-profile-photo.following .d-flex.flex-column {
+	    padding-right: 100px;
+	}
+	.full-consultant .custom-checkbox {
+		padding-right: 3rem;
+	}
+	.full-consultant .modal-dialog {
+		height: auto;
+		width: auto;
+	    margin: 1.75rem auto;
+        overflow-y: auto;
+	}
+	.full-consultant .modal-dialog .modal-content form .upload-profile p {
+		text-align: center;
+	}
+	.full-consultant .modal-dialog .modal-header h3 {
+	    font-size: 30px;
+	}
+	.full-consultant form .step .ability {
+		justify-content: space-between;
+	    flex-direction: row;
+	}
+	.benefit .consultant-benefit-item {
+		flex-direction: row;
+		text-align: left;
+    	padding: 0px;
+	}
+	/*Customer Portal*/
+	/*Member Settings*/
+	.setting-page {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		margin: 0 auto 0 0;
+	}
+	.setting-page .setting-content {
+        flex-direction: row;
+	}
+	/*Find Consultant*/
+	.content-wrapper.adminprof .pages-top-sec {
+		display: flex;
+	}
+	.content-wrapper.adminprof .filter-sec {
+		display: none;
+	}
+	.page-dashboard .page-border.recommend .cart-full {
+		flex-direction: row;
+	}
+	.page-dashboard .page-border.recommend .cart-section {
+		width: 20%;
+	}
+	/*Wallet Page*/	
+	.prepaid-card-full .prepaid-card-left {
+	    width: 65%;
+	}
+	.prepaid-card-full .prepaid-card-left .pay-method table{
+	  display: grid;
+	}
+	.prepaid-card-full .prepaid-card-right {
+		display: block;
+	}
+	.prepaid-card-full .prepaid-card-left .pay-method.table {
+		display: block;
+	}
+	.mobile-wallet-payment {
+		display: none;
+	}
+	.mobile-step2 {
+		display: none;	
+	}
+	.mobile-wallet-transaction {
+		display: none;
+	}
+	/*Dashboard*/
+	.page-dashboard.admin {
+		flex-direction: row;
+	}
+	.page-dashboard h3 {
+		padding-top: 0px;
+	}
+	.page-dashboard .mobile-step2 {
+		display: none;
+	}
+	.page-dashboard .profile-header{
+		flex-direction: row;
+		margin-top: 15px;
+		margin-bottom: 25px;
+	}
+	.page-dashboard .profile-header .profile-sec {
+		flex-direction: row;
+		margin-right: 15px;
+	}
+	.page-dashboard .profile-header .profile-sec .detail-profile {
+		flex-direction: row;
+	}
+	.page-dashboard .profile-header .profile-sec .detail-info {
+    	align-items: flex-start;
+	}
+	.page-dashboard .profile-header .profile-sec .avatar-pic {
+		margin-right: 20px;
+	}
+	.page-dashboard .profile-header .current-bal {
+		display: flex;
+	}
+	.page-dashboard .page-border.recommend {
+		flex-direction: row;
+	}
+	.page-dashboard.admin .current-bal {
+		display: flex;
+	    margin-right: 15px;
+	}
+	.page-dashboard.admin .current-bal:nth-child(5) {
+		margin-right: 0;
+	}
+	.pages-heading {
+		flex-direction: row;
+	}
+	.filter-tag.dashboard {
+		flex-direction: row;
+	}
+	.filter-tag.dashboard .form-group{
+		padding-right: 15px;
+	}
+	.filter-tag.dashboard button{
+		width: 100px;
+	    margin-left: 15px;
+	}
+	/*Transaction Page*/
+	.filter-tag.transaction {
+		flex-direction: row;
+	    justify-content: space-between;
+        align-items: flex-end;
+	}
+	.filter-tag.transaction .form-group{
+		padding-right: 15px;
+	}
+	.filter-tag.transaction button{
+		width: 100px;
+	}
+	.filter-tag.transaction .group-forms {
+		flex-direction: row;
+	}
+	/*Register Page*/
+	.create-account	{
+		flex-direction: row;
+	}
+	.login-sec.create-acc {
+		width: 400px;
+	}
+	.create-account .create-account-right {
+	    margin: 3rem 0;
+    	margin-left: 10px;
+	}
+	.create-account .create-account-right .figure-div img {
+	    width: 80px;
+	}
+	/*Session Page*/
+	.content-wrapper.chat, .select-box {
+		min-height: 780px;
+	}
+	.select-box .step .desktop-session {
+	    display: flex;
+	    flex-direction: column;
+	    align-items: center;
+	}
+	.chat-drop select {
+		margin: 0;
+		padding: 0 20px;
+	}
 }
 
-.cart-full {
-    justify-content: center;
-}
-.cart-full .cart-section {
-    margin: 20px; 
-}
-.full-cart .cart-full .cart-section:last-child {
-    margin-right: 20px; 
-}
-.end-button.d-flex  {
-    justify-content: center;
-}	
-.explore-carts h3 {
-    min-height: 69px;
-    max-height: 70px;
-}
-.end-button.d-flex .btn-mid {
-    margin: 0px 21px;
-}
-/* my-consult */
-.full-chat-section .chat-left {
-    width: 100%;
-}
-.full-chat-section {
-    flex-direction: column;
-}
-.full-chat-section .chatter-pro.d-flex {
-    width: 100%;
-	display:none;
-}
-.full-chat-section .chat-right {
-    width: 100%;
-}
-.full-chat-section .chat-profile {
-    justify-content: center;
-}
-.full-chat-section .end-chat-right {
-    margin-left: initial;
-	margin-top: 15px;
-}
-.full-chat-section .chat-left-top {
-    float: left;
-    width: 100%;
-}
-.full-chat-section #chat-right-top {
-    float: left;
-    width: 100%;
-}
-.full-chat-section .chat-right .chat-heading span:before {
-    width: 38%;
-}
-.full-chat-section .chat-right .chat-heading span:after {
-    width: 38%;
-}
-/*/my-consult */
-/* prepaid */
-.prepaid-card-full.d-flex {
-    flex-direction: column;
-}
-.method-image.d-flex {
-    flex-direction: column;
-}
-.prepaid-card-full .prepaid-card-left {
-    width: 100%;
-}
-.content_holesecion .prepaid-card-full .prepaid-card-right {
-    width: 100%;
-    padding-left: 0;
-    margin-top: 20px;
-}
-.prepaid-card-full .pay-method .method-image img {
-    padding: 9%;
-}
-.prepaid-card-full .pay-method .method-image img:nth-child(2) {
-    margin: 20px 0px;
-}
-/*/prepaid */
 
-/* login-setting */
-.setting-uploader .three-uploader.d-flex {
-    flex-direction: column;
-}
-.setting-uploader .up-one, .setting-uploader .up-two, .setting-uploader .up-three {
-    width: 100%;
-}
-/*/login-setting */
-
-}
-/* end  */
-/*L-Lap--Version*/
-
-@media screen and (min-width: 1850px) and (max-width: 1920px) {
-.single-page .page-seting-content .link-input input { width: 86%;}
-.cate table th:last-child { width: 10%;}
-.cate table th:nth-child(2) { width: 39%;}
-.cate table th:nth-child(3) { width: 30%;}
-/* create account */
-.navbar .container-fluid.wraper {padding: 0px 105px;}
-.navbar-nav .nav-item {padding-right: 10px;}
-.navbar-nav .nav-item:last-child {padding-right: 0px;}
-/* create account */
-/* categories*/
-.wrap{max-width:75%!important;justify-content:center!important;margin:0px auto;!important}
-.pages-list .pages-list-l {
-    max-width: 75%;
-    margin: 0px auto;
-    justify-content: center;
-}
-/*/categories*/
-
-/* my consultant */
-.full-chat-section .chat-right .chat-profile h2{padding-right:8px;}
-.full-chat-section .chat-right span {
-    padding-left: 28px;
-    font-size: 13px;
-}
-.full-chat-section .end-chat-right img {
-    margin-left: 13px;
-}
-.full-chat-section .chat-records {
-    padding: 18px 15px 22px 15px;
-}
-.full-chat-section .chat-drop .dropdown .btn {
-    padding: 13px 15px;
-}
-.full-chat-section .chat-drop .dropdown-toggle::after {
-    right: 25px;
-}
-.full-chat-section .chat-right .chat-heading span:before {
-    width: 42%;
-}
-.full-chat-section .chat-right .chat-heading span:after {
-    width: 42%;
-}
-/* my consultant */
-
-/* prepaid */
-.prepaid-card-full .pay-method .method-image img {
-    padding: 70px 75px;
-}
-.prepaid-card-full .prepaid-card-full .prepaid-card-right {
-    width: 25%;
-    padding-left: 21px;
-}
-.prepaid-card-full .prepaid-card-right .current-bal {
-    background: #fff;
-    padding: 22px;
-}
-/*/prepaid */
-
-/* footer */
-.info-footer .info-footer-sec {
-    max-width: 75%;
-    margin: 0px auto;
-	justify-content: space-between;
-}
-.info-footer .info-cate { padding-right: 90px;}
-.info-footer .foot-start {margin-right: 15%;}
-.sub-footer.d-flex {
-	padding-left: 13.6%;
-    padding-right: 12%;
-    margin: 0px auto;
-    justify-content: center;
-	margin-top: -1px;
+/*Desktop--Version*/
+@media (min-width: 1280px) {
+	/*Header*/
+	.navbar .collapse.mobile {
+		display: none !important;
+	}
+	/*Find Consultant*/
+	.main-sidebar {
+		display: block;
+	}
+	.content-wrapper.adminprof {
+	    margin-left: 260px;
+	}
+	/*Wallet Page*/	
+	.content-wrapper.member-content {
+		margin-left: 260px;
+	}
+	/*Profile Page*/
+	.profile-card-left {
+		width: 70%;
+	}
+	.profile-card-left .profile-card {
+		margin: 25px 0;
+	}
+	.profile-card-left .profile-card.about, .profile-card-left .profile-card.sessions, .profile-card-left .profile-card.reviews {
+		display: block;
+	}
+	.profile-card-left .profile-card.profile-sub-header {
+		flex-direction: row;
+	}
+	.profile-card-left .profile-card.profile-sub-header .avatar-pic {
+		margin-top: 0px;
+	}
+	.profile-card-left .profile-card.profile-sub-header .detail-info {
+	    margin-left: 15px;
+        align-items: flex-start;
+	}
+	.profile-card-left .profile-card.profile-sub-header .detail-info .details span {
+	    font-size: 15px;
+	}
+	.profile-card-left .profile-card .header {
+		flex-direction: row;
+	}
+	.profile-card-left .profile-card .review-sec .review-group {
+	  flex-direction: row;
+	}
+	.profile-card-left .profile-card .review-sec .review-group .review{
+		padding: 15px;
+    	margin-right: 1rem;
+    	width: 49%;
+	}
+	.profile-card-left .profile-card .body .review-group .review .review-header {
+		flex-direction: row;
+	}
+	.profile-card-left .profile-card .body .review-group .review .review-body {
+		padding: 1rem 0 0;
+	}
+	.profile-card-left .profile-header .mobile-tab-view {
+		display: none;
+	}
+	.profile-card-left #edit-profile-modal .modal-dialog {
+		max-width: 75%;
+	}
+	.profile-card-left #edit-profile-modal .modal-dialog .modal-body .basic-info {
+		margin-right: 200px;
+	}
+	.profile-card-left #edit-profile-modal .modal-dialog .modal-body .basic-info .row .form-group {
+		width: auto;
+	}
+	.profile-card-left #edit-profile-modal .modal-dialog .modal-body .basic-info .row .form-group:first-child {
+		margin-right: 15px;
+	}
+	.profile-card-left #edit-profile-modal .modal-dialog .modal-body .basic-info .row.three .form-group:nth-child(2) {
+		margin-right: 15px;
+	}
+	.profile-card-left #edit-profile-modal .modal-dialog .modal-body .basic-info .form-group input {
+		width: auto;
+	}
+	.profile-card-left .profile-card .rate-charts {
+		flex-direction: row;
+	}
+	/*Register Page*/
+	.login-sec.create-acc {
+		width: 450px;
+	}
+	.create-account .create-account-right {
+	    margin-left: 50px;
+	}
+	.create-account .create-account-right .figure-div img {
+	    width: 90px;
+	}
+	.create-account .create-account-right .figure-div {
+	    flex-direction: row;
+	    align-items: flex-start;
+	    text-align: left;
+        margin-bottom: auto;
+	}
+	.create-account .create-account-right .figure-div .description p{
+		padding-left: 1rem;
+	}
+	/*Session Page*/
+	.content-wrapper.chat, .select-box {
+		min-height: 730px;
+	}
 }
 
-/*/footer */
-.setting-uploader .up-one, .setting-uploader .up-two, .setting-uploader .up-three {
-    width: 18%;
+@media (min-width: 1366px) {
+	/*Feature Page*/
+	.full-cart.abs-img .abs-item .img-section {
+	    margin-left: 70px;
+	    margin-right: -40px;
+	}
+	/*Wallet Page*/
+	.prepaid-card-full .prepaid-card-left {
+	    width: 70%;
+	}
+	.prepaid-card-full .prepaid-card-left .pay-method table{
+	  display: inline-table;
+	}
+	/*Session Page*/
+	.content-wrapper.chat, .select-box {
+		min-height: 560px;
+	}
 }
-} /*END*/	
 
-
-@media screen and (min-width: 992px) and (max-width: 1028px) {
-
-} /*END*/	
-
-@media screen and (min-width: 992px) and (max-width: 1200px) {
-
-
-} /*END*/	
+@media (min-width: 1440px) {
+	/*Feature Page*/
+	.full-cart.abs-img .abs-item .img-section {
+	    margin-left: 200px;
+	    margin-right: -100px;
+	}
+	/*Session Page*/
+	.content-wrapper.chat, .select-box {
+		min-height: 830px;
+	}
+}
+@media (min-width: 1920px) {
+	.content-wrapper.adminprof {
+		min-height: 880px;
+	}
+	/*Wallet Page*/
+	.prepaid-card-full .prepaid-card-left {
+	    width: 60%;
+	}
+	/*Session Page*/
+	.content-wrapper.chat, .select-box {
+		min-height: 880px;
+	}
+	.chat-left {
+		flex: none;
+	}
+}

@@ -64,6 +64,7 @@
     "meta_title" => "Meta title (max 55 characters)",
     "meta_description" => "Meta description (max 55 characters)",
     "page_url" => "Page URL",
-    "body" => "Body"
+    "body" => "Body",
+    "earnings" => "Earnings"
   ]
 ?>

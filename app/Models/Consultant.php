@@ -24,7 +24,7 @@ class Consultant extends Model
      * @var array
      */
     protected $fillable = [
-        'unique_id', 'industry_expertise', 'phone_contact', 'chat_contact', 'video_contact', 'company_name', 'invoice_mail', 'invoice_first_name', 'invoice_last_name', 'invoice_address', 'invoice_zip_code', 'invoice_zip_place', 'prof_image', 'image_access'
+        'user_id', 'profile_id', 'company_id', 'phone_contact', 'chat_contact', 'video_contact', 'currency', 'hourly_rate', 'rate', 'payment_method', 'completed_sessions', 'response_rate'
     ];
 
     /**
@@ -36,8 +36,15 @@ class Consultant extends Model
         'password', 'remember_token',
     ];
 
-    public function user()
-    {
-        return $this->belongsTo('App\User', 'unique_id');
+    public function user() {
+        return $this->belongsTo('App\User', 'user_id');
+    }
+
+    public function profile() {
+        return $this->belongsTo('App\Models\Profile', 'profile_id');
+    }
+
+    public function company() {
+        return $this->belongsTo('App\Models\Company', 'company_id');
     }
 }

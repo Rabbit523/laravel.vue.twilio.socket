@@ -10,7 +10,6 @@
                 <div class="single-page-heading single-page d-flex flex-column">
                     <a href="{{ $lang == 'en' ? url('/pages') : url('/no/sider') }}"><img src="{{ asset('images/back-icon.png')}}" alt="icon"/></a>
                 </div>
-
                 <div class="page-setting d-flex flex-column">
                     <h2>@lang('admin.page_settings')</h2>
                     <div class="page-seting-content d-flex flex-column">
@@ -53,142 +52,11 @@
         </div>
     </div>
 </div>
-
 @endsection
-
-@section ('scripts')
+@section('scripts')
 <script>
-    $("#page_body").summernote({ height: 300 });
-    $(document).ready(function() {
-
-        $("#page_save").click(function(){
-            var page_info = {
-                page_name: $("#page_name").val(),
-                page_url: $("#page_url").val(),
-                type: "page"
-            };
-            if ($("#hidden_id").val() == '') {
-                $.ajax({
-                    url: '/create_page',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    type: 'POST',
-                    data: page_info,
-                    dataType: 'JSON',
-                    success: function (data) {
-                        var status=JSON.stringify(data['status']);
-                        if(status=='false') {
-                            $.each(data.errors,function(index,value){
-                                $("#" + index + "_error").show();
-                                $("#" + index + "_error").text(value[0]);
-                            });
-                        } else {
-                            var id=JSON.stringify(data['id']);
-                            if(id!='') {
-                                $("#hidden_id").val(id);
-                                alert("Page is created successfully");
-                            } 
-                        }
-                    }
-                });
-            } else {
-                var page_info = {
-                    page_name: $("#page_name").val(),
-                    page_url: $("#page_url").val(),
-                    hidden_id: $("#hidden_id").val(),
-                    type: "page"
-                };
-                $.ajax({
-                    url: '/update_page',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    type: 'POST',
-                    data: page_info,
-                    dataType: 'JSON',
-                    success: function (data) {
-                        var status=JSON.stringify(data['status']);
-                        if(status=='false') {
-                            $.each(data.errors,function(index,value){
-                                $("#" + index + "_error").show();
-                                $("#" + index + "_error").text(value[0]);
-                            });
-                        } else {
-                            alert("Updated successfully");
-                        }
-                    }
-                });
-            }
-        });
-
-        $("#page_body_save").click(function () {
-            var body_info = {
-                page_body: $("#page_body").summernote('code'),
-                hidden_id: $("#hidden_id").val(),
-                type: "page_body"
-            };
-            if ($("#hidden_id").val() != '') {
-                $.ajax({
-                    url: '/create_page',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    type: 'POST',
-                    data: body_info,
-                    dataType: 'JSON',
-                    success: function (data) {
-                        var status=JSON.stringify(data['status']);
-                        if(status=='false') {
-                            $.each(data.errors,function(index,value){
-                                $("#" + index + "_error").show();
-                                $("#" + index + "_error").text(value[0]);
-                            });
-                        } else {
-                            $("#hidden_id").val(data['id']);
-                            alert("Page Body updated successfully");
-                        }
-                    }
-                });
-            } else {
-                alert("Complete page setting first!");
-            }
-        });
-
-        $("#meta_save").click(function(){
-            var meta_info = {
-                meta_title: $("#meta_title").val(),
-                meta_description: $("#meta_description").val(),
-                hidden_id: $("#hidden_id").val(),
-                type: "meta"
-            };
-            if ($("#hidden_id").val() != '') {
-                $.ajax({
-                    url: '/create_page',
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    type: 'POST',
-                    data: meta_info,
-                    dataType: 'JSON',
-                    success: function (data) {
-                        var status=JSON.stringify(data['status']);
-                        if(status=='false') {
-                            $.each(data.errors,function(index,value){
-                                $("#" + index + "_error").show();
-                                $("#" + index + "_error").text(value[0]);
-                            });
-                        } else {
-                            alert("Meta Data updated successfully");
-                            $("#meta_title_error").hide();
-                            $("#meta_description_error").hide();
-                        }
-                    }
-                });
-            } else {
-                alert("Complete page setting first!");
-            }
-        });
-    });
+	jQuery(function(){
+		new gotoconsult.Controllers.createPage();
+	});
 </script>
 @endsection

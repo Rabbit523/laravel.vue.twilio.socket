@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+	<defs>
+		<image width="36" height="36" id="img1" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkAQMAAADbzgrbAAAAAXNSR0IB2cksfwAAAAZQTFRF////Wlpa/wN1LAAAAAJ0Uk5T/wDltzBKAAAAHUlEQVR4nGNgYPjAAAKUk///f8BKYlePSzWV3AMA+LwxsYju8nQAAAAASUVORK5CYII="/>
+	</defs>
+	<style>
+		tspan { white-space:pre }
+		.shp0 { fill: none } 
+	</style>
+	<g id="Layer">
+		<path id="canvas_background" class="shp0" d="M-1 -1L581 -1L581 401L-1 401L-1 -1Z" />
+	</g>
+	<g id="Layer">
+		<path id="svg_1" class="shp0" d="M0 0L48 0L48 48L0 48L0 0Z" />
+		<use id="svg_2" href="#img1" x="6" y="6" />
+	</g>
+</svg>

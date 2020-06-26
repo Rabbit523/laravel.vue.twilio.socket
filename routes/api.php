@@ -31,7 +31,15 @@ Route::group(['middleware' => 'api'], function ($router) {
     Route::post('/create_room', 'Api\VideoController@createRoom');
 
     Route::post('/manage_status', 'Api\ApiController@manageStatus');
-    Route::post('/manage_balance', 'Api\ApiController@manageBalance');
-    Route::post('/manage_rate', 'Api\ApiController@manageRate');
+    Route::post('/manage_transaction', 'Api\ApiController@manageTransaction');
+    Route::post('/submit_review', 'Api\ApiController@manageReview');
+    Route::get('/get-universities', 'Api\ApiController@getUniversities');
+    
+    Route::post('/member_image_upload', 'Api\ApiController@memberImageUpload');
+    Route::post('/update_member_profile', 'Api\ApiController@updateMemberProfile');
+    Route::post('/update_member_setting', 'Api\ApiController@updateMemberSetting');
+    Route::post('/consultant_doc_upload', 'Api\ApiController@consultantDoc');
+
+    Route::post('/become-consultant', 'Api\ApiController@becomeConsultant');
 });
 

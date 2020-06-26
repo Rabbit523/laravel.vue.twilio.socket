@@ -63,6 +63,7 @@
     "meta_title" => "Metatittel (maks 55 tegn)",
     "meta_description" => "Meta Beskrivelse (maks 55 tegn)",
     "page_url" => "side url",
-    "body" => "Kropp"
+    "body" => "Kropp",
+    "earnings" => "Inntjening"
   ]
 ?>

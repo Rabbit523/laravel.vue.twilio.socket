@@ -2,12 +2,12 @@
 @section('title', 'GoToConsult - Categories')
 @section('content')
 <?php $lang = app()->getLocale();?>
-<div class="wrapper">
+<div class="wrapper member-sidebar">
     @include('elements.admin_sidebar')
     <div class="content-wrapper adminprof">
         <div class="content_holesecion">
-		    <div class="page-list d-flex flex-column">
-                <div class="pages-heading category-heading d-flex">
+		    <div class="page-list">
+                <div class="pages-heading category-heading">
                     <h2 class="mr-auto mt-auto mb-auto">@lang('admin.categories')</h2>
                     <a href="{{ $lang == 'en' ? url('/create-category') : url('/no/opprett-kategori') }}"><button class="btn">@lang('admin.create_category')</button></a>
                 </div>
@@ -37,13 +37,11 @@
 		</div>
     </div>
 </div>
-
 @endsection
-
 @section('scripts')
 <script>
-    $(document).ready(function() {
-		$('#example').DataTable();
-    });
+	jQuery(function(){
+		new gotoconsult.Controllers.categories();
+	});
 </script>
 @endsection

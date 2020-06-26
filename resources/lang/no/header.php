@@ -1,7 +1,6 @@
 <?php 
   return [
-    "faq" => "FAQ",
-    "about_us" => "Om oss",
+    "about_us" => "Om",
     "become_consultant" => "Bli konsulent",
     "categories" => "Kategorier",
     "find_consultant" => "Finn en konsulent",
@@ -12,8 +11,10 @@
     "my_consultants" => "Mine konsulenter",
     "my_customers" => "Mine kunder",
     "login" => "Logg Inn",
+    'register' => 'Melde deg på',
     "customers" => "Kunder",
     "consultants" => "Konsulenter",
-    "pages" => "Sider"
+    "pages" => "Sider",
+    "features" => "Funksjoner"
   ]
 ?>

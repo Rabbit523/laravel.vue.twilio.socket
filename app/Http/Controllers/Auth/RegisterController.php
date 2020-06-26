@@ -14,7 +14,9 @@ use App\User;
 use App\Models\Consultant;
 use App\Models\Customer;
 use App\Models\Page;
+use App\Models\Profile;
 use App;
+use Auth;
 
 class RegisterController extends Controller
 {
@@ -54,14 +56,6 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-    }
 
     /**
      * Create a new user instance after a valid registration.
@@ -80,16 +74,12 @@ class RegisterController extends Controller
 
     protected function register (Request $request) {
         $rules = array(
-            'first_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
-            'industry_expertise' => 'required',
-            'phone' => 'required||regex:/[0-9]{9}/',
-            'email' => 'required|unique:users|email',
-            'password' => 'required|min:6',
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8'],
         );
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
-            return App::getLocale() == 'en' ? Redirect::to('/register')->withErrors($validator) ->withInput(Input::except('password')) : Redirect::to('/no/registrer')->withErrors($validator) ->withInput(Input::except('password'));
+            return Redirect::to('register')->withErrors($validator);
         } else {
             $user = User::create([
                 'first_name' => $request->first_name,
@@ -97,25 +87,17 @@ class RegisterController extends Controller
                 'phone' => $request->phone,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'role' => 'customer',
                 'status' => 'Offline',
-                'balance' => '0'
+                'balance' => '0',
+                'active' => '1'
             ]);
-            if($request->has('checkbox')) {
-                $consultant=new Consultant;
-                $consultant->unique_id = $user->id;
-                $consultant->industry_expertise = $request->industry_expertise;
-                $consultant->save();
-                $user->role='consultant';
-                $user->save();
-                return App::getLocale() == 'en' ? Redirect::to('/login')->with('alert-success', 'Consultant addess sucessfully') : Redirect::to('/no/logg-inn')->with('alert-success', 'Consultant addess sucessfully');
+            $customer = Customer::create(['user_id' => $user->id]);
+            if ($request->remember == 'true') {
+                Auth::login($user);
+                return App::getLocale() == 'en' ? Redirect::to('/sessions') : Redirect::to('/no/moter');
             } else {
-                $customer=new Customer;
-                $customer->unique_id = $user->id;
-                $customer->industry_expertise = $request->industry_expertise;
-                $customer->save();
-                $user->role='customer';
-                $user->save();
-                return App::getLocale() == 'en' ? Redirect::to('/login')->with('alert-success', 'Customer addess sucessfully') : Redirect::to('/no/logg-inn')->with('alert-success', 'Customer addess sucessfully');
+                return App::getLocale() == 'en' ? Redirect::to('/login') : Redirect::to('/no/logg-inn');
             }
         }
     }

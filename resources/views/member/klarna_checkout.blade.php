@@ -2,7 +2,6 @@
 @section('title', "Klarna Checkout")
 @section('description', "Klarna Checkout API")
 @section('content')
-
 <div class="wrapper member-sidebar">
   @include('elements.member_sidebar')
   <div class="content-wrapper adminprof">
@@ -11,5 +10,4 @@
     </div>
   </div>
 </div>
-
 @endsection

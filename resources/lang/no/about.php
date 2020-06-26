@@ -7,6 +7,7 @@
     "become_consult" => "Bli en konsulent",
     "get_started" => "Det er lett å komme i gang",
     "how_it_all" => "Hvordan det hele",
-    "started_in" => "Startet i"
+    "started_in" => "Startet i",
+    "show-bio" => "Vis Bio"
   ];
 ?>

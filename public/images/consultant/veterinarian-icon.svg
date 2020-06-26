@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 24.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 183.7 187.1" style="enable-background:new 0 0 183.7 187.1;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:url(#SVGID_1_);}
+	.st1{fill:#B957FF;}
+</style>
+<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="2.8143" y1="189.9389" x2="167.7546" y2="6.8847" gradientTransform="matrix(1 0 0 -1 0 184.9388)">
+	<stop  offset="0" style="stop-color:#EDD0FF"/>
+	<stop  offset="1" style="stop-color:#DDA7FE"/>
+</linearGradient>
+<path class="st0" d="M89.5,174.9c45.2,0,81.8-37.5,81.8-83.7c0-46.3-36.6-83.7-81.8-83.7C44.3,7.4,7.7,44.9,7.7,91.2
+	C7.7,137.4,44.3,174.9,89.5,174.9z"/>
+<g id="Veterinary_1_">
+	<g>
+		<path class="st1" d="M54,90.5c-5.7,0-10.4-4.7-10.4-10.4c0-5.7,4.7-10.4,10.4-10.4s10.4,4.7,10.4,10.4
+			C64.3,85.8,59.7,90.5,54,90.5z"/>
+	</g>
+	<g>
+		<path class="st1" d="M74.9,74.9c-5.7,0-10.4-4.7-10.4-10.4c0-5.7,4.7-10.4,10.4-10.4c5.7,0,10.4,4.7,10.4,10.4
+			C85.3,70.3,80.6,74.9,74.9,74.9z"/>
+	</g>
+	<g>
+		<path class="st1" d="M100.8,74.9c-5.7,0-10.4-4.7-10.4-10.4c0-5.7,4.7-10.4,10.4-10.4s10.4,4.7,10.4,10.4
+			C111.2,70.3,106.6,74.9,100.8,74.9z"/>
+	</g>
+	<g>
+		<path class="st1" d="M121.8,90.5c-5.7,0-10.4-4.7-10.4-10.4c0-5.7,4.7-10.4,10.4-10.4s10.4,4.7,10.4,10.4
+			C132.1,85.8,127.5,90.5,121.8,90.5z"/>
+	</g>
+	<path class="st1" d="M87.9,80.1c-15.7,0-28.5,12.8-28.5,28.5c0,18.2,17.2,18.2,28.5,18.2s28.5,0,28.5-18.2
+		C116.4,92.9,103.6,80.1,87.9,80.1z M95.6,106h-5.2v5.2h-5.2V106h-5.2v-5.2h5.2v-5.2h5.2v5.2h5.2V106z"/>
+</g>
+</svg>

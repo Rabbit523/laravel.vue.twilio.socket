@@ -2,12 +2,12 @@
 @section('title', 'GoToConsult - Customers')
 @section('content')
 <?php $lang = app()->getLocale();?>
-<div class="wrapper">
+<div class="wrapper member-sidebar">
     @include('elements.admin_sidebar')
     <div class="content-wrapper adminprof">
         <div class="content_holesecion">
-		    <div class="page-list d-flex flex-column">
-                <div class="pages-heading category-heading d-flex">
+		    <div class="page-list">
+                <div class="pages-heading category-heading">
                     <h2 class="mr-auto mt-auto mb-auto">@lang('admin.customers')</h2>
                     <a href="{{ $lang == 'en' ? url('/create-customer') : url('/no/opprett-kunde') }}"><button class="btn">@lang('admin.create_customer')</button></a>
                 </div>
@@ -35,7 +35,7 @@
                                 {{$data->user->first_name}} {{$data->user->last_name}}
                             </td>
                             <td>{{$data->created_at->format('d.m.Y')}}</td>
-                            <td><a style="display:block;line-height:22px;" href="{{ $lang == 'en' ? url('/edit-customer/'.$data->unique_id) : url('/no/rediger-kunde/'.$data->unique_id) }}" class="">@lang('admin.details') </a></td>
+                            <td><a style="display:block;line-height:22px;" href="{{ $lang == 'en' ? url('/edit-customer/'.$data->user_id) : url('/no/rediger-kunde/'.$data->user_id) }}" class="">@lang('admin.details') </a></td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -44,13 +44,11 @@
 		</div>
     </div>
 </div>
-
 @endsection
-
 @section('scripts')
 <script>
-    $(document).ready(function() {
-		$('#example').DataTable();
-    });
+	jQuery(function(){
+		new gotoconsult.Controllers.customers();
+	});
 </script>
 @endsection

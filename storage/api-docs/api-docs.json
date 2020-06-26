@@ -1,0 +1,731 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Gotoconsult API documentation",
+        "description": "API description in https://gotoconsult.fantasylab.io",
+        "contact": {
+            "email": "dmitrii@fantasylab.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://gotoconsult.fantasylab.io"
+        }
+    ],
+    "paths": {
+        "/": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns home view",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                }
+            }
+        },
+        "/no": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns home view with Norwegian content",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                }
+            }
+        },
+        "/category/{id}": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns category data",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "category id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
+        "/no/kategori/{id}": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns category data with Norwegian content",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "category id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Resource Not Found"
+                    }
+                }
+            }
+        },
+        "/become-consultant": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns become consultant view",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                }
+            }
+        },
+        "/no/bli-konsulent": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns become consultant view with Norwegian content",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                }
+            }
+        },
+        "/about": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns about us view",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                }
+            }
+        },
+        "/no/om-oss": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns about us view with Norwegian content",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                }
+            }
+        },
+        "/privacy": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns privacy view",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                }
+            }
+        },
+        "/no/personvern": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns privacy view with Norwegian content",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                }
+            }
+        },
+        "/terms-customer": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns customer terms view",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                }
+            }
+        },
+        "/no/vilkar-kunde": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns customer terms view with Norwegian content",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                }
+            }
+        },
+        "/terms-provider": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns provider terms view",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                }
+            }
+        },
+        "/no/vilkar-tilbyder": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns provider terms view with Norwegian content",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                }
+            }
+        },
+        "/find-consultant": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns consultants view",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2_security_example": [
+                            "write:projects",
+                            "read:projects"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/no/finn-konsulent": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns consultants view with Norwegian content",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2_security_example": [
+                            "write:projects",
+                            "read:projects"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/find-customer": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns customers view",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2_security_example": [
+                            "write:projects",
+                            "read:projects"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/no/finn-kunde": {
+            "get": {
+                "tags": [
+                    "Pages"
+                ],
+                "description": "Returns customers view with Norwegian content",
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "404": {
+                        "description": "Page not found"
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2_security_example": [
+                            "write:projects",
+                            "read:projects"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/klarna_checkout": {
+            "post": {
+                "tags": [
+                    "Rest APIs"
+                ],
+                "description": "Get klarna checkout snippet",
+                "parameters": [
+                    {
+                        "name": "merchantId",
+                        "in": "path",
+                        "description": "klarna api merchant id",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "sharedSecret",
+                        "in": "path",
+                        "description": "klarna api secret key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "price",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "description",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2_security_example": [
+                            "write:projects",
+                            "read:projects"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/klarna_confirmation": {
+            "get": {
+                "tags": [
+                    "Rest APIs"
+                ],
+                "description": "Get klarna confirmation",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "klarna checkout id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/api/brain_token": {
+            "post": {
+                "tags": [
+                    "Rest APIs"
+                ],
+                "description": "Get braintree dropin client token",
+                "parameters": [
+                    {
+                        "name": "environment",
+                        "in": "path",
+                        "description": "braintree environment",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "merchantId",
+                        "in": "path",
+                        "description": "braintree merchant id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "publicKey",
+                        "in": "path",
+                        "description": "braintree public key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "privateKey",
+                        "in": "path",
+                        "description": "braintree private key",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "if the payment isn't new, then customer can use his id which is saved in braintree customer service.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2_security_example": [
+                            "write:projects",
+                            "read:projects"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/api/credit_checkout": {
+            "post": {
+                "tags": [
+                    "Rest APIs"
+                ],
+                "description": "Braintree credit card checkout",
+                "parameters": [
+                    {
+                        "name": "currency",
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "customer id",
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "nonce",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "amount",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "float"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/api/chat_token": {
+            "post": {
+                "tags": [
+                    "Rest APIs"
+                ],
+                "description": "Fetch twilio chat token",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/api/chat_channel": {
+            "post": {
+                "tags": [
+                    "Rest APIs"
+                ],
+                "description": "Fetch twilio chat channel",
+                "parameters": [
+                    {
+                        "name": "customer email",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "customer id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "consultant email",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "consultant id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/api/call_token": {
+            "post": {
+                "tags": [
+                    "Rest APIs"
+                ],
+                "description": "Fetch twilio voice token",
+                "parameters": [
+                    {
+                        "name": "phone number",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/api/video_token": {
+            "post": {
+                "tags": [
+                    "Rest APIs"
+                ],
+                "description": "Fetch twilio video token",
+                "parameters": [
+                    {
+                        "name": "user name",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "room name",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/api/create_room": {
+            "post": {
+                "tags": [
+                    "Rest APIs"
+                ],
+                "description": "Create video room",
+                "parameters": [
+                    {
+                        "name": "room name",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -7,6 +7,7 @@
     "become_consult" => "Become a Consult",
     "get_started" => "It's easy to get started",
     "how_it_all" => "How it all",
-    "started_in" => "Started in"
+    "started_in" => "Started in",
+    "show-bio" => "Show Bio"
   ];
 ?>

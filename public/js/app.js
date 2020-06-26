@@ -17482,6 +17482,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Http */ "./resources/js/Http.js");
 /* harmony import */ var twilio_client__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! twilio-client */ "./node_modules/twilio-client/es5/twilio.js");
 /* harmony import */ var twilio_client__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(twilio_client__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var vue_cute_rate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-cute-rate */ "./node_modules/vue-cute-rate/dist/vue-cute-rate.js");
+/* harmony import */ var vue_cute_rate__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vue_cute_rate__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var detect_touch_device__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! detect-touch-device */ "./node_modules/detect-touch-device/dist/index.js");
+/* harmony import */ var detect_touch_device__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(detect_touch_device__WEBPACK_IMPORTED_MODULE_5__);
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -17627,6 +17633,119 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
 
 
 
@@ -17639,6 +17758,9 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "consultant-component",
+  components: {
+    "vue-start-rate": vue_cute_rate__WEBPACK_IMPORTED_MODULE_3___default.a
+  },
   props: {
     authUser: {
       type: Object,
@@ -17657,21 +17779,27 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
     return {
       customers: [],
       messages: [],
-      newMessage: '',
-      channel: '',
+      newMessage: "",
+      channel: "",
       device: new twilio_client__WEBPACK_IMPORTED_MODULE_2__["Device"](),
       activeRoom: null,
+      time_clock: 0,
+      rate: 0,
+      review_des: "",
       incoming_user: {
-        id: '',
-        name: '',
-        request_min: '',
-        prof_image: '',
-        min: ''
+        id: "",
+        name: "",
+        request_min: "",
+        prof_image: "",
+        min: ""
       },
       current_customer: {
-        user: {}
+        user: {},
+        profile: {}
       },
+      is_mobile: false,
       is_chat: false,
+      isSessionEnded: false,
       is_modal: false,
       is_video_request_modal: false,
       is_video_modal: false,
@@ -17683,10 +17811,11 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
     var _this = this;
 
     console.log("consultant chat service started!");
+    this.is_mobile = detect_touch_device__WEBPACK_IMPORTED_MODULE_5__["isMobile"] ? true : false;
     var today = new Date();
-    this.today = today.toString().split(' ')[0] + " " + today.toString().split(' ')[1] + " " + today.toString().split(' ')[2] + " " + today.toString().split(' ')[3];
+    this.today = today.toString().split(" ")[0] + " " + today.toString().split(" ")[1] + " " + today.toString().split(" ")[2] + " " + today.toString().split(" ")[3];
     this.customers = this._customers;
-    _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post('/api/manage_status', {
+    _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/manage_status", {
       id: this.authUser.id,
       status: "Available"
     });
@@ -17698,45 +17827,52 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
       _this.$socket.onmessage = function (data) {
         var msg = JSON.parse(data.data);
 
-        if (msg.type == 'token') {
+        if (msg.type == "token") {
           self.voice_token_name = msg.token;
-        } else if (msg.type == 'request') {
+        } else if (msg.type == "request") {
           self.incoming_user.id = msg.id;
           self.incoming_user.name = msg.name;
           self.incoming_user.min = msg.min;
-          self.incoming_user.image = msg.image;
+          self.incoming_user.prof_image = msg.image;
 
-          if (msg.sub_type == 'chat_pause') {
+          if (msg.sub_type == "chat_pause") {
             self.is_chat_session = false;
-          } else if (msg.sub_type == 'chat_continue') {
+            self.time_clock = 0;
+          } else if (msg.sub_type == "chat_continue") {
             self.is_chat_session = true;
-          } else if (msg.sub_type == 'chat_start') {
+            self.time_clock = self.incoming_user.min * 60;
+            var interval = setInterval(function () {
+              if (self.time_clock > 0) {
+                self.time_clock--;
+              } else {
+                clearInterval(interval);
+              }
+            }, 1000);
+          } else if (msg.sub_type == "chat_start") {
             self.is_chat_request_modal = true;
+            self.time_clock = self.incoming_user.min * 60;
             self.customers.forEach(function (customer) {
               if (customer.user.id == msg.id) {
                 self.current_customer = customer;
               }
             });
-          } else if (msg.sub_type == 'chat_end') {
-            self.incoming_user = {};
-            self.current_customer = {};
-            self.is_chat = false;
+          } else if (msg.sub_type == "chat_end") {
+            self.isSessionEnded = true;
             self.$socket.sendObj({
               command: "message",
               id: self.authUser.id,
-              type: 'status',
-              msg: 'Available'
+              type: "status",
+              msg: "Available"
             });
           }
         } else {
-          _this.customers.forEach(function (customer) {
+          self.customers.forEach(function (customer) {
             if (customer.user.id == msg.id) {
               customer.user.status = msg.status;
-              _this.current_customer = customer;
+              self.current_customer = customer;
             }
           });
-
-          _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post('/api/manage_status', {
+          _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/manage_status", {
             id: msg.id,
             status: msg.status
           });
@@ -17762,16 +17898,16 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                type = connection.customParameters.get('type');
-                roomName = connection.customParameters.get('roomName');
+                type = connection.customParameters.get("type");
+                roomName = connection.customParameters.get("roomName");
 
-                if (!(type == 'voice')) {
+                if (!(type == "voice")) {
                   _context.next = 7;
                   break;
                 }
 
                 self.is_modal = true;
-                self.$refs.accept_btn.addEventListener('click', function () {
+                self.$refs.accept_btn.addEventListener("click", function () {
                   connection.accept();
                 });
                 _context.next = 15;
@@ -17794,37 +17930,37 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
 
                 _context.next = 12;
                 return _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/video_token", {
-                  "userName": self.authUser.first_name + self.authUser.last_name,
-                  "roomName": roomName
+                  userName: self.authUser.first_name + self.authUser.last_name,
+                  roomName: roomName
                 });
 
               case 12:
                 _ref2 = _context.sent;
                 data = _ref2.data;
                 Video.connect(data.token, {
-                  "name": roomName,
-                  'logLevel': 'debug'
+                  name: roomName,
+                  logLevel: "debug"
                 }).then(function (room) {
-                  console.log('Successfully joined a Room: ', room);
+                  console.log("Successfully joined a Room: ", room);
                   self.activeRoom = room;
-                  _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post('/api/manage_status', {
+                  _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/manage_status", {
                     id: self.authUser.id,
                     status: "In a video call"
                   });
                   self.$socket.sendObj({
                     command: "message",
                     id: self.authUser.id,
-                    type: 'status',
-                    msg: 'In a video call'
+                    type: "status",
+                    msg: "In a video call"
                   });
                   room.participants.forEach(self.participantConnected);
-                  room.on('participantConnected', self.participantConnected);
-                  room.on('participantDisconnected', self.participantDisconnected);
-                  room.once('disconnected', function (error) {
+                  room.on("participantConnected", self.participantConnected);
+                  room.on("participantDisconnected", self.participantDisconnected);
+                  room.once("disconnected", function (error) {
                     return room.participants.forEach(self.participantDisconnected);
                   });
                 }, function (err) {
-                  console.error('Unable to connect to Room: ' + err.message);
+                  console.error("Unable to connect to Room: " + err.message);
                 });
 
               case 15:
@@ -17843,15 +17979,15 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
     this.device.disconnect(function (connection) {
       self.is_modal = false;
     });
-    this.$refs.hangup_btn.addEventListener('click', function () {
+    this.$refs.hangup_btn.addEventListener("click", function () {
       self.is_modal = false;
       self.device.disconnectAll();
-      _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post('/api/manage_status', {
+      _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/manage_status", {
         id: self.authUser.id,
         status: "Available"
       });
     });
-    this.$refs.video_hangup_btn.addEventListener('click', function () {
+    this.$refs.video_hangup_btn.addEventListener("click", function () {
       self.is_video_modal = false;
 
       if (self.activeRoom) {
@@ -17859,31 +17995,31 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
           track.stop();
         });
         self.activeRoom.disconnect();
-        _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post('/api/manage_status', {
+        _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/manage_status", {
           id: self.authUser.id,
           status: "Available"
         });
       }
     });
     this.device.connect(function (connection) {
-      _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post('/api/manage_status', {
+      _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/manage_status", {
         id: self.authUser.id,
         status: "In a call"
       });
       self.$socket.sendObj({
         command: "message",
         id: self.authUser.id,
-        type: 'status',
-        msg: 'In a call'
+        type: "status",
+        msg: "In a call"
       });
       setTimeout(function () {
         self.is_modal = false;
         self.device.disconnectAll();
-        _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post('/api/manage_balance', {
+        _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/manage_balance", {
           id: self.incoming_user.id,
           cost: Number(self.authUser.hourly_rate) * Number(self.incoming_user.min)
         }).then(function (res) {
-          console.log('managing balance is completed.');
+          console.log("managing balance is completed.");
         });
       }, self.incoming_user.min * 60 * 1000);
     });
@@ -17893,7 +18029,7 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
     this.device.error(function (error) {
       console.error("ERROR: " + error.message);
 
-      if (error.code == '31205') {
+      if (error.code == "31205") {
         self.initializeCallClient();
       }
     });
@@ -17904,7 +18040,13 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
       var container = this.$el.querySelector("#scroll-view");
       container.scrollTop = container.scrollHeight;
     },
-    chatAccept: function chatAccept() {
+    setStatus: function setStatus(status) {
+      _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/manage_status", {
+        id: this.authConsultant.user.id,
+        status: status
+      });
+    },
+    checkChannel: function checkChannel(customer) {
       var _this2 = this;
 
       return _asyncToGenerator(
@@ -17915,890 +18057,113 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                _this2.$socket.sendObj({
-                  command: "message",
-                  id: _this2.current_customer.user.id,
-                  customer_id: '',
-                  customer_name: 'accepted',
-                  type: 'request',
-                  msg: ''
-                });
-
-                _this2.is_chat_request_modal = false;
-                _this2.is_chat = true;
-                _this2.is_chat_session = true;
-                _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post('/api/chat_channel', {
-                  customer_email: _this2.current_customer.user.email,
-                  customer_id: _this2.current_customer.user.id,
+                _this2.current_customer = customer;
+                _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/chat_channel", {
+                  customer_email: customer.user.email,
+                  customer_id: customer.user.id,
                   consultant_id: _this2.authUser.id,
                   consultant_email: _this2.authUser.email
                 }).then(function (response) {
-                  console.log('chat channel fetched!');
+                  console.log("chat channel fetched!");
                 });
-                _context2.next = 7;
+                _context2.next = 4;
                 return _this2.fetchChatToken();
 
-              case 7:
+              case 4:
                 chat_token = _context2.sent;
-                _context2.next = 10;
-                return _this2.initializeChatClient(chat_token, _this2.current_customer.user.id);
+                _context2.next = 7;
+                return _this2.initializeChatClient(chat_token, customer.user.id);
 
-              case 10:
-                _context2.next = 12;
+              case 7:
+                _context2.next = 9;
                 return _this2.fetchMessages();
 
-              case 12:
-                _this2.scrollToEnd();
+              case 9:
+                _this2.is_chat = true;
 
-              case 13:
+              case 10:
               case "end":
                 return _context2.stop();
             }
           }
         }, _callee2);
+      }))();
+    },
+    chatAccept: function chatAccept() {
+      var _this3 = this;
+
+      return _asyncToGenerator(
+      /*#__PURE__*/
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var chat_token, self, interval;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _this3.$socket.sendObj({
+                  command: "message",
+                  id: _this3.current_customer.user.id,
+                  customer_id: "",
+                  customer_name: "accepted",
+                  type: "request",
+                  msg: ""
+                });
+
+                _this3.setStatus("In a chat");
+
+                _this3.is_chat_request_modal = false;
+                _this3.is_chat = true;
+                _this3.is_chat_session = true;
+                _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/chat_channel", {
+                  customer_email: _this3.current_customer.user.email,
+                  customer_id: _this3.current_customer.user.id,
+                  consultant_id: _this3.authUser.id,
+                  consultant_email: _this3.authUser.email
+                }).then(function (response) {
+                  console.log("chat channel fetched!");
+                });
+                _context3.next = 8;
+                return _this3.fetchChatToken();
+
+              case 8:
+                chat_token = _context3.sent;
+                _context3.next = 11;
+                return _this3.initializeChatClient(chat_token, _this3.current_customer.user.id);
+
+              case 11:
+                _context3.next = 13;
+                return _this3.fetchMessages();
+
+              case 13:
+                _this3.scrollToEnd();
+
+                self = _this3;
+                interval = setInterval(function () {
+                  if (self.time_clock > 0) {
+                    self.time_clock--;
+                  } else {
+                    clearInterval(interval);
+                  }
+                }, 1000);
+
+              case 16:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
       }))();
     },
     chatReject: function chatReject() {
       this.$socket.sendObj({
         command: "message",
         id: this.current_customer.user.id,
-        customer_id: '',
-        customer_name: 'rejected',
-        type: 'request',
-        msg: ''
+        customer_id: "",
+        customer_name: "rejected",
+        type: "request",
+        msg: ""
       });
       this.is_chat_request_modal = false;
-    },
-    fetchChatToken: function fetchChatToken() {
-      var _this3 = this;
-
-      return _asyncToGenerator(
-      /*#__PURE__*/
-      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-        var _ref3, data;
-
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                _context3.next = 2;
-                return _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/chat_token", {
-                  email: _this3.authUser.email
-                });
-
-              case 2:
-                _ref3 = _context3.sent;
-                data = _ref3.data;
-                return _context3.abrupt("return", data.token);
-
-              case 5:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3);
-      }))();
-    },
-    initializeChatClient: function initializeChatClient(token, id) {
-      var _this4 = this;
-
-      return _asyncToGenerator(
-      /*#__PURE__*/
-      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
-        var client;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
-          while (1) {
-            switch (_context5.prev = _context5.next) {
-              case 0:
-                _context5.next = 2;
-                return Twilio.Chat.Client.create(token);
-
-              case 2:
-                client = _context5.sent;
-                client.on("tokenAboutToExpire",
-                /*#__PURE__*/
-                _asyncToGenerator(
-                /*#__PURE__*/
-                _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
-                  var token;
-                  return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
-                    while (1) {
-                      switch (_context4.prev = _context4.next) {
-                        case 0:
-                          _context4.next = 2;
-                          return _this4.fetchChatToken();
-
-                        case 2:
-                          token = _context4.sent;
-                          client.updateToken(token);
-
-                        case 4:
-                        case "end":
-                          return _context4.stop();
-                      }
-                    }
-                  }, _callee4);
-                })));
-                _context5.next = 6;
-                return client.getChannelByUniqueName("private-".concat(_this4.authUser.id, "-").concat(id));
-
-              case 6:
-                _this4.channel = _context5.sent;
-
-                _this4.channel.on("messageAdded", function (message) {
-                  if (_this4.messages[_this4.messages.length - 1].state.index != message.state.index) {
-                    _this4.messages.push(message);
-
-                    var self = _this4;
-                    setTimeout(function () {
-                      self.scrollToEnd();
-                    }, 100);
-                  }
-                });
-
-              case 8:
-              case "end":
-                return _context5.stop();
-            }
-          }
-        }, _callee5);
-      }))();
-    },
-    fetchMessages: function fetchMessages() {
-      var _this5 = this;
-
-      return _asyncToGenerator(
-      /*#__PURE__*/
-      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
-          while (1) {
-            switch (_context6.prev = _context6.next) {
-              case 0:
-                _this5.$socket.sendObj({
-                  command: "message",
-                  id: _this5.authUser.id,
-                  type: 'status',
-                  msg: 'In a chat'
-                });
-
-                _context6.next = 3;
-                return _this5.channel.getMessages();
-
-              case 3:
-                _this5.messages = _context6.sent.items;
-
-              case 4:
-              case "end":
-                return _context6.stop();
-            }
-          }
-        }, _callee6);
-      }))();
-    },
-    sendMessage: function sendMessage() {
-      if (this.is_chat_session && this.current_customer.user.status != 'Offline') {
-        this.channel.sendMessage(this.newMessage);
-        this.newMessage = "";
-      }
-    },
-    // call module
-    initializeCallClient: function initializeCallClient() {
-      var _this6 = this;
-
-      return _asyncToGenerator(
-      /*#__PURE__*/
-      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee7() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee7$(_context7) {
-          while (1) {
-            switch (_context7.prev = _context7.next) {
-              case 0:
-                _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/new_token", {
-                  "name": _this6.authUser.first_name + _this6.authUser.last_name
-                }).then(function (res) {
-                  _this6.device.setup(res.data.token, {
-                    debug: true
-                  });
-                });
-
-              case 1:
-              case "end":
-                return _context7.stop();
-            }
-          }
-        }, _callee7);
-      }))();
-    },
-    // video module
-    participantConnected: function participantConnected(participant) {
-      var _this7 = this;
-
-      console.log('Participant "%s" connected', participant.identity);
-      var div = document.createElement('div');
-      div.ref = participant.sid;
-      div.innerText = participant.identity;
-      participant.on('trackSubscribed', function (track) {
-        return _this7.trackSubscribed(div, track);
-      });
-      participant.tracks.forEach(function (track) {
-        return _this7.trackSubscribed(div, track);
-      });
-      participant.on('trackUnsubscribed', this.trackUnsubscribed);
-      this.$refs.video_tag.appendChild(div);
-    },
-    participantDisconnected: function participantDisconnected(participant) {
-      console.log('Participant "%s" disconnected', participant.identity);
-      participant.tracks.forEach(this.trackUnsubscribed);
-      var ref = participant.sid;
-      this.$refs.ref.remove();
-    },
-    trackSubscribed: function trackSubscribed(div, track) {
-      if (div) {
-        div.appendChild(track.attach());
-      }
-    },
-    trackUnsubscribed: function trackUnsubscribed(track) {
-      track.detach().forEach(function (element) {
-        return element.remove();
-      });
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CustomerComponent.vue?vue&type=script&lang=js&":
-/*!****************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CustomerComponent.vue?vue&type=script&lang=js& ***!
-  \****************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Http */ "./resources/js/Http.js");
-/* harmony import */ var twilio_client__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! twilio-client */ "./node_modules/twilio-client/es5/twilio.js");
-/* harmony import */ var twilio_client__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(twilio_client__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var vue_cute_rate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-cute-rate */ "./node_modules/vue-cute-rate/dist/vue-cute-rate.js");
-/* harmony import */ var vue_cute_rate__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vue_cute_rate__WEBPACK_IMPORTED_MODULE_3__);
-
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-var Video = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-video/es5/index.js");
-
-var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-video/es5/index.js"),
-    connect = _require.connect,
-    createLocalTracks = _require.createLocalTracks,
-    createLocalVideoTrack = _require.createLocalVideoTrack;
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: "customer-component",
-  components: {
-    'vue-start-rate': vue_cute_rate__WEBPACK_IMPORTED_MODULE_3___default.a
-  },
-  props: {
-    _authUser: {
-      type: Object,
-      required: true
-    },
-    _consultants: {
-      type: Array,
-      required: true
-    },
-    authCustomer: {
-      type: Object,
-      required: true
-    }
-  },
-  data: function data() {
-    return {
-      messages: [],
-      consultants: [],
-      newMessage: "",
-      channel: "",
-      step: "",
-      selected_type: "",
-      minute: "",
-      cost: "",
-      today: "",
-      balance: 0,
-      rate: 0,
-      left_sec: 50,
-      is_chat: false,
-      is_selected: false,
-      is_setting: false,
-      is_modal: false,
-      is_video_modal: false,
-      is_session_modal: false,
-      is_channel: true,
-      chat_accepted: false,
-      chat_session: false,
-      current_consultant: {
-        user: {}
-      },
-      device: new twilio_client__WEBPACK_IMPORTED_MODULE_2__["Device"](),
-      activeRoom: null
-    };
-  },
-  mounted: function mounted() {
-    var _this = this;
-
-    console.log("customer chat service started!");
-    var today = new Date();
-    this.today = today.toString().split(' ')[0] + " " + today.toString().split(' ')[1] + " " + today.toString().split(' ')[2] + " " + today.toString().split(' ')[3];
-    this.consultants = this._consultants;
-    this.authUser = this._authUser;
-    this.step = "step0";
-    this.minute = "0";
-    this.cost = "0";
-    this.setStatus('Available');
-    var self = this;
-
-    this.$socket.onopen = function () {
-      _this.$socket.onmessage = function (data) {
-        var msg = JSON.parse(data.data);
-
-        if (msg.type == 'token') {
-          self.voice_token_name = msg.token;
-        }
-
-        if (msg.type == 'request') {
-          if (msg.name == 'accepted') {
-            self.chat_accepted = true;
-            self.startChat();
-          } else {
-            self.chat_accepted = false;
-          }
-        } else {
-          self.consultants.forEach(function (consultant) {
-            if (consultant.user.id == msg.id) {
-              consultant.user.status = msg.status;
-              self.current_consultant = consultant;
-            }
-          });
-          _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post('/api/manage_status', {
-            id: msg.id,
-            status: msg.status
-          });
-        }
-      };
-
-      _this.$socket.sendObj({
-        command: "subscribe",
-        channel: _this.authUser.id
-      });
-    };
-
-    this.device.incoming(
-    /*#__PURE__*/
-    function () {
-      var _ref = _asyncToGenerator(
-      /*#__PURE__*/
-      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(connection) {
-        var type, roomName, _ref2, data;
-
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                type = connection.customParameters.get('type');
-                roomName = connection.customParameters.get('roomName');
-
-                if (!(type == 'voice')) {
-                  _context.next = 7;
-                  break;
-                }
-
-                self.is_modal = true;
-                self.$refs.accept_btn.addEventListener('click', function () {
-                  connection.accept();
-                });
-                _context.next = 15;
-                break;
-
-              case 7:
-                self.is_video_modal = true;
-                connection.reject();
-
-                if (self.$refs.self_video_tag.children.length == 0) {
-                  createLocalVideoTrack({
-                    audio: true,
-                    video: {
-                      width: 150
-                    }
-                  }).then(function (track) {
-                    self.$refs.self_video_tag.appendChild(track.attach());
-                  });
-                }
-
-                _context.next = 12;
-                return _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/video_token", {
-                  "userName": self.authUser.first_name + self.authUser.last_name,
-                  "roomName": roomName
-                });
-
-              case 12:
-                _ref2 = _context.sent;
-                data = _ref2.data;
-                Video.connect(data.token, {
-                  "name": roomName
-                }).then(function (room) {
-                  console.log('Successfully joined a Room: ', room);
-                  self.activeRoom = room;
-                  self.setStatus('In a Video call');
-                  self.sendStatusSocket('In a Video call');
-                  setTimeout(function () {
-                    self.is_modal = false;
-                    self.minute = '0';
-                    self.step = 'step1';
-                    self.activeRoom.localParticipant.tracks.forEach(function (track) {
-                      track.stop();
-                    });
-                    self.activeRoom.disconnect();
-                    _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post('/api/manage_balance', {
-                      id: self.authUser.id,
-                      cost: self.cost
-                    }).then(function (res) {
-                      self.authUser = res.data;
-                    });
-                    self.cost = '0';
-                  }, self.minute * 60 * 1000);
-                  room.participants.forEach(self.participantConnected);
-                  room.on('participantConnected', self.participantConnected);
-                  room.on('participantDisconnected', self.participantDisconnected);
-                  room.once('disconnected', function (error) {
-                    return room.participants.forEach(self.participantDisconnected);
-                  });
-                }, function (err) {
-                  console.error('Unable to connect to Room: ' + err.message);
-                });
-
-              case 15:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }));
-
-      return function (_x) {
-        return _ref.apply(this, arguments);
-      };
-    }());
-    this.$refs.hangup_btn.addEventListener('click', function () {
-      self.is_modal = false;
-      self.minute = '0';
-      self.step = '1';
-      self.device.disconnectAll();
-      self.setStatus('Available');
-      self.sendStatusSocket('Available'); // re-calulate the minute and the cost
-    });
-    this.device.disconnect(function (connection) {
-      self.is_modal = false;
-    });
-    this.device.connect(function (connection) {
-      console.log(connection);
-    });
-    this.device.error(function (error) {
-      console.error("ERROR: " + error.message);
-
-      if (error.code == 31205) {
-        self.initializeCallClient();
-      }
-    });
-  },
-  methods: {
-    // initialize tokens and twilio client
-    selectChannel: function selectChannel(data) {
-      var _this2 = this;
-
-      return _asyncToGenerator(
-      /*#__PURE__*/
-      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                if (!_this2.is_channel) {
-                  _context2.next = 11;
-                  break;
-                }
-
-                _this2.step = "step1";
-                _this2.current_consultant = data;
-                _this2.is_selected = true;
-                _this2.is_setting = true;
-                _this2.is_chat = false;
-                _this2.is_channel = false; // use consultant's name to generate token
-
-                _context2.next = 9;
-                return _this2.initializeCallClient();
-
-              case 9:
-                _context2.next = 11;
-                return _this2.initializeVideoClient();
-
-              case 11:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }))();
-    },
-    sendRequestSocket: function sendRequestSocket(type) {
-      this.$socket.sendObj({
-        command: "message",
-        type: 'request',
-        sub_type: type,
-        id: this.current_consultant.user.id,
-        customer_id: this.authUser.id,
-        customer_name: this.authUser.first_name + " " + this.authUser.last_name,
-        min: this.minute,
-        img: authCustomer.prof_image
-      });
-    },
-    sendStatusSocket: function sendStatusSocket(msg) {
-      this.$socket.sendObj({
-        command: "message",
-        id: this.authUser.id,
-        type: 'status',
-        msg: msg
-      });
-    },
-    setStatus: function setStatus(status) {
-      _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post('/api/manage_status', {
-        id: this.authUser.id,
-        status: status
-      });
-    },
-    // chat module
-    startChat: function startChat() {
-      var _this3 = this;
-
-      return _asyncToGenerator(
-      /*#__PURE__*/
-      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-        var chat_token;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                if (!_this3.chat_accepted) {
-                  _context3.next = 12;
-                  break;
-                }
-
-                _this3.is_chat = true;
-                _this3.chat_session = true;
-                _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post('/api/chat_channel', {
-                  consultant_email: _this3.current_consultant.user.email,
-                  consultant_id: _this3.current_consultant.user.id,
-                  customer_email: _this3.authUser.email,
-                  customer_id: _this3.authUser.id
-                }).then(function (response) {
-                  console.log('channel fetched!');
-                });
-                _context3.next = 6;
-                return _this3.fetchChatToken();
-
-              case 6:
-                chat_token = _context3.sent;
-                _context3.next = 9;
-                return _this3.initializeChatClient(chat_token, _this3.current_consultant.user.id);
-
-              case 9:
-                _context3.next = 11;
-                return _this3.fetchMessages();
-
-              case 11:
-                _this3.scrollToEnd();
-
-              case 12:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3);
-      }))();
-    },
-    continueChat: function continueChat() {
-      if (this.minute > 0) {
-        this.sendRequestSocket('chat_continue');
-        this.left_sec = 50;
-        this.startChat();
-      }
-    },
-    viewConversation: function viewConversation() {
-      this.is_session_modal = false;
     },
     fetchChatToken: function fetchChatToken() {
       var _this4 = this;
@@ -18871,7 +18236,7 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
                   }, _callee5);
                 })));
                 _context6.next = 6;
-                return client.getChannelByUniqueName("private-".concat(id, "-").concat(_this5.authUser.id));
+                return client.getChannelByUniqueName("private-".concat(_this5.authUser.id, "-").concat(id));
 
               case 6:
                 _this5.channel = _context6.sent;
@@ -18901,38 +18266,24 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
       return _asyncToGenerator(
       /*#__PURE__*/
       _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee7() {
-        var self;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee7$(_context7) {
           while (1) {
             switch (_context7.prev = _context7.next) {
               case 0:
-                _context7.next = 2;
+                _this6.$socket.sendObj({
+                  command: "message",
+                  id: _this6.authUser.id,
+                  type: "status",
+                  msg: "In a chat"
+                });
+
+                _context7.next = 3;
                 return _this6.channel.getMessages();
 
-              case 2:
+              case 3:
                 _this6.messages = _context7.sent.items;
 
-                _this6.sendStatusSocket('In a chat');
-
-                self = _this6;
-                setTimeout(function (t) {
-                  self.left_sec = 15;
-                  setTimeout(function () {
-                    self.sendRequestSocket('chat_pause');
-                    _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post('/api/manage_balance', {
-                      id: self.authUser.id,
-                      cost: self.cost
-                    }).then(function (res) {
-                      self.authUser = res.data;
-                    });
-                    self.minute = '0';
-                    self.cost = '0';
-                    self.left_sec = 0;
-                    self.chat_session = false;
-                  }, 15 * 1000);
-                }.bind('timeCounting', 15 * 1000), self.minute * 60 * 1000);
-
-              case 6:
+              case 4:
               case "end":
                 return _context7.stop();
             }
@@ -18941,26 +18292,48 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
       }))();
     },
     sendMessage: function sendMessage() {
-      if (this.chat_session && this.current_consultant.user.status != 'Offline') {
+      if (this.is_chat_session && this.current_customer.user.status != "Offline") {
         this.channel.sendMessage(this.newMessage);
         this.newMessage = "";
       }
     },
-    // voice call module
-    startCall: function startCall() {
-      this.sendRequestSocket('voice_call');
-      var params = {
-        "phone": this.current_consultant.user.phone,
-        "callerId": this.authUser.phone,
-        "name": this.current_consultant.user.first_name + this.current_consultant.user.last_name,
-        "type": "voice",
-        "roomName": ""
-      };
-      this.device.connect(params);
-      this.is_modal = true;
+    toHHMMSS: function toHHMMSS(sec_num) {
+      var hours = Math.floor(sec_num / 3600);
+      var minutes = Math.floor((sec_num - hours * 3600) / 60);
+      var seconds = sec_num - hours * 3600 - minutes * 60;
+
+      if (hours < 10) {
+        hours = "0" + hours;
+      }
+
+      if (minutes < 10) {
+        minutes = "0" + minutes;
+      }
+
+      if (seconds < 10) {
+        seconds = "0" + seconds;
+      }
+
+      return hours + ":" + minutes + ":" + seconds;
     },
-    initializeCallClient: function initializeCallClient() {
+    submitReview: function submitReview() {
       var _this7 = this;
+
+      _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/submit_review", {
+        sender_id: this.authConsultant.id,
+        receiver_id: this.current_customer.id,
+        rate: this.rate,
+        description: this.review_des,
+        type: "CONTOCUS"
+      }).then(function (res) {
+        _this7.is_chat = false;
+        _this7.incoming_user = {};
+        _this7.current_customer = {};
+      });
+    },
+    // call module
+    initializeCallClient: function initializeCallClient() {
+      var _this8 = this;
 
       return _asyncToGenerator(
       /*#__PURE__*/
@@ -18970,9 +18343,9 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
             switch (_context8.prev = _context8.next) {
               case 0:
                 _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/new_token", {
-                  "name": _this7.current_consultant.user.first_name + _this7.current_consultant.user.last_name
+                  name: _this8.authUser.first_name + _this8.authUser.last_name
                 }).then(function (res) {
-                  _this7.device.setup(res.data.token, {
+                  _this8.device.setup(res.data.token, {
                     debug: true
                   });
                 });
@@ -18985,25 +18358,1197 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
         }, _callee8);
       }))();
     },
-    // video call module
-    initializeVideoClient: function initializeVideoClient() {
-      var _this8 = this;
+    // video module
+    participantConnected: function participantConnected(participant) {
+      var _this9 = this;
+
+      console.log('Participant "%s" connected', participant.identity);
+      var div = document.createElement("div");
+      div.ref = participant.sid;
+      div.innerText = participant.identity;
+      participant.on("trackSubscribed", function (track) {
+        return _this9.trackSubscribed(div, track);
+      });
+      participant.tracks.forEach(function (track) {
+        return _this9.trackSubscribed(div, track);
+      });
+      participant.on("trackUnsubscribed", this.trackUnsubscribed);
+      this.$refs.video_tag.appendChild(div);
+    },
+    participantDisconnected: function participantDisconnected(participant) {
+      console.log('Participant "%s" disconnected', participant.identity);
+      participant.tracks.forEach(this.trackUnsubscribed);
+      var ref = participant.sid;
+      this.$refs.ref.remove();
+    },
+    trackSubscribed: function trackSubscribed(div, track) {
+      if (div) {
+        div.appendChild(track.attach());
+      }
+    },
+    trackUnsubscribed: function trackUnsubscribed(track) {
+      track.detach().forEach(function (element) {
+        return element.remove();
+      });
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CustomerComponent.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CustomerComponent.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _Http__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Http */ "./resources/js/Http.js");
+/* harmony import */ var twilio_client__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! twilio-client */ "./node_modules/twilio-client/es5/twilio.js");
+/* harmony import */ var twilio_client__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(twilio_client__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var vue_cute_rate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-cute-rate */ "./node_modules/vue-cute-rate/dist/vue-cute-rate.js");
+/* harmony import */ var vue_cute_rate__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vue_cute_rate__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var detect_touch_device__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! detect-touch-device */ "./node_modules/detect-touch-device/dist/index.js");
+/* harmony import */ var detect_touch_device__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(detect_touch_device__WEBPACK_IMPORTED_MODULE_5__);
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+
+
+var Video = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-video/es5/index.js");
+
+var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-video/es5/index.js"),
+    connect = _require.connect,
+    createLocalTracks = _require.createLocalTracks,
+    createLocalVideoTrack = _require.createLocalVideoTrack;
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "customer-component",
+  components: {
+    "vue-start-rate": vue_cute_rate__WEBPACK_IMPORTED_MODULE_3___default.a
+  },
+  props: {
+    _consultants: {
+      type: Array,
+      required: true
+    },
+    authCustomer: {
+      type: Object,
+      required: true
+    }
+  },
+  data: function data() {
+    return {
+      messages: [],
+      consultants: [],
+      newMessage: "",
+      channel: "",
+      step: "",
+      selected_type: "",
+      form: {
+        minute: 0
+      },
+      time_clock: 0,
+      cost: "",
+      today: "",
+      balance: 0,
+      rate: 0,
+      review_des: "",
+      is_mobile: false,
+      is_chat: false,
+      is_selected: false,
+      is_setting: false,
+      is_modal: false,
+      is_video_modal: false,
+      is_session_modal: false,
+      is_channel: false,
+      isCheckReview: false,
+      isCheckContinue: false,
+      chat_accepted: false,
+      chat_session: false,
+      current_consultant: {
+        user: {},
+        profile: {}
+      },
+      device: new twilio_client__WEBPACK_IMPORTED_MODULE_2__["Device"](),
+      activeRoom: null
+    };
+  },
+  validations: {
+    form: {
+      minute: {
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_4__["required"],
+        min: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_4__["minValue"])(1)
+      }
+    }
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    console.log("customer chat service started!");
+    var today = new Date();
+    this.today = today.toString().split(" ")[0] + " " + today.toString().split(" ")[1] + " " + today.toString().split(" ")[2] + " " + today.toString().split(" ")[3];
+    this.consultants = this._consultants;
+    this.step = "step0";
+    this.form.minute = "0";
+    this.cost = "0";
+    this.setStatus("Available");
+    var self = this;
+    this.is_mobile = detect_touch_device__WEBPACK_IMPORTED_MODULE_5__["isMobile"] ? true : false;
+
+    this.$socket.onopen = function () {
+      _this.$socket.onmessage = function (data) {
+        var msg = JSON.parse(data.data);
+
+        if (msg.type == "token") {
+          self.voice_token_name = msg.token;
+        }
+
+        if (msg.type == "request") {
+          if (msg.name == "accepted") {
+            self.chat_accepted = true;
+            self.startChat();
+          } else {
+            self.chat_accepted = false;
+            self.is_chat = false;
+            self.step = "step1";
+            self.cost = "";
+            self.form.minute = "";
+          }
+        } else {
+          self.consultants.forEach(function (consultant) {
+            if (consultant.user.id == msg.id) {
+              consultant.user.status = msg.status;
+              self.current_consultant = consultant;
+            }
+          });
+          _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/manage_status", {
+            id: msg.id,
+            status: msg.status
+          });
+        }
+      };
+
+      _this.$socket.sendObj({
+        command: "subscribe",
+        channel: _this.authCustomer.user.id
+      });
+    };
+
+    this.device.incoming(
+    /*#__PURE__*/
+    function () {
+      var _ref = _asyncToGenerator(
+      /*#__PURE__*/
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(connection) {
+        var type, roomName, _ref2, data;
+
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                type = connection.customParameters.get("type");
+                roomName = connection.customParameters.get("roomName");
+
+                if (!(type == "voice")) {
+                  _context.next = 7;
+                  break;
+                }
+
+                self.is_modal = true;
+                self.$refs.accept_btn.addEventListener("click", function () {
+                  connection.accept();
+                });
+                _context.next = 15;
+                break;
+
+              case 7:
+                self.is_video_modal = true;
+                connection.reject();
+
+                if (self.$refs.self_video_tag.children.length == 0) {
+                  createLocalVideoTrack({
+                    audio: true,
+                    video: {
+                      width: 150
+                    }
+                  }).then(function (track) {
+                    self.$refs.self_video_tag.appendChild(track.attach());
+                  });
+                }
+
+                _context.next = 12;
+                return _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/video_token", {
+                  userName: self.authCustomer.user.first_name + self.authCustomer.user.last_name,
+                  roomName: roomName
+                });
+
+              case 12:
+                _ref2 = _context.sent;
+                data = _ref2.data;
+                Video.connect(data.token, {
+                  name: roomName
+                }).then(function (room) {
+                  console.log("Successfully joined a Room: ", room);
+                  self.activeRoom = room;
+                  self.setStatus("In a Video call");
+                  self.sendStatusSocket("In a Video call");
+                  setTimeout(function () {
+                    self.is_modal = false;
+                    self.step = "step1";
+                    self.activeRoom.localParticipant.tracks.forEach(function (track) {
+                      track.stop();
+                    });
+                    self.activeRoom.disconnect();
+                    self.cost = "0";
+                    self.form.minute = "0";
+                  }, self.form.minute * 60 * 1000);
+                  room.participants.forEach(self.participantConnected);
+                  room.on("participantConnected", self.participantConnected);
+                  room.on("participantDisconnected", self.participantDisconnected);
+                  room.once("disconnected", function (error) {
+                    return room.participants.forEach(self.participantDisconnected);
+                  });
+                }, function (err) {
+                  console.error("Unable to connect to Room: " + err.message);
+                });
+
+              case 15:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }));
+
+      return function (_x) {
+        return _ref.apply(this, arguments);
+      };
+    }());
+    this.$refs.hangup_btn.addEventListener("click", function () {
+      self.is_modal = false;
+      self.form.minute = "0";
+      self.step = "1";
+      self.device.disconnectAll();
+      self.setStatus("Available");
+      self.sendStatusSocket("Available"); // re-calulate the minute and the cost
+    });
+    this.device.disconnect(function (connection) {
+      self.is_modal = false;
+    });
+    this.device.connect(function (connection) {
+      console.log(connection);
+    });
+    this.device.error(function (error) {
+      console.error("ERROR: " + error.message);
+
+      if (error.code == 31205) {
+        self.initializeCallClient();
+      }
+    });
+  },
+  methods: {
+    selectChannel: function selectChannel(data) {
+      if (!this.is_channel) {
+        this.step = "step1";
+        this.current_consultant = data;
+        this.is_selected = true;
+
+        if (!detect_touch_device__WEBPACK_IMPORTED_MODULE_5__["isMobile"]) {
+          this.is_setting = true;
+        }
+
+        this.is_chat = false;
+      }
+    },
+    // socket processing functions
+    sendRequestSocket: function sendRequestSocket(type) {
+      this.$socket.sendObj({
+        command: "message",
+        type: "request",
+        sub_type: type,
+        id: this.current_consultant.user.id,
+        customer_id: this.authCustomer.user.id,
+        customer_name: this.authCustomer.user.first_name + " " + this.authCustomer.user.last_name,
+        min: this.form.minute,
+        img: this.authCustomer.profile.avatar
+      });
+    },
+    sendStatusSocket: function sendStatusSocket(msg) {
+      this.$socket.sendObj({
+        command: "message",
+        id: this.authCustomer.user.id,
+        type: "status",
+        msg: msg
+      });
+    },
+    setStatus: function setStatus(status) {
+      _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/manage_status", {
+        id: this.authCustomer.user.id,
+        status: status
+      });
+    },
+    // chat module
+    startChat: function startChat() {
+      var _this2 = this;
 
       return _asyncToGenerator(
       /*#__PURE__*/
-      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee9() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee9$(_context9) {
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        var chat_token, self, interval;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
-            switch (_context9.prev = _context9.next) {
+            switch (_context2.prev = _context2.next) {
               case 0:
-                _context9.next = 2;
-                return _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post('/api/create_room', {
-                  "name": "videoRoom-".concat(_this8.current_consultant.user.id, "-").concat(_this8.authUser.id)
+                if (!_this2.chat_accepted) {
+                  _context2.next = 16;
+                  break;
+                }
+
+                _this2.setStatus("In a chat");
+
+                _this2.current_consultant.user.status = "In a call";
+                _this2.is_chat = true;
+                _this2.chat_session = true;
+                _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/chat_channel", {
+                  consultant_email: _this2.current_consultant.user.email,
+                  consultant_id: _this2.current_consultant.user.id,
+                  customer_email: _this2.authCustomer.user.email,
+                  customer_id: _this2.authCustomer.user.id
+                }).then(function (response) {
+                  console.log("channel fetched!");
+                });
+                _context2.next = 8;
+                return _this2.fetchChatToken();
+
+              case 8:
+                chat_token = _context2.sent;
+                _context2.next = 11;
+                return _this2.initializeChatClient(chat_token, _this2.current_consultant.user.id);
+
+              case 11:
+                _context2.next = 13;
+                return _this2.fetchMessages();
+
+              case 13:
+                _this2.scrollToEnd();
+
+                self = _this2;
+                interval = setInterval(function () {
+                  if (self.time_clock > 0) {
+                    self.time_clock--;
+                  } else {
+                    clearInterval(interval);
+                    self.sendRequestSocket("chat_pause");
+                    self.form.minute = "0";
+                    self.cost = "0";
+                    self.chat_session = false;
+                    self.is_session_modal = true;
+                  }
+                }, 1000);
+
+              case 16:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    continueChat: function continueChat() {
+      this.sendRequestSocket("chat_continue");
+      this.chat_session = true;
+      var self = this;
+      var interval = setInterval(function () {
+        if (self.time_clock > 0) {
+          self.time_clock--;
+        } else {
+          clearInterval(interval);
+          self.sendRequestSocket("chat_pause");
+          self.form.minute = "0";
+          self.cost = "0";
+          self.chat_session = false;
+          self.is_session_modal = true;
+        }
+      }, 1000);
+    },
+    fetchChatToken: function fetchChatToken() {
+      var _this3 = this;
+
+      return _asyncToGenerator(
+      /*#__PURE__*/
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var _ref3, data;
+
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.next = 2;
+                return _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/chat_token", {
+                  email: _this3.authCustomer.user.email
+                });
+
+              case 2:
+                _ref3 = _context3.sent;
+                data = _ref3.data;
+                return _context3.abrupt("return", data.token);
+
+              case 5:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
+    },
+    initializeChatClient: function initializeChatClient(token, id) {
+      var _this4 = this;
+
+      return _asyncToGenerator(
+      /*#__PURE__*/
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
+        var client;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _context5.next = 2;
+                return Twilio.Chat.Client.create(token);
+
+              case 2:
+                client = _context5.sent;
+                client.on("tokenAboutToExpire",
+                /*#__PURE__*/
+                _asyncToGenerator(
+                /*#__PURE__*/
+                _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
+                  var token;
+                  return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
+                    while (1) {
+                      switch (_context4.prev = _context4.next) {
+                        case 0:
+                          _context4.next = 2;
+                          return _this4.fetchChatToken();
+
+                        case 2:
+                          token = _context4.sent;
+                          client.updateToken(token);
+
+                        case 4:
+                        case "end":
+                          return _context4.stop();
+                      }
+                    }
+                  }, _callee4);
+                })));
+                _context5.next = 6;
+                return client.getChannelByUniqueName("private-".concat(id, "-").concat(_this4.authCustomer.user.id));
+
+              case 6:
+                _this4.channel = _context5.sent;
+
+                _this4.channel.on("messageAdded", function (message) {
+                  if (_this4.messages[_this4.messages.length - 1].state.index != message.state.index) {
+                    _this4.messages.push(message);
+
+                    var self = _this4;
+                    setTimeout(function () {
+                      self.scrollToEnd();
+                    }, 100);
+                  }
+                });
+
+              case 8:
+              case "end":
+                return _context5.stop();
+            }
+          }
+        }, _callee5);
+      }))();
+    },
+    fetchMessages: function fetchMessages() {
+      var _this5 = this;
+
+      return _asyncToGenerator(
+      /*#__PURE__*/
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _context6.next = 2;
+                return _this5.channel.getMessages();
+
+              case 2:
+                _this5.messages = _context6.sent.items;
+
+                _this5.sendStatusSocket("In a chat");
+
+              case 4:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6);
+      }))();
+    },
+    sendMessage: function sendMessage() {
+      if (this.chat_session && this.current_consultant.user.status != "Offline") {
+        this.channel.sendMessage(this.newMessage);
+        this.newMessage = "";
+      }
+    },
+    // voice call module
+    startCall: function startCall() {
+      this.sendRequestSocket("voice_call");
+      var params = {
+        phone: this.current_consultant.user.phone,
+        callerId: this.authCustomer.user.phone,
+        name: this.current_consultant.user.first_name + this.current_consultant.user.last_name,
+        type: "voice",
+        roomName: ""
+      };
+      this.device.connect(params);
+      this.is_modal = true;
+    },
+    initializeCallClient: function initializeCallClient() {
+      var _this6 = this;
+
+      return _asyncToGenerator(
+      /*#__PURE__*/
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee7() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee7$(_context7) {
+          while (1) {
+            switch (_context7.prev = _context7.next) {
+              case 0:
+                _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/new_token", {
+                  name: _this6.current_consultant.user.first_name + _this6.current_consultant.user.last_name
+                }).then(function (res) {
+                  _this6.device.setup(res.data.token, {
+                    debug: true
+                  });
+                });
+
+              case 1:
+              case "end":
+                return _context7.stop();
+            }
+          }
+        }, _callee7);
+      }))();
+    },
+    // video call module
+    initializeVideoClient: function initializeVideoClient() {
+      var _this7 = this;
+
+      return _asyncToGenerator(
+      /*#__PURE__*/
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee8() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee8$(_context8) {
+          while (1) {
+            switch (_context8.prev = _context8.next) {
+              case 0:
+                _context8.next = 2;
+                return _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/create_room", {
+                  name: "videoRoom-".concat(_this7.current_consultant.user.id, "-").concat(_this7.authCustomer.user.id)
                 }).then(function (res) {
                   console.log(res);
                 });
 
               case 2:
+              case "end":
+                return _context8.stop();
+            }
+          }
+        }, _callee8);
+      }))();
+    },
+    fetchVideoToken: function fetchVideoToken() {
+      var _this8 = this;
+
+      return _asyncToGenerator(
+      /*#__PURE__*/
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee9() {
+        var _ref5, data;
+
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee9$(_context9) {
+          while (1) {
+            switch (_context9.prev = _context9.next) {
+              case 0:
+                _context9.next = 2;
+                return _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/video_token", {
+                  userName: _this8.authCustomer.user.first_name + _this8.authCustomer.user.last_name,
+                  roomName: "videoRoom-".concat(_this8.current_consultant.user.id, "-").concat(_this8.authCustomer.user.id)
+                });
+
+              case 2:
+                _ref5 = _context9.sent;
+                data = _ref5.data;
+                return _context9.abrupt("return", data.token);
+
+              case 5:
               case "end":
                 return _context9.stop();
             }
@@ -19011,52 +19556,21 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
         }, _callee9);
       }))();
     },
-    fetchVideoToken: function fetchVideoToken() {
+    startVideo: function startVideo() {
       var _this9 = this;
 
       return _asyncToGenerator(
       /*#__PURE__*/
       _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee10() {
-        var _ref5, data;
-
+        var self, params, token;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee10$(_context10) {
           while (1) {
             switch (_context10.prev = _context10.next) {
               case 0:
-                _context10.next = 2;
-                return _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/video_token", {
-                  "userName": _this9.authUser.first_name + _this9.authUser.last_name,
-                  "roomName": "videoRoom-".concat(_this9.current_consultant.user.id, "-").concat(_this9.authUser.id)
-                });
+                _this9.sendRequestSocket("video_call");
 
-              case 2:
-                _ref5 = _context10.sent;
-                data = _ref5.data;
-                return _context10.abrupt("return", data.token);
-
-              case 5:
-              case "end":
-                return _context10.stop();
-            }
-          }
-        }, _callee10);
-      }))();
-    },
-    startVideo: function startVideo() {
-      var _this10 = this;
-
-      return _asyncToGenerator(
-      /*#__PURE__*/
-      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee11() {
-        var self, params, token;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee11$(_context11) {
-          while (1) {
-            switch (_context11.prev = _context11.next) {
-              case 0:
-                _this10.sendRequestSocket('video_call');
-
-                _this10.is_video_modal = true;
-                self = _this10;
+                _this9.is_video_modal = true;
+                self = _this9;
 
                 if (self.$refs.self_video_tag.children.length == 0) {
                   createLocalVideoTrack({
@@ -19070,72 +19584,72 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
                 }
 
                 params = {
-                  "phone": _this10.current_consultant.user.phone,
-                  "callerId": _this10.authUser.phone,
-                  "name": _this10.current_consultant.user.first_name + _this10.current_consultant.user.last_name,
-                  "type": "video",
-                  "roomName": "videoRoom-".concat(_this10.current_consultant.user.id, "-").concat(_this10.authUser.id)
+                  phone: _this9.current_consultant.user.phone,
+                  callerId: _this9.authCustomer.user.phone,
+                  name: _this9.current_consultant.user.first_name + _this9.current_consultant.user.last_name,
+                  type: "video",
+                  roomName: "videoRoom-".concat(_this9.current_consultant.user.id, "-").concat(_this9.authCustomer.user.id)
                 };
 
-                _this10.device.connect(params);
+                _this9.device.connect(params);
 
-                _context11.next = 8;
-                return _this10.fetchVideoToken();
+                _context10.next = 8;
+                return _this9.fetchVideoToken();
 
               case 8:
-                token = _context11.sent;
+                token = _context10.sent;
                 Video.connect(token, {
-                  "name": "videoRoom-".concat(_this10.current_consultant.user.id, "-").concat(_this10.authUser.id)
+                  name: "videoRoom-".concat(_this9.current_consultant.user.id, "-").concat(_this9.authCustomer.user.id)
                 }).then(function (room) {
-                  console.log('Successfully joined a Room: ', room);
+                  console.log("Successfully joined a Room: ", room);
                   self.activeRoom = room; // room.participants.forEach(self.participantConnected);
 
-                  room.on('participantConnected', self.participantConnected);
-                  room.on('participantDisconnected', self.participantDisconnected);
-                  room.once('disconnected', function (error) {
+                  room.on("participantConnected", self.participantConnected);
+                  room.on("participantDisconnected", self.participantDisconnected);
+                  room.once("disconnected", function (error) {
                     return room.participants.forEach(self.participantDisconnected);
                   });
                 }, function (err) {
-                  console.error('Unable to connect to Room: ' + err.message);
+                  console.error("Unable to connect to Room: " + err.message);
                 });
 
               case 10:
               case "end":
-                return _context11.stop();
+                return _context10.stop();
             }
           }
-        }, _callee11);
+        }, _callee10);
       }))();
     },
     hangupVideoCall: function hangupVideoCall() {
       this.is_video_modal = false;
-      this.minute = '0';
-      this.step = '1';
+      this.form.minute = "0";
+      this.step = "1";
 
       if (this.activeRoom) {
         this.activeRoom.localParticipant.tracks.forEach(function (track) {
           track.stop();
         });
         this.activeRoom.disconnect();
-        this.setStatus('Available');
-        this.sendStatusSocket('Available');
+        this.setStatus("Available");
+        this.sendStatusSocket("Available");
       } // re-calulate the minute and the cost
 
     },
     participantConnected: function participantConnected(participant) {
-      var _this11 = this;
+      var _this10 = this;
 
       console.log('Participant "%s" connected', participant.identity);
-      var div = document.createElement('div');
+      var div = document.createElement("div");
       div.ref = participant.sid;
       div.innerText = participant.identity;
-      participant.on('trackSubscribed', function (track) {
-        return _this11.trackSubscribed(div, track);
+      participant.on("trackSubscribed", function (track) {
+        return _this10.trackSubscribed(div, track);
       });
       participant.tracks.forEach(function (track) {
-        return _this11.trackSubscribed(div, track);
+        return _this10.trackSubscribed(div, track);
       });
-      participant.on('trackUnsubscribed', this.trackUnsubscribed);
+      participant.on("trackUnsubscribed", this.trackUnsubscribed);
       this.$refs.video_tag.appendChild(div);
     },
     participantDisconnected: function participantDisconnected(participant) {
@@ -19161,65 +19675,177 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
     },
     // step 2
     Step2: function Step2(type) {
-      if (this.current_consultant.user.status == 'Available') {
-        this.step = 'step2';
+      if (this.current_consultant.user.status == "Available") {
+        this.step = "step2";
         this.selected_type = type;
       }
     },
     goBack: function goBack() {
-      var _this12 = this;
-
-      this.sendRequestSocket('chat_end');
-      this.sendStatusSocket('Available');
-      _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post('/api/manage_rate', {
-        id: this.current_consultant.user.id,
-        rate: this.rate
-      }).then(function (res) {
-        _this12.current_consultant.user.rate = res.data.user.rate;
-      });
-      this.is_channel = true;
+      this.sendRequestSocket("chat_end");
+      this.sendStatusSocket("Available");
       this.is_chat = false;
+      this.is_channel = false;
       this.is_session_modal = false;
-      this.step = 'step1';
+      this.step = "step1";
+      this.cost = "";
+      this.form.minute = "";
+      this.isCheckReview = false;
+      this.isCheckContinue = false;
+    },
+    mobilePrevStep: function mobilePrevStep() {
+      this.is_selected = false;
     },
     startMethod: function startMethod() {
-      if (Number(this.authUser.balance) > Number(this.minute) * Number(this.current_consultant.user.hourly_rate)) {
-        switch (this.selected_type) {
-          case 'voice':
-            this.startCall();
-            break;
+      var _this11 = this;
 
-          case 'video':
-            this.startVideo();
-            break;
+      return _asyncToGenerator(
+      /*#__PURE__*/
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee11() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee11$(_context11) {
+          while (1) {
+            switch (_context11.prev = _context11.next) {
+              case 0:
+                _this11.$v.form.$touch();
 
-          case 'chat':
-            this.sendRequestSocket('chat_start');
-            break;
-        }
-      }
+                if (!_this11.$v.form.$error) {
+                  _context11.next = 3;
+                  break;
+                }
+
+                return _context11.abrupt("return");
+
+              case 3:
+                _this11.is_channel = true;
+
+                if (!(Number(_this11.authCustomer.user.balance) > Number(_this11.form.minute) * Number(_this11.current_consultant.hourly_rate))) {
+                  _context11.next = 20;
+                  break;
+                }
+
+                _context11.next = 7;
+                return _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/manage_transaction", {
+                  id: _this11.authCustomer.user.id,
+                  cost: _this11.cost,
+                  time: _this11.form.minute,
+                  consultant_id: _this11.current_consultant.id
+                });
+
+              case 7:
+                _context11.t0 = _this11.selected_type;
+                _context11.next = _context11.t0 === "voice" ? 10 : _context11.t0 === "video" ? 14 : _context11.t0 === "chat" ? 18 : 20;
+                break;
+
+              case 10:
+                _context11.next = 12;
+                return _this11.initializeCallClient();
+
+              case 12:
+                _this11.startCall();
+
+                return _context11.abrupt("break", 20);
+
+              case 14:
+                _context11.next = 16;
+                return _this11.initializeVideoClient();
+
+              case 16:
+                _this11.startVideo();
+
+                return _context11.abrupt("break", 20);
+
+              case 18:
+                _this11.sendRequestSocket("chat_start");
+
+                return _context11.abrupt("break", 20);
+
+              case 20:
+              case "end":
+                return _context11.stop();
+            }
+          }
+        }, _callee11);
+      }))();
     },
     restartMethod: function restartMethod() {
+      this.$v.form.$touch();
+      if (this.$v.form.$error) return;
       this.is_session_modal = false;
 
-      if (Number(this.authUser.balance) > Number(this.minute) * Number(this.current_consultant.user.hourly_rate)) {
+      if (Number(this.authCustomer.user.balance) > Number(this.form.minute) * Number(this.current_consultant.hourly_rate)) {
         switch (this.selected_type) {
-          case 'voice':
+          case "voice":
             this.startCall();
             break;
 
-          case 'video':
+          case "video":
             this.startVideo();
             break;
 
-          case 'chat':
+          case "chat":
             this.continueChat();
             break;
         }
+      } else {
+        console.log("balance not enough");
       }
     },
     minuteChange: function minuteChange() {
-      this.cost = Number(this.minute) * Number(this.current_consultant.user.hourly_rate);
+      this.cost = Number(this.form.minute) * Number(this.current_consultant.hourly_rate);
+      this.time_clock = Number(this.form.minute) * 60;
+    },
+    submitReview: function submitReview() {
+      var _this12 = this;
+
+      _Http__WEBPACK_IMPORTED_MODULE_1__["default"].post("/api/submit_review", {
+        sender_id: this.authCustomer.id,
+        receiver_id: this.current_consultant.id,
+        rate: this.rate,
+        description: this.review_des,
+        type: "CUSTOCON"
+      }).then(function (res) {
+        _this12.goBack();
+      });
+    },
+    endSession: function endSession() {
+      this.sendRequestSocket("chat_end");
+      this.sendStatusSocket("Available");
+      var new_cost = (this.form.minute * 60 - this.time_clock) / 60 * this.current_consultant.hourly_rate;
+      this.time_clock = 0;
+      this.form.minute = "0";
+      this.cost = "0";
+      this.chat_session = false;
+      this.is_session_modal = true;
+    },
+    viewSession: function viewSession() {
+      this.is_session_modal = false;
+      this.time_clock = 0;
+    },
+    toHHMMSS: function toHHMMSS(sec_num) {
+      var hours = Math.floor(sec_num / 3600);
+      var minutes = Math.floor((sec_num - hours * 3600) / 60);
+      var seconds = sec_num - hours * 3600 - minutes * 60;
+
+      if (hours < 10) {
+        hours = "0" + hours;
+      }
+
+      if (minutes < 10) {
+        minutes = "0" + minutes;
+      }
+
+      if (seconds < 10) {
+        seconds = "0" + seconds;
+      }
+
+      return hours + ":" + minutes + ":" + seconds;
+    },
+    goToReview: function goToReview() {
+      this.isCheckReview = true;
+      this.isCheckContinue = false;
+    },
+    goToContinue: function goToContinue() {
+      this.isCheckContinue = true;
+      this.isCheckReview = false;
     },
     scrollToEnd: function scrollToEnd() {
       var container = this.$el.querySelector("#scroll-view");
@@ -19227,13 +19853,6 @@ var _require = __webpack_require__(/*! twilio-video */ "./node_modules/twilio-vi
     },
     showSetting: function showSetting() {
       this.is_setting = true;
-    },
-    endSession: function endSession() {
-      if (this.rate > 0) {
-        this.is_session_modal = true;
-        this.minute = '0';
-        this.cost = '0';
-      }
     }
   }
 });
@@ -20533,6 +21152,49 @@ BackoffStrategy.prototype.reset_ = function() {
 };
 
 module.exports = BackoffStrategy;
+
+
+/***/ }),
+
+/***/ "./node_modules/detect-touch-device/dist/index.js":
+/*!********************************************************!*\
+  !*** ./node_modules/detect-touch-device/dist/index.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function isdeviceTouchFriendly() {
+    var isMobile = false;
+    if (navigator !== null || navigator !== undefined) { }
+    if ("maxTouchPoints" in navigator) {
+        isMobile = navigator.maxTouchPoints > 0;
+    }
+    else if ("msMaxTouchPoints" in navigator) {
+        if (navigator !== null) {
+            isMobile = navigator.msMaxTouchPoints > 0;
+        }
+    }
+    else {
+        var mQ = window.matchMedia && matchMedia("(pointer:coarse)");
+        if (mQ && mQ.media === "(pointer:coarse)") {
+            isMobile = !!mQ.matches;
+        }
+        else if ('orientation' in window) {
+            isMobile = true; // deprecated, but good fallback
+        }
+        else {
+            // Only as a last resort, fall back to user agent sniffing
+            var UA = navigator.userAgent;
+            isMobile = (/\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA) ||
+                /\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA));
+        }
+    }
+    return isMobile;
+}
+exports.isMobile = isdeviceTouchFriendly();
 
 
 /***/ }),
@@ -72760,6 +73422,2113 @@ exports.callbackify = callbackify;
 
 /***/ }),
 
+/***/ "./node_modules/vue-i18n/dist/vue-i18n.esm.js":
+/*!****************************************************!*\
+  !*** ./node_modules/vue-i18n/dist/vue-i18n.esm.js ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/*!
+ * vue-i18n v8.17.4 
+ * (c) 2020 kazuya kawaguchi
+ * Released under the MIT License.
+ */
+/*  */
+
+/**
+ * constants
+ */
+
+var numberFormatKeys = [
+  'style',
+  'currency',
+  'currencyDisplay',
+  'useGrouping',
+  'minimumIntegerDigits',
+  'minimumFractionDigits',
+  'maximumFractionDigits',
+  'minimumSignificantDigits',
+  'maximumSignificantDigits',
+  'localeMatcher',
+  'formatMatcher',
+  'unit'
+];
+
+/**
+ * utilities
+ */
+
+function warn (msg, err) {
+  if (typeof console !== 'undefined') {
+    console.warn('[vue-i18n] ' + msg);
+    /* istanbul ignore if */
+    if (err) {
+      console.warn(err.stack);
+    }
+  }
+}
+
+function error (msg, err) {
+  if (typeof console !== 'undefined') {
+    console.error('[vue-i18n] ' + msg);
+    /* istanbul ignore if */
+    if (err) {
+      console.error(err.stack);
+    }
+  }
+}
+
+function isObject (obj) {
+  return obj !== null && typeof obj === 'object'
+}
+
+var toString = Object.prototype.toString;
+var OBJECT_STRING = '[object Object]';
+function isPlainObject (obj) {
+  return toString.call(obj) === OBJECT_STRING
+}
+
+function isNull (val) {
+  return val === null || val === undefined
+}
+
+function parseArgs () {
+  var args = [], len = arguments.length;
+  while ( len-- ) args[ len ] = arguments[ len ];
+
+  var locale = null;
+  var params = null;
+  if (args.length === 1) {
+    if (isObject(args[0]) || Array.isArray(args[0])) {
+      params = args[0];
+    } else if (typeof args[0] === 'string') {
+      locale = args[0];
+    }
+  } else if (args.length === 2) {
+    if (typeof args[0] === 'string') {
+      locale = args[0];
+    }
+    /* istanbul ignore if */
+    if (isObject(args[1]) || Array.isArray(args[1])) {
+      params = args[1];
+    }
+  }
+
+  return { locale: locale, params: params }
+}
+
+function looseClone (obj) {
+  return JSON.parse(JSON.stringify(obj))
+}
+
+function remove (arr, item) {
+  if (arr.length) {
+    var index = arr.indexOf(item);
+    if (index > -1) {
+      return arr.splice(index, 1)
+    }
+  }
+}
+
+function includes (arr, item) {
+  return !!~arr.indexOf(item)
+}
+
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+function hasOwn (obj, key) {
+  return hasOwnProperty.call(obj, key)
+}
+
+function merge (target) {
+  var arguments$1 = arguments;
+
+  var output = Object(target);
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments$1[i];
+    if (source !== undefined && source !== null) {
+      var key = (void 0);
+      for (key in source) {
+        if (hasOwn(source, key)) {
+          if (isObject(source[key])) {
+            output[key] = merge(output[key], source[key]);
+          } else {
+            output[key] = source[key];
+          }
+        }
+      }
+    }
+  }
+  return output
+}
+
+function looseEqual (a, b) {
+  if (a === b) { return true }
+  var isObjectA = isObject(a);
+  var isObjectB = isObject(b);
+  if (isObjectA && isObjectB) {
+    try {
+      var isArrayA = Array.isArray(a);
+      var isArrayB = Array.isArray(b);
+      if (isArrayA && isArrayB) {
+        return a.length === b.length && a.every(function (e, i) {
+          return looseEqual(e, b[i])
+        })
+      } else if (!isArrayA && !isArrayB) {
+        var keysA = Object.keys(a);
+        var keysB = Object.keys(b);
+        return keysA.length === keysB.length && keysA.every(function (key) {
+          return looseEqual(a[key], b[key])
+        })
+      } else {
+        /* istanbul ignore next */
+        return false
+      }
+    } catch (e) {
+      /* istanbul ignore next */
+      return false
+    }
+  } else if (!isObjectA && !isObjectB) {
+    return String(a) === String(b)
+  } else {
+    return false
+  }
+}
+
+/*  */
+
+function extend (Vue) {
+  if (!Vue.prototype.hasOwnProperty('$i18n')) {
+    // $FlowFixMe
+    Object.defineProperty(Vue.prototype, '$i18n', {
+      get: function get () { return this._i18n }
+    });
+  }
+
+  Vue.prototype.$t = function (key) {
+    var values = [], len = arguments.length - 1;
+    while ( len-- > 0 ) values[ len ] = arguments[ len + 1 ];
+
+    var i18n = this.$i18n;
+    return i18n._t.apply(i18n, [ key, i18n.locale, i18n._getMessages(), this ].concat( values ))
+  };
+
+  Vue.prototype.$tc = function (key, choice) {
+    var values = [], len = arguments.length - 2;
+    while ( len-- > 0 ) values[ len ] = arguments[ len + 2 ];
+
+    var i18n = this.$i18n;
+    return i18n._tc.apply(i18n, [ key, i18n.locale, i18n._getMessages(), this, choice ].concat( values ))
+  };
+
+  Vue.prototype.$te = function (key, locale) {
+    var i18n = this.$i18n;
+    return i18n._te(key, i18n.locale, i18n._getMessages(), locale)
+  };
+
+  Vue.prototype.$d = function (value) {
+    var ref;
+
+    var args = [], len = arguments.length - 1;
+    while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+    return (ref = this.$i18n).d.apply(ref, [ value ].concat( args ))
+  };
+
+  Vue.prototype.$n = function (value) {
+    var ref;
+
+    var args = [], len = arguments.length - 1;
+    while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+    return (ref = this.$i18n).n.apply(ref, [ value ].concat( args ))
+  };
+}
+
+/*  */
+
+var mixin = {
+  beforeCreate: function beforeCreate () {
+    var options = this.$options;
+    options.i18n = options.i18n || (options.__i18n ? {} : null);
+
+    if (options.i18n) {
+      if (options.i18n instanceof VueI18n) {
+        // init locale messages via custom blocks
+        if (options.__i18n) {
+          try {
+            var localeMessages = {};
+            options.__i18n.forEach(function (resource) {
+              localeMessages = merge(localeMessages, JSON.parse(resource));
+            });
+            Object.keys(localeMessages).forEach(function (locale) {
+              options.i18n.mergeLocaleMessage(locale, localeMessages[locale]);
+            });
+          } catch (e) {
+            if (true) {
+              error("Cannot parse locale messages via custom blocks.", e);
+            }
+          }
+        }
+        this._i18n = options.i18n;
+        this._i18nWatcher = this._i18n.watchI18nData();
+      } else if (isPlainObject(options.i18n)) {
+        // component local i18n
+        if (this.$root && this.$root.$i18n && this.$root.$i18n instanceof VueI18n) {
+          options.i18n.root = this.$root;
+          options.i18n.formatter = this.$root.$i18n.formatter;
+          options.i18n.fallbackLocale = this.$root.$i18n.fallbackLocale;
+          options.i18n.formatFallbackMessages = this.$root.$i18n.formatFallbackMessages;
+          options.i18n.silentTranslationWarn = this.$root.$i18n.silentTranslationWarn;
+          options.i18n.silentFallbackWarn = this.$root.$i18n.silentFallbackWarn;
+          options.i18n.pluralizationRules = this.$root.$i18n.pluralizationRules;
+          options.i18n.preserveDirectiveContent = this.$root.$i18n.preserveDirectiveContent;
+        }
+
+        // init locale messages via custom blocks
+        if (options.__i18n) {
+          try {
+            var localeMessages$1 = {};
+            options.__i18n.forEach(function (resource) {
+              localeMessages$1 = merge(localeMessages$1, JSON.parse(resource));
+            });
+            options.i18n.messages = localeMessages$1;
+          } catch (e) {
+            if (true) {
+              warn("Cannot parse locale messages via custom blocks.", e);
+            }
+          }
+        }
+
+        var ref = options.i18n;
+        var sharedMessages = ref.sharedMessages;
+        if (sharedMessages && isPlainObject(sharedMessages)) {
+          options.i18n.messages = merge(options.i18n.messages, sharedMessages);
+        }
+
+        this._i18n = new VueI18n(options.i18n);
+        this._i18nWatcher = this._i18n.watchI18nData();
+
+        if (options.i18n.sync === undefined || !!options.i18n.sync) {
+          this._localeWatcher = this.$i18n.watchLocale();
+        }
+      } else {
+        if (true) {
+          warn("Cannot be interpreted 'i18n' option.");
+        }
+      }
+    } else if (this.$root && this.$root.$i18n && this.$root.$i18n instanceof VueI18n) {
+      // root i18n
+      this._i18n = this.$root.$i18n;
+    } else if (options.parent && options.parent.$i18n && options.parent.$i18n instanceof VueI18n) {
+      // parent i18n
+      this._i18n = options.parent.$i18n;
+    }
+  },
+
+  beforeMount: function beforeMount () {
+    var options = this.$options;
+    options.i18n = options.i18n || (options.__i18n ? {} : null);
+
+    if (options.i18n) {
+      if (options.i18n instanceof VueI18n) {
+        // init locale messages via custom blocks
+        this._i18n.subscribeDataChanging(this);
+        this._subscribing = true;
+      } else if (isPlainObject(options.i18n)) {
+        this._i18n.subscribeDataChanging(this);
+        this._subscribing = true;
+      } else {
+        if (true) {
+          warn("Cannot be interpreted 'i18n' option.");
+        }
+      }
+    } else if (this.$root && this.$root.$i18n && this.$root.$i18n instanceof VueI18n) {
+      this._i18n.subscribeDataChanging(this);
+      this._subscribing = true;
+    } else if (options.parent && options.parent.$i18n && options.parent.$i18n instanceof VueI18n) {
+      this._i18n.subscribeDataChanging(this);
+      this._subscribing = true;
+    }
+  },
+
+  beforeDestroy: function beforeDestroy () {
+    if (!this._i18n) { return }
+
+    var self = this;
+    this.$nextTick(function () {
+      if (self._subscribing) {
+        self._i18n.unsubscribeDataChanging(self);
+        delete self._subscribing;
+      }
+
+      if (self._i18nWatcher) {
+        self._i18nWatcher();
+        self._i18n.destroyVM();
+        delete self._i18nWatcher;
+      }
+
+      if (self._localeWatcher) {
+        self._localeWatcher();
+        delete self._localeWatcher;
+      }
+
+      self._i18n = null;
+    });
+  }
+};
+
+/*  */
+
+var interpolationComponent = {
+  name: 'i18n',
+  functional: true,
+  props: {
+    tag: {
+      type: String
+    },
+    path: {
+      type: String,
+      required: true
+    },
+    locale: {
+      type: String
+    },
+    places: {
+      type: [Array, Object]
+    }
+  },
+  render: function render (h, ref) {
+    var data = ref.data;
+    var parent = ref.parent;
+    var props = ref.props;
+    var slots = ref.slots;
+
+    var $i18n = parent.$i18n;
+    if (!$i18n) {
+      if (true) {
+        warn('Cannot find VueI18n instance!');
+      }
+      return
+    }
+
+    var path = props.path;
+    var locale = props.locale;
+    var places = props.places;
+    var params = slots();
+    var children = $i18n.i(
+      path,
+      locale,
+      onlyHasDefaultPlace(params) || places
+        ? useLegacyPlaces(params.default, places)
+        : params
+    );
+
+    var tag = props.tag || 'span';
+    return tag ? h(tag, data, children) : children
+  }
+};
+
+function onlyHasDefaultPlace (params) {
+  var prop;
+  for (prop in params) {
+    if (prop !== 'default') { return false }
+  }
+  return Boolean(prop)
+}
+
+function useLegacyPlaces (children, places) {
+  var params = places ? createParamsFromPlaces(places) : {};
+
+  if (!children) { return params }
+
+  // Filter empty text nodes
+  children = children.filter(function (child) {
+    return child.tag || child.text.trim() !== ''
+  });
+
+  var everyPlace = children.every(vnodeHasPlaceAttribute);
+  if ( true && everyPlace) {
+    warn('`place` attribute is deprecated in next major version. Please switch to Vue slots.');
+  }
+
+  return children.reduce(
+    everyPlace ? assignChildPlace : assignChildIndex,
+    params
+  )
+}
+
+function createParamsFromPlaces (places) {
+  if (true) {
+    warn('`places` prop is deprecated in next major version. Please switch to Vue slots.');
+  }
+
+  return Array.isArray(places)
+    ? places.reduce(assignChildIndex, {})
+    : Object.assign({}, places)
+}
+
+function assignChildPlace (params, child) {
+  if (child.data && child.data.attrs && child.data.attrs.place) {
+    params[child.data.attrs.place] = child;
+  }
+  return params
+}
+
+function assignChildIndex (params, child, index) {
+  params[index] = child;
+  return params
+}
+
+function vnodeHasPlaceAttribute (vnode) {
+  return Boolean(vnode.data && vnode.data.attrs && vnode.data.attrs.place)
+}
+
+/*  */
+
+var numberComponent = {
+  name: 'i18n-n',
+  functional: true,
+  props: {
+    tag: {
+      type: String,
+      default: 'span'
+    },
+    value: {
+      type: Number,
+      required: true
+    },
+    format: {
+      type: [String, Object]
+    },
+    locale: {
+      type: String
+    }
+  },
+  render: function render (h, ref) {
+    var props = ref.props;
+    var parent = ref.parent;
+    var data = ref.data;
+
+    var i18n = parent.$i18n;
+
+    if (!i18n) {
+      if (true) {
+        warn('Cannot find VueI18n instance!');
+      }
+      return null
+    }
+
+    var key = null;
+    var options = null;
+
+    if (typeof props.format === 'string') {
+      key = props.format;
+    } else if (isObject(props.format)) {
+      if (props.format.key) {
+        key = props.format.key;
+      }
+
+      // Filter out number format options only
+      options = Object.keys(props.format).reduce(function (acc, prop) {
+        var obj;
+
+        if (includes(numberFormatKeys, prop)) {
+          return Object.assign({}, acc, ( obj = {}, obj[prop] = props.format[prop], obj ))
+        }
+        return acc
+      }, null);
+    }
+
+    var locale = props.locale || i18n.locale;
+    var parts = i18n._ntp(props.value, locale, key, options);
+
+    var values = parts.map(function (part, index) {
+      var obj;
+
+      var slot = data.scopedSlots && data.scopedSlots[part.type];
+      return slot ? slot(( obj = {}, obj[part.type] = part.value, obj.index = index, obj.parts = parts, obj )) : part.value
+    });
+
+    return h(props.tag, {
+      attrs: data.attrs,
+      'class': data['class'],
+      staticClass: data.staticClass
+    }, values)
+  }
+};
+
+/*  */
+
+function bind (el, binding, vnode) {
+  if (!assert(el, vnode)) { return }
+
+  t(el, binding, vnode);
+}
+
+function update (el, binding, vnode, oldVNode) {
+  if (!assert(el, vnode)) { return }
+
+  var i18n = vnode.context.$i18n;
+  if (localeEqual(el, vnode) &&
+    (looseEqual(binding.value, binding.oldValue) &&
+     looseEqual(el._localeMessage, i18n.getLocaleMessage(i18n.locale)))) { return }
+
+  t(el, binding, vnode);
+}
+
+function unbind (el, binding, vnode, oldVNode) {
+  var vm = vnode.context;
+  if (!vm) {
+    warn('Vue instance does not exists in VNode context');
+    return
+  }
+
+  var i18n = vnode.context.$i18n || {};
+  if (!binding.modifiers.preserve && !i18n.preserveDirectiveContent) {
+    el.textContent = '';
+  }
+  el._vt = undefined;
+  delete el['_vt'];
+  el._locale = undefined;
+  delete el['_locale'];
+  el._localeMessage = undefined;
+  delete el['_localeMessage'];
+}
+
+function assert (el, vnode) {
+  var vm = vnode.context;
+  if (!vm) {
+    warn('Vue instance does not exists in VNode context');
+    return false
+  }
+
+  if (!vm.$i18n) {
+    warn('VueI18n instance does not exists in Vue instance');
+    return false
+  }
+
+  return true
+}
+
+function localeEqual (el, vnode) {
+  var vm = vnode.context;
+  return el._locale === vm.$i18n.locale
+}
+
+function t (el, binding, vnode) {
+  var ref$1, ref$2;
+
+  var value = binding.value;
+
+  var ref = parseValue(value);
+  var path = ref.path;
+  var locale = ref.locale;
+  var args = ref.args;
+  var choice = ref.choice;
+  if (!path && !locale && !args) {
+    warn('value type not supported');
+    return
+  }
+
+  if (!path) {
+    warn('`path` is required in v-t directive');
+    return
+  }
+
+  var vm = vnode.context;
+  if (choice) {
+    el._vt = el.textContent = (ref$1 = vm.$i18n).tc.apply(ref$1, [ path, choice ].concat( makeParams(locale, args) ));
+  } else {
+    el._vt = el.textContent = (ref$2 = vm.$i18n).t.apply(ref$2, [ path ].concat( makeParams(locale, args) ));
+  }
+  el._locale = vm.$i18n.locale;
+  el._localeMessage = vm.$i18n.getLocaleMessage(vm.$i18n.locale);
+}
+
+function parseValue (value) {
+  var path;
+  var locale;
+  var args;
+  var choice;
+
+  if (typeof value === 'string') {
+    path = value;
+  } else if (isPlainObject(value)) {
+    path = value.path;
+    locale = value.locale;
+    args = value.args;
+    choice = value.choice;
+  }
+
+  return { path: path, locale: locale, args: args, choice: choice }
+}
+
+function makeParams (locale, args) {
+  var params = [];
+
+  locale && params.push(locale);
+  if (args && (Array.isArray(args) || isPlainObject(args))) {
+    params.push(args);
+  }
+
+  return params
+}
+
+var Vue;
+
+function install (_Vue) {
+  /* istanbul ignore if */
+  if ( true && install.installed && _Vue === Vue) {
+    warn('already installed.');
+    return
+  }
+  install.installed = true;
+
+  Vue = _Vue;
+
+  var version = (Vue.version && Number(Vue.version.split('.')[0])) || -1;
+  /* istanbul ignore if */
+  if ( true && version < 2) {
+    warn(("vue-i18n (" + (install.version) + ") need to use Vue 2.0 or later (Vue: " + (Vue.version) + ")."));
+    return
+  }
+
+  extend(Vue);
+  Vue.mixin(mixin);
+  Vue.directive('t', { bind: bind, update: update, unbind: unbind });
+  Vue.component(interpolationComponent.name, interpolationComponent);
+  Vue.component(numberComponent.name, numberComponent);
+
+  // use simple mergeStrategies to prevent i18n instance lose '__proto__'
+  var strats = Vue.config.optionMergeStrategies;
+  strats.i18n = function (parentVal, childVal) {
+    return childVal === undefined
+      ? parentVal
+      : childVal
+  };
+}
+
+/*  */
+
+var BaseFormatter = function BaseFormatter () {
+  this._caches = Object.create(null);
+};
+
+BaseFormatter.prototype.interpolate = function interpolate (message, values) {
+  if (!values) {
+    return [message]
+  }
+  var tokens = this._caches[message];
+  if (!tokens) {
+    tokens = parse(message);
+    this._caches[message] = tokens;
+  }
+  return compile(tokens, values)
+};
+
+
+
+var RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
+var RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
+
+function parse (format) {
+  var tokens = [];
+  var position = 0;
+
+  var text = '';
+  while (position < format.length) {
+    var char = format[position++];
+    if (char === '{') {
+      if (text) {
+        tokens.push({ type: 'text', value: text });
+      }
+
+      text = '';
+      var sub = '';
+      char = format[position++];
+      while (char !== undefined && char !== '}') {
+        sub += char;
+        char = format[position++];
+      }
+      var isClosed = char === '}';
+
+      var type = RE_TOKEN_LIST_VALUE.test(sub)
+        ? 'list'
+        : isClosed && RE_TOKEN_NAMED_VALUE.test(sub)
+          ? 'named'
+          : 'unknown';
+      tokens.push({ value: sub, type: type });
+    } else if (char === '%') {
+      // when found rails i18n syntax, skip text capture
+      if (format[(position)] !== '{') {
+        text += char;
+      }
+    } else {
+      text += char;
+    }
+  }
+
+  text && tokens.push({ type: 'text', value: text });
+
+  return tokens
+}
+
+function compile (tokens, values) {
+  var compiled = [];
+  var index = 0;
+
+  var mode = Array.isArray(values)
+    ? 'list'
+    : isObject(values)
+      ? 'named'
+      : 'unknown';
+  if (mode === 'unknown') { return compiled }
+
+  while (index < tokens.length) {
+    var token = tokens[index];
+    switch (token.type) {
+      case 'text':
+        compiled.push(token.value);
+        break
+      case 'list':
+        compiled.push(values[parseInt(token.value, 10)]);
+        break
+      case 'named':
+        if (mode === 'named') {
+          compiled.push((values)[token.value]);
+        } else {
+          if (true) {
+            warn(("Type of token '" + (token.type) + "' and format of value '" + mode + "' don't match!"));
+          }
+        }
+        break
+      case 'unknown':
+        if (true) {
+          warn("Detect 'unknown' type of token!");
+        }
+        break
+    }
+    index++;
+  }
+
+  return compiled
+}
+
+/*  */
+
+/**
+ *  Path parser
+ *  - Inspired:
+ *    Vue.js Path parser
+ */
+
+// actions
+var APPEND = 0;
+var PUSH = 1;
+var INC_SUB_PATH_DEPTH = 2;
+var PUSH_SUB_PATH = 3;
+
+// states
+var BEFORE_PATH = 0;
+var IN_PATH = 1;
+var BEFORE_IDENT = 2;
+var IN_IDENT = 3;
+var IN_SUB_PATH = 4;
+var IN_SINGLE_QUOTE = 5;
+var IN_DOUBLE_QUOTE = 6;
+var AFTER_PATH = 7;
+var ERROR = 8;
+
+var pathStateMachine = [];
+
+pathStateMachine[BEFORE_PATH] = {
+  'ws': [BEFORE_PATH],
+  'ident': [IN_IDENT, APPEND],
+  '[': [IN_SUB_PATH],
+  'eof': [AFTER_PATH]
+};
+
+pathStateMachine[IN_PATH] = {
+  'ws': [IN_PATH],
+  '.': [BEFORE_IDENT],
+  '[': [IN_SUB_PATH],
+  'eof': [AFTER_PATH]
+};
+
+pathStateMachine[BEFORE_IDENT] = {
+  'ws': [BEFORE_IDENT],
+  'ident': [IN_IDENT, APPEND],
+  '0': [IN_IDENT, APPEND],
+  'number': [IN_IDENT, APPEND]
+};
+
+pathStateMachine[IN_IDENT] = {
+  'ident': [IN_IDENT, APPEND],
+  '0': [IN_IDENT, APPEND],
+  'number': [IN_IDENT, APPEND],
+  'ws': [IN_PATH, PUSH],
+  '.': [BEFORE_IDENT, PUSH],
+  '[': [IN_SUB_PATH, PUSH],
+  'eof': [AFTER_PATH, PUSH]
+};
+
+pathStateMachine[IN_SUB_PATH] = {
+  "'": [IN_SINGLE_QUOTE, APPEND],
+  '"': [IN_DOUBLE_QUOTE, APPEND],
+  '[': [IN_SUB_PATH, INC_SUB_PATH_DEPTH],
+  ']': [IN_PATH, PUSH_SUB_PATH],
+  'eof': ERROR,
+  'else': [IN_SUB_PATH, APPEND]
+};
+
+pathStateMachine[IN_SINGLE_QUOTE] = {
+  "'": [IN_SUB_PATH, APPEND],
+  'eof': ERROR,
+  'else': [IN_SINGLE_QUOTE, APPEND]
+};
+
+pathStateMachine[IN_DOUBLE_QUOTE] = {
+  '"': [IN_SUB_PATH, APPEND],
+  'eof': ERROR,
+  'else': [IN_DOUBLE_QUOTE, APPEND]
+};
+
+/**
+ * Check if an expression is a literal value.
+ */
+
+var literalValueRE = /^\s?(?:true|false|-?[\d.]+|'[^']*'|"[^"]*")\s?$/;
+function isLiteral (exp) {
+  return literalValueRE.test(exp)
+}
+
+/**
+ * Strip quotes from a string
+ */
+
+function stripQuotes (str) {
+  var a = str.charCodeAt(0);
+  var b = str.charCodeAt(str.length - 1);
+  return a === b && (a === 0x22 || a === 0x27)
+    ? str.slice(1, -1)
+    : str
+}
+
+/**
+ * Determine the type of a character in a keypath.
+ */
+
+function getPathCharType (ch) {
+  if (ch === undefined || ch === null) { return 'eof' }
+
+  var code = ch.charCodeAt(0);
+
+  switch (code) {
+    case 0x5B: // [
+    case 0x5D: // ]
+    case 0x2E: // .
+    case 0x22: // "
+    case 0x27: // '
+      return ch
+
+    case 0x5F: // _
+    case 0x24: // $
+    case 0x2D: // -
+      return 'ident'
+
+    case 0x09: // Tab
+    case 0x0A: // Newline
+    case 0x0D: // Return
+    case 0xA0:  // No-break space
+    case 0xFEFF:  // Byte Order Mark
+    case 0x2028:  // Line Separator
+    case 0x2029:  // Paragraph Separator
+      return 'ws'
+  }
+
+  return 'ident'
+}
+
+/**
+ * Format a subPath, return its plain form if it is
+ * a literal string or number. Otherwise prepend the
+ * dynamic indicator (*).
+ */
+
+function formatSubPath (path) {
+  var trimmed = path.trim();
+  // invalid leading 0
+  if (path.charAt(0) === '0' && isNaN(path)) { return false }
+
+  return isLiteral(trimmed) ? stripQuotes(trimmed) : '*' + trimmed
+}
+
+/**
+ * Parse a string path into an array of segments
+ */
+
+function parse$1 (path) {
+  var keys = [];
+  var index = -1;
+  var mode = BEFORE_PATH;
+  var subPathDepth = 0;
+  var c;
+  var key;
+  var newChar;
+  var type;
+  var transition;
+  var action;
+  var typeMap;
+  var actions = [];
+
+  actions[PUSH] = function () {
+    if (key !== undefined) {
+      keys.push(key);
+      key = undefined;
+    }
+  };
+
+  actions[APPEND] = function () {
+    if (key === undefined) {
+      key = newChar;
+    } else {
+      key += newChar;
+    }
+  };
+
+  actions[INC_SUB_PATH_DEPTH] = function () {
+    actions[APPEND]();
+    subPathDepth++;
+  };
+
+  actions[PUSH_SUB_PATH] = function () {
+    if (subPathDepth > 0) {
+      subPathDepth--;
+      mode = IN_SUB_PATH;
+      actions[APPEND]();
+    } else {
+      subPathDepth = 0;
+      if (key === undefined) { return false }
+      key = formatSubPath(key);
+      if (key === false) {
+        return false
+      } else {
+        actions[PUSH]();
+      }
+    }
+  };
+
+  function maybeUnescapeQuote () {
+    var nextChar = path[index + 1];
+    if ((mode === IN_SINGLE_QUOTE && nextChar === "'") ||
+      (mode === IN_DOUBLE_QUOTE && nextChar === '"')) {
+      index++;
+      newChar = '\\' + nextChar;
+      actions[APPEND]();
+      return true
+    }
+  }
+
+  while (mode !== null) {
+    index++;
+    c = path[index];
+
+    if (c === '\\' && maybeUnescapeQuote()) {
+      continue
+    }
+
+    type = getPathCharType(c);
+    typeMap = pathStateMachine[mode];
+    transition = typeMap[type] || typeMap['else'] || ERROR;
+
+    if (transition === ERROR) {
+      return // parse error
+    }
+
+    mode = transition[0];
+    action = actions[transition[1]];
+    if (action) {
+      newChar = transition[2];
+      newChar = newChar === undefined
+        ? c
+        : newChar;
+      if (action() === false) {
+        return
+      }
+    }
+
+    if (mode === AFTER_PATH) {
+      return keys
+    }
+  }
+}
+
+
+
+
+
+var I18nPath = function I18nPath () {
+  this._cache = Object.create(null);
+};
+
+/**
+ * External parse that check for a cache hit first
+ */
+I18nPath.prototype.parsePath = function parsePath (path) {
+  var hit = this._cache[path];
+  if (!hit) {
+    hit = parse$1(path);
+    if (hit) {
+      this._cache[path] = hit;
+    }
+  }
+  return hit || []
+};
+
+/**
+ * Get path value from path string
+ */
+I18nPath.prototype.getPathValue = function getPathValue (obj, path) {
+  if (!isObject(obj)) { return null }
+
+  var paths = this.parsePath(path);
+  if (paths.length === 0) {
+    return null
+  } else {
+    var length = paths.length;
+    var last = obj;
+    var i = 0;
+    while (i < length) {
+      var value = last[paths[i]];
+      if (value === undefined) {
+        return null
+      }
+      last = value;
+      i++;
+    }
+
+    return last
+  }
+};
+
+/*  */
+
+
+
+var htmlTagMatcher = /<\/?[\w\s="/.':;#-\/]+>/;
+var linkKeyMatcher = /(?:@(?:\.[a-z]+)?:(?:[\w\-_|.]+|\([\w\-_|.]+\)))/g;
+var linkKeyPrefixMatcher = /^@(?:\.([a-z]+))?:/;
+var bracketsMatcher = /[()]/g;
+var defaultModifiers = {
+  'upper': function (str) { return str.toLocaleUpperCase(); },
+  'lower': function (str) { return str.toLocaleLowerCase(); },
+  'capitalize': function (str) { return ("" + (str.charAt(0).toLocaleUpperCase()) + (str.substr(1))); }
+};
+
+var defaultFormatter = new BaseFormatter();
+
+var VueI18n = function VueI18n (options) {
+  var this$1 = this;
+  if ( options === void 0 ) options = {};
+
+  // Auto install if it is not done yet and `window` has `Vue`.
+  // To allow users to avoid auto-installation in some cases,
+  // this code should be placed here. See #290
+  /* istanbul ignore if */
+  if (!Vue && typeof window !== 'undefined' && window.Vue) {
+    install(window.Vue);
+  }
+
+  var locale = options.locale || 'en-US';
+  var fallbackLocale = options.fallbackLocale === false
+    ? false
+    : options.fallbackLocale || 'en-US';
+  var messages = options.messages || {};
+  var dateTimeFormats = options.dateTimeFormats || {};
+  var numberFormats = options.numberFormats || {};
+
+  this._vm = null;
+  this._formatter = options.formatter || defaultFormatter;
+  this._modifiers = options.modifiers || {};
+  this._missing = options.missing || null;
+  this._root = options.root || null;
+  this._sync = options.sync === undefined ? true : !!options.sync;
+  this._fallbackRoot = options.fallbackRoot === undefined
+    ? true
+    : !!options.fallbackRoot;
+  this._formatFallbackMessages = options.formatFallbackMessages === undefined
+    ? false
+    : !!options.formatFallbackMessages;
+  this._silentTranslationWarn = options.silentTranslationWarn === undefined
+    ? false
+    : options.silentTranslationWarn;
+  this._silentFallbackWarn = options.silentFallbackWarn === undefined
+    ? false
+    : !!options.silentFallbackWarn;
+  this._dateTimeFormatters = {};
+  this._numberFormatters = {};
+  this._path = new I18nPath();
+  this._dataListeners = [];
+  this._preserveDirectiveContent = options.preserveDirectiveContent === undefined
+    ? false
+    : !!options.preserveDirectiveContent;
+  this.pluralizationRules = options.pluralizationRules || {};
+  this._warnHtmlInMessage = options.warnHtmlInMessage || 'off';
+  this._postTranslation = options.postTranslation || null;
+
+  this._exist = function (message, key) {
+    if (!message || !key) { return false }
+    if (!isNull(this$1._path.getPathValue(message, key))) { return true }
+    // fallback for flat key
+    if (message[key]) { return true }
+    return false
+  };
+
+  if (this._warnHtmlInMessage === 'warn' || this._warnHtmlInMessage === 'error') {
+    Object.keys(messages).forEach(function (locale) {
+      this$1._checkLocaleMessage(locale, this$1._warnHtmlInMessage, messages[locale]);
+    });
+  }
+
+  this._initVM({
+    locale: locale,
+    fallbackLocale: fallbackLocale,
+    messages: messages,
+    dateTimeFormats: dateTimeFormats,
+    numberFormats: numberFormats
+  });
+};
+
+var prototypeAccessors = { vm: { configurable: true },messages: { configurable: true },dateTimeFormats: { configurable: true },numberFormats: { configurable: true },availableLocales: { configurable: true },locale: { configurable: true },fallbackLocale: { configurable: true },formatFallbackMessages: { configurable: true },missing: { configurable: true },formatter: { configurable: true },silentTranslationWarn: { configurable: true },silentFallbackWarn: { configurable: true },preserveDirectiveContent: { configurable: true },warnHtmlInMessage: { configurable: true },postTranslation: { configurable: true } };
+
+VueI18n.prototype._checkLocaleMessage = function _checkLocaleMessage (locale, level, message) {
+  var paths = [];
+
+  var fn = function (level, locale, message, paths) {
+    if (isPlainObject(message)) {
+      Object.keys(message).forEach(function (key) {
+        var val = message[key];
+        if (isPlainObject(val)) {
+          paths.push(key);
+          paths.push('.');
+          fn(level, locale, val, paths);
+          paths.pop();
+          paths.pop();
+        } else {
+          paths.push(key);
+          fn(level, locale, val, paths);
+          paths.pop();
+        }
+      });
+    } else if (Array.isArray(message)) {
+      message.forEach(function (item, index) {
+        if (isPlainObject(item)) {
+          paths.push(("[" + index + "]"));
+          paths.push('.');
+          fn(level, locale, item, paths);
+          paths.pop();
+          paths.pop();
+        } else {
+          paths.push(("[" + index + "]"));
+          fn(level, locale, item, paths);
+          paths.pop();
+        }
+      });
+    } else if (typeof message === 'string') {
+      var ret = htmlTagMatcher.test(message);
+      if (ret) {
+        var msg = "Detected HTML in message '" + message + "' of keypath '" + (paths.join('')) + "' at '" + locale + "'. Consider component interpolation with '<i18n>' to avoid XSS. See https://bit.ly/2ZqJzkp";
+        if (level === 'warn') {
+          warn(msg);
+        } else if (level === 'error') {
+          error(msg);
+        }
+      }
+    }
+  };
+
+  fn(level, locale, message, paths);
+};
+
+VueI18n.prototype._initVM = function _initVM (data) {
+  var silent = Vue.config.silent;
+  Vue.config.silent = true;
+  this._vm = new Vue({ data: data });
+  Vue.config.silent = silent;
+};
+
+VueI18n.prototype.destroyVM = function destroyVM () {
+  this._vm.$destroy();
+};
+
+VueI18n.prototype.subscribeDataChanging = function subscribeDataChanging (vm) {
+  this._dataListeners.push(vm);
+};
+
+VueI18n.prototype.unsubscribeDataChanging = function unsubscribeDataChanging (vm) {
+  remove(this._dataListeners, vm);
+};
+
+VueI18n.prototype.watchI18nData = function watchI18nData () {
+  var self = this;
+  return this._vm.$watch('$data', function () {
+    var i = self._dataListeners.length;
+    while (i--) {
+      Vue.nextTick(function () {
+        self._dataListeners[i] && self._dataListeners[i].$forceUpdate();
+      });
+    }
+  }, { deep: true })
+};
+
+VueI18n.prototype.watchLocale = function watchLocale () {
+  /* istanbul ignore if */
+  if (!this._sync || !this._root) { return null }
+  var target = this._vm;
+  return this._root.$i18n.vm.$watch('locale', function (val) {
+    target.$set(target, 'locale', val);
+    target.$forceUpdate();
+  }, { immediate: true })
+};
+
+prototypeAccessors.vm.get = function () { return this._vm };
+
+prototypeAccessors.messages.get = function () { return looseClone(this._getMessages()) };
+prototypeAccessors.dateTimeFormats.get = function () { return looseClone(this._getDateTimeFormats()) };
+prototypeAccessors.numberFormats.get = function () { return looseClone(this._getNumberFormats()) };
+prototypeAccessors.availableLocales.get = function () { return Object.keys(this.messages).sort() };
+
+prototypeAccessors.locale.get = function () { return this._vm.locale };
+prototypeAccessors.locale.set = function (locale) {
+  this._vm.$set(this._vm, 'locale', locale);
+};
+
+prototypeAccessors.fallbackLocale.get = function () { return this._vm.fallbackLocale };
+prototypeAccessors.fallbackLocale.set = function (locale) {
+  this._localeChainCache = {};
+  this._vm.$set(this._vm, 'fallbackLocale', locale);
+};
+
+prototypeAccessors.formatFallbackMessages.get = function () { return this._formatFallbackMessages };
+prototypeAccessors.formatFallbackMessages.set = function (fallback) { this._formatFallbackMessages = fallback; };
+
+prototypeAccessors.missing.get = function () { return this._missing };
+prototypeAccessors.missing.set = function (handler) { this._missing = handler; };
+
+prototypeAccessors.formatter.get = function () { return this._formatter };
+prototypeAccessors.formatter.set = function (formatter) { this._formatter = formatter; };
+
+prototypeAccessors.silentTranslationWarn.get = function () { return this._silentTranslationWarn };
+prototypeAccessors.silentTranslationWarn.set = function (silent) { this._silentTranslationWarn = silent; };
+
+prototypeAccessors.silentFallbackWarn.get = function () { return this._silentFallbackWarn };
+prototypeAccessors.silentFallbackWarn.set = function (silent) { this._silentFallbackWarn = silent; };
+
+prototypeAccessors.preserveDirectiveContent.get = function () { return this._preserveDirectiveContent };
+prototypeAccessors.preserveDirectiveContent.set = function (preserve) { this._preserveDirectiveContent = preserve; };
+
+prototypeAccessors.warnHtmlInMessage.get = function () { return this._warnHtmlInMessage };
+prototypeAccessors.warnHtmlInMessage.set = function (level) {
+    var this$1 = this;
+
+  var orgLevel = this._warnHtmlInMessage;
+  this._warnHtmlInMessage = level;
+  if (orgLevel !== level && (level === 'warn' || level === 'error')) {
+    var messages = this._getMessages();
+    Object.keys(messages).forEach(function (locale) {
+      this$1._checkLocaleMessage(locale, this$1._warnHtmlInMessage, messages[locale]);
+    });
+  }
+};
+
+prototypeAccessors.postTranslation.get = function () { return this._postTranslation };
+prototypeAccessors.postTranslation.set = function (handler) { this._postTranslation = handler; };
+
+VueI18n.prototype._getMessages = function _getMessages () { return this._vm.messages };
+VueI18n.prototype._getDateTimeFormats = function _getDateTimeFormats () { return this._vm.dateTimeFormats };
+VueI18n.prototype._getNumberFormats = function _getNumberFormats () { return this._vm.numberFormats };
+
+VueI18n.prototype._warnDefault = function _warnDefault (locale, key, result, vm, values, interpolateMode) {
+  if (!isNull(result)) { return result }
+  if (this._missing) {
+    var missingRet = this._missing.apply(null, [locale, key, vm, values]);
+    if (typeof missingRet === 'string') {
+      return missingRet
+    }
+  } else {
+    if ( true && !this._isSilentTranslationWarn(key)) {
+      warn(
+        "Cannot translate the value of keypath '" + key + "'. " +
+        'Use the value of keypath as default.'
+      );
+    }
+  }
+
+  if (this._formatFallbackMessages) {
+    var parsedArgs = parseArgs.apply(void 0, values);
+    return this._render(key, interpolateMode, parsedArgs.params, key)
+  } else {
+    return key
+  }
+};
+
+VueI18n.prototype._isFallbackRoot = function _isFallbackRoot (val) {
+  return !val && !isNull(this._root) && this._fallbackRoot
+};
+
+VueI18n.prototype._isSilentFallbackWarn = function _isSilentFallbackWarn (key) {
+  return this._silentFallbackWarn instanceof RegExp
+    ? this._silentFallbackWarn.test(key)
+    : this._silentFallbackWarn
+};
+
+VueI18n.prototype._isSilentFallback = function _isSilentFallback (locale, key) {
+  return this._isSilentFallbackWarn(key) && (this._isFallbackRoot() || locale !== this.fallbackLocale)
+};
+
+VueI18n.prototype._isSilentTranslationWarn = function _isSilentTranslationWarn (key) {
+  return this._silentTranslationWarn instanceof RegExp
+    ? this._silentTranslationWarn.test(key)
+    : this._silentTranslationWarn
+};
+
+VueI18n.prototype._interpolate = function _interpolate (
+  locale,
+  message,
+  key,
+  host,
+  interpolateMode,
+  values,
+  visitedLinkStack
+) {
+  if (!message) { return null }
+
+  var pathRet = this._path.getPathValue(message, key);
+  if (Array.isArray(pathRet) || isPlainObject(pathRet)) { return pathRet }
+
+  var ret;
+  if (isNull(pathRet)) {
+    /* istanbul ignore else */
+    if (isPlainObject(message)) {
+      ret = message[key];
+      if (typeof ret !== 'string') {
+        if ( true && !this._isSilentTranslationWarn(key) && !this._isSilentFallback(locale, key)) {
+          warn(("Value of key '" + key + "' is not a string!"));
+        }
+        return null
+      }
+    } else {
+      return null
+    }
+  } else {
+    /* istanbul ignore else */
+    if (typeof pathRet === 'string') {
+      ret = pathRet;
+    } else {
+      if ( true && !this._isSilentTranslationWarn(key) && !this._isSilentFallback(locale, key)) {
+        warn(("Value of key '" + key + "' is not a string!"));
+      }
+      return null
+    }
+  }
+
+  // Check for the existence of links within the translated string
+  if (ret.indexOf('@:') >= 0 || ret.indexOf('@.') >= 0) {
+    ret = this._link(locale, message, ret, host, 'raw', values, visitedLinkStack);
+  }
+
+  return this._render(ret, interpolateMode, values, key)
+};
+
+VueI18n.prototype._link = function _link (
+  locale,
+  message,
+  str,
+  host,
+  interpolateMode,
+  values,
+  visitedLinkStack
+) {
+  var ret = str;
+
+  // Match all the links within the local
+  // We are going to replace each of
+  // them with its translation
+  var matches = ret.match(linkKeyMatcher);
+  for (var idx in matches) {
+    // ie compatible: filter custom array
+    // prototype method
+    if (!matches.hasOwnProperty(idx)) {
+      continue
+    }
+    var link = matches[idx];
+    var linkKeyPrefixMatches = link.match(linkKeyPrefixMatcher);
+    var linkPrefix = linkKeyPrefixMatches[0];
+      var formatterName = linkKeyPrefixMatches[1];
+
+    // Remove the leading @:, @.case: and the brackets
+    var linkPlaceholder = link.replace(linkPrefix, '').replace(bracketsMatcher, '');
+
+    if (includes(visitedLinkStack, linkPlaceholder)) {
+      if (true) {
+        warn(("Circular reference found. \"" + link + "\" is already visited in the chain of " + (visitedLinkStack.reverse().join(' <- '))));
+      }
+      return ret
+    }
+    visitedLinkStack.push(linkPlaceholder);
+
+    // Translate the link
+    var translated = this._interpolate(
+      locale, message, linkPlaceholder, host,
+      interpolateMode === 'raw' ? 'string' : interpolateMode,
+      interpolateMode === 'raw' ? undefined : values,
+      visitedLinkStack
+    );
+
+    if (this._isFallbackRoot(translated)) {
+      if ( true && !this._isSilentTranslationWarn(linkPlaceholder)) {
+        warn(("Fall back to translate the link placeholder '" + linkPlaceholder + "' with root locale."));
+      }
+      /* istanbul ignore if */
+      if (!this._root) { throw Error('unexpected error') }
+      var root = this._root.$i18n;
+      translated = root._translate(
+        root._getMessages(), root.locale, root.fallbackLocale,
+        linkPlaceholder, host, interpolateMode, values
+      );
+    }
+    translated = this._warnDefault(
+      locale, linkPlaceholder, translated, host,
+      Array.isArray(values) ? values : [values],
+      interpolateMode
+    );
+
+    if (this._modifiers.hasOwnProperty(formatterName)) {
+      translated = this._modifiers[formatterName](translated);
+    } else if (defaultModifiers.hasOwnProperty(formatterName)) {
+      translated = defaultModifiers[formatterName](translated);
+    }
+
+    visitedLinkStack.pop();
+
+    // Replace the link with the translated
+    ret = !translated ? ret : ret.replace(link, translated);
+  }
+
+  return ret
+};
+
+VueI18n.prototype._render = function _render (message, interpolateMode, values, path) {
+  var ret = this._formatter.interpolate(message, values, path);
+
+  // If the custom formatter refuses to work - apply the default one
+  if (!ret) {
+    ret = defaultFormatter.interpolate(message, values, path);
+  }
+
+  // if interpolateMode is **not** 'string' ('row'),
+  // return the compiled data (e.g. ['foo', VNode, 'bar']) with formatter
+  return interpolateMode === 'string' && typeof ret !== 'string' ? ret.join('') : ret
+};
+
+VueI18n.prototype._appendItemToChain = function _appendItemToChain (chain, item, blocks) {
+  var follow = false;
+  if (!includes(chain, item)) {
+    follow = true;
+    if (item) {
+      follow = item[item.length - 1] !== '!';
+      item = item.replace(/!/g, '');
+      chain.push(item);
+      if (blocks && blocks[item]) {
+        follow = blocks[item];
+      }
+    }
+  }
+  return follow
+};
+
+VueI18n.prototype._appendLocaleToChain = function _appendLocaleToChain (chain, locale, blocks) {
+  var follow;
+  var tokens = locale.split('-');
+  do {
+    var item = tokens.join('-');
+    follow = this._appendItemToChain(chain, item, blocks);
+    tokens.splice(-1, 1);
+  } while (tokens.length && (follow === true))
+  return follow
+};
+
+VueI18n.prototype._appendBlockToChain = function _appendBlockToChain (chain, block, blocks) {
+  var follow = true;
+  for (var i = 0; (i < block.length) && (typeof follow === 'boolean'); i++) {
+    var locale = block[i];
+    follow = this._appendLocaleToChain(chain, locale, blocks);
+  }
+  return follow
+};
+
+VueI18n.prototype._getLocaleChain = function _getLocaleChain (start, fallbackLocale) {
+  if (start === '') { return [] }
+
+  if (!this._localeChainCache) {
+    this._localeChainCache = {};
+  }
+
+  var chain = this._localeChainCache[start];
+  if (!chain) {
+    if (!fallbackLocale) {
+      fallbackLocale = this.fallbackLocale;
+    }
+    chain = [];
+
+    // first block defined by start
+    var block = [start];
+
+    // while any intervening block found
+    while (Array.isArray(block)) {
+      block = this._appendBlockToChain(
+        chain,
+        block,
+        fallbackLocale
+      );
+    }
+
+    // last block defined by default
+    var defaults;
+    if (Array.isArray(fallbackLocale)) {
+      defaults = fallbackLocale;
+    } else if (fallbackLocale instanceof Object) {
+      if (fallbackLocale['default']) {
+        defaults = fallbackLocale['default'];
+      } else {
+        defaults = null;
+      }
+    } else {
+      defaults = fallbackLocale;
+    }
+
+    // convert defaults to array
+    if (typeof defaults === 'string') {
+      block = [defaults];
+    } else {
+      block = defaults;
+    }
+    if (block) {
+      this._appendBlockToChain(
+        chain,
+        block,
+        null
+      );
+    }
+    this._localeChainCache[start] = chain;
+  }
+  return chain
+};
+
+VueI18n.prototype._translate = function _translate (
+  messages,
+  locale,
+  fallback,
+  key,
+  host,
+  interpolateMode,
+  args
+) {
+  var chain = this._getLocaleChain(locale, fallback);
+  var res;
+  for (var i = 0; i < chain.length; i++) {
+    var step = chain[i];
+    res =
+      this._interpolate(step, messages[step], key, host, interpolateMode, args, [key]);
+    if (!isNull(res)) {
+      if (step !== locale && "development" !== 'production' && !this._isSilentTranslationWarn(key) && !this._isSilentFallbackWarn(key)) {
+        warn(("Fall back to translate the keypath '" + key + "' with '" + step + "' locale."));
+      }
+      return res
+    }
+  }
+  return null
+};
+
+VueI18n.prototype._t = function _t (key, _locale, messages, host) {
+    var ref;
+
+    var values = [], len = arguments.length - 4;
+    while ( len-- > 0 ) values[ len ] = arguments[ len + 4 ];
+  if (!key) { return '' }
+
+  var parsedArgs = parseArgs.apply(void 0, values);
+  var locale = parsedArgs.locale || _locale;
+
+  var ret = this._translate(
+    messages, locale, this.fallbackLocale, key,
+    host, 'string', parsedArgs.params
+  );
+  if (this._isFallbackRoot(ret)) {
+    if ( true && !this._isSilentTranslationWarn(key) && !this._isSilentFallbackWarn(key)) {
+      warn(("Fall back to translate the keypath '" + key + "' with root locale."));
+    }
+    /* istanbul ignore if */
+    if (!this._root) { throw Error('unexpected error') }
+    return (ref = this._root).$t.apply(ref, [ key ].concat( values ))
+  } else {
+    ret = this._warnDefault(locale, key, ret, host, values, 'string');
+    if (this._postTranslation && ret !== null && ret !== undefined) {
+      ret = this._postTranslation(ret, key);
+    }
+    return ret
+  }
+};
+
+VueI18n.prototype.t = function t (key) {
+    var ref;
+
+    var values = [], len = arguments.length - 1;
+    while ( len-- > 0 ) values[ len ] = arguments[ len + 1 ];
+  return (ref = this)._t.apply(ref, [ key, this.locale, this._getMessages(), null ].concat( values ))
+};
+
+VueI18n.prototype._i = function _i (key, locale, messages, host, values) {
+  var ret =
+    this._translate(messages, locale, this.fallbackLocale, key, host, 'raw', values);
+  if (this._isFallbackRoot(ret)) {
+    if ( true && !this._isSilentTranslationWarn(key)) {
+      warn(("Fall back to interpolate the keypath '" + key + "' with root locale."));
+    }
+    if (!this._root) { throw Error('unexpected error') }
+    return this._root.$i18n.i(key, locale, values)
+  } else {
+    return this._warnDefault(locale, key, ret, host, [values], 'raw')
+  }
+};
+
+VueI18n.prototype.i = function i (key, locale, values) {
+  /* istanbul ignore if */
+  if (!key) { return '' }
+
+  if (typeof locale !== 'string') {
+    locale = this.locale;
+  }
+
+  return this._i(key, locale, this._getMessages(), null, values)
+};
+
+VueI18n.prototype._tc = function _tc (
+  key,
+  _locale,
+  messages,
+  host,
+  choice
+) {
+    var ref;
+
+    var values = [], len = arguments.length - 5;
+    while ( len-- > 0 ) values[ len ] = arguments[ len + 5 ];
+  if (!key) { return '' }
+  if (choice === undefined) {
+    choice = 1;
+  }
+
+  var predefined = { 'count': choice, 'n': choice };
+  var parsedArgs = parseArgs.apply(void 0, values);
+  parsedArgs.params = Object.assign(predefined, parsedArgs.params);
+  values = parsedArgs.locale === null ? [parsedArgs.params] : [parsedArgs.locale, parsedArgs.params];
+  return this.fetchChoice((ref = this)._t.apply(ref, [ key, _locale, messages, host ].concat( values )), choice)
+};
+
+VueI18n.prototype.fetchChoice = function fetchChoice (message, choice) {
+  /* istanbul ignore if */
+  if (!message && typeof message !== 'string') { return null }
+  var choices = message.split('|');
+
+  choice = this.getChoiceIndex(choice, choices.length);
+  if (!choices[choice]) { return message }
+  return choices[choice].trim()
+};
+
+/**
+ * @param choice {number} a choice index given by the input to $tc: `$tc('path.to.rule', choiceIndex)`
+ * @param choicesLength {number} an overall amount of available choices
+ * @returns a final choice index
+*/
+VueI18n.prototype.getChoiceIndex = function getChoiceIndex (choice, choicesLength) {
+  // Default (old) getChoiceIndex implementation - english-compatible
+  var defaultImpl = function (_choice, _choicesLength) {
+    _choice = Math.abs(_choice);
+
+    if (_choicesLength === 2) {
+      return _choice
+        ? _choice > 1
+          ? 1
+          : 0
+        : 1
+    }
+
+    return _choice ? Math.min(_choice, 2) : 0
+  };
+
+  if (this.locale in this.pluralizationRules) {
+    return this.pluralizationRules[this.locale].apply(this, [choice, choicesLength])
+  } else {
+    return defaultImpl(choice, choicesLength)
+  }
+};
+
+VueI18n.prototype.tc = function tc (key, choice) {
+    var ref;
+
+    var values = [], len = arguments.length - 2;
+    while ( len-- > 0 ) values[ len ] = arguments[ len + 2 ];
+  return (ref = this)._tc.apply(ref, [ key, this.locale, this._getMessages(), null, choice ].concat( values ))
+};
+
+VueI18n.prototype._te = function _te (key, locale, messages) {
+    var args = [], len = arguments.length - 3;
+    while ( len-- > 0 ) args[ len ] = arguments[ len + 3 ];
+
+  var _locale = parseArgs.apply(void 0, args).locale || locale;
+  return this._exist(messages[_locale], key)
+};
+
+VueI18n.prototype.te = function te (key, locale) {
+  return this._te(key, this.locale, this._getMessages(), locale)
+};
+
+VueI18n.prototype.getLocaleMessage = function getLocaleMessage (locale) {
+  return looseClone(this._vm.messages[locale] || {})
+};
+
+VueI18n.prototype.setLocaleMessage = function setLocaleMessage (locale, message) {
+  if (this._warnHtmlInMessage === 'warn' || this._warnHtmlInMessage === 'error') {
+    this._checkLocaleMessage(locale, this._warnHtmlInMessage, message);
+  }
+  this._vm.$set(this._vm.messages, locale, message);
+};
+
+VueI18n.prototype.mergeLocaleMessage = function mergeLocaleMessage (locale, message) {
+  if (this._warnHtmlInMessage === 'warn' || this._warnHtmlInMessage === 'error') {
+    this._checkLocaleMessage(locale, this._warnHtmlInMessage, message);
+  }
+  this._vm.$set(this._vm.messages, locale, merge({}, this._vm.messages[locale] || {}, message));
+};
+
+VueI18n.prototype.getDateTimeFormat = function getDateTimeFormat (locale) {
+  return looseClone(this._vm.dateTimeFormats[locale] || {})
+};
+
+VueI18n.prototype.setDateTimeFormat = function setDateTimeFormat (locale, format) {
+  this._vm.$set(this._vm.dateTimeFormats, locale, format);
+  this._clearDateTimeFormat(locale, format);
+};
+
+VueI18n.prototype.mergeDateTimeFormat = function mergeDateTimeFormat (locale, format) {
+  this._vm.$set(this._vm.dateTimeFormats, locale, merge(this._vm.dateTimeFormats[locale] || {}, format));
+  this._clearDateTimeFormat(locale, format);
+};
+
+VueI18n.prototype._clearDateTimeFormat = function _clearDateTimeFormat (locale, format) {
+  for (var key in format) {
+    var id = locale + "__" + key;
+
+    if (!this._dateTimeFormatters.hasOwnProperty(id)) {
+      continue
+    }
+
+    delete this._dateTimeFormatters[id];
+  }
+};
+
+VueI18n.prototype._localizeDateTime = function _localizeDateTime (
+  value,
+  locale,
+  fallback,
+  dateTimeFormats,
+  key
+) {
+  var _locale = locale;
+  var formats = dateTimeFormats[_locale];
+
+  var chain = this._getLocaleChain(locale, fallback);
+  for (var i = 0; i < chain.length; i++) {
+    var current = _locale;
+    var step = chain[i];
+    formats = dateTimeFormats[step];
+    _locale = step;
+    // fallback locale
+    if (isNull(formats) || isNull(formats[key])) {
+      if (step !== locale && "development" !== 'production' && !this._isSilentTranslationWarn(key) && !this._isSilentFallbackWarn(key)) {
+        warn(("Fall back to '" + step + "' datetime formats from '" + current + "' datetime formats."));
+      }
+    } else {
+      break
+    }
+  }
+
+  if (isNull(formats) || isNull(formats[key])) {
+    return null
+  } else {
+    var format = formats[key];
+    var id = _locale + "__" + key;
+    var formatter = this._dateTimeFormatters[id];
+    if (!formatter) {
+      formatter = this._dateTimeFormatters[id] = new Intl.DateTimeFormat(_locale, format);
+    }
+    return formatter.format(value)
+  }
+};
+
+VueI18n.prototype._d = function _d (value, locale, key) {
+  /* istanbul ignore if */
+  if ( true && !VueI18n.availabilities.dateTimeFormat) {
+    warn('Cannot format a Date value due to not supported Intl.DateTimeFormat.');
+    return ''
+  }
+
+  if (!key) {
+    return new Intl.DateTimeFormat(locale).format(value)
+  }
+
+  var ret =
+    this._localizeDateTime(value, locale, this.fallbackLocale, this._getDateTimeFormats(), key);
+  if (this._isFallbackRoot(ret)) {
+    if ( true && !this._isSilentTranslationWarn(key) && !this._isSilentFallbackWarn(key)) {
+      warn(("Fall back to datetime localization of root: key '" + key + "'."));
+    }
+    /* istanbul ignore if */
+    if (!this._root) { throw Error('unexpected error') }
+    return this._root.$i18n.d(value, key, locale)
+  } else {
+    return ret || ''
+  }
+};
+
+VueI18n.prototype.d = function d (value) {
+    var args = [], len = arguments.length - 1;
+    while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+  var locale = this.locale;
+  var key = null;
+
+  if (args.length === 1) {
+    if (typeof args[0] === 'string') {
+      key = args[0];
+    } else if (isObject(args[0])) {
+      if (args[0].locale) {
+        locale = args[0].locale;
+      }
+      if (args[0].key) {
+        key = args[0].key;
+      }
+    }
+  } else if (args.length === 2) {
+    if (typeof args[0] === 'string') {
+      key = args[0];
+    }
+    if (typeof args[1] === 'string') {
+      locale = args[1];
+    }
+  }
+
+  return this._d(value, locale, key)
+};
+
+VueI18n.prototype.getNumberFormat = function getNumberFormat (locale) {
+  return looseClone(this._vm.numberFormats[locale] || {})
+};
+
+VueI18n.prototype.setNumberFormat = function setNumberFormat (locale, format) {
+  this._vm.$set(this._vm.numberFormats, locale, format);
+  this._clearNumberFormat(locale, format);
+};
+
+VueI18n.prototype.mergeNumberFormat = function mergeNumberFormat (locale, format) {
+  this._vm.$set(this._vm.numberFormats, locale, merge(this._vm.numberFormats[locale] || {}, format));
+  this._clearNumberFormat(locale, format);
+};
+
+VueI18n.prototype._clearNumberFormat = function _clearNumberFormat (locale, format) {
+  for (var key in format) {
+    var id = locale + "__" + key;
+
+    if (!this._numberFormatters.hasOwnProperty(id)) {
+      continue
+    }
+
+    delete this._numberFormatters[id];
+  }
+};
+
+VueI18n.prototype._getNumberFormatter = function _getNumberFormatter (
+  value,
+  locale,
+  fallback,
+  numberFormats,
+  key,
+  options
+) {
+  var _locale = locale;
+  var formats = numberFormats[_locale];
+
+  var chain = this._getLocaleChain(locale, fallback);
+  for (var i = 0; i < chain.length; i++) {
+    var current = _locale;
+    var step = chain[i];
+    formats = numberFormats[step];
+    _locale = step;
+    // fallback locale
+    if (isNull(formats) || isNull(formats[key])) {
+      if (step !== locale && "development" !== 'production' && !this._isSilentTranslationWarn(key) && !this._isSilentFallbackWarn(key)) {
+        warn(("Fall back to '" + step + "' number formats from '" + current + "' number formats."));
+      }
+    } else {
+      break
+    }
+  }
+
+  if (isNull(formats) || isNull(formats[key])) {
+    return null
+  } else {
+    var format = formats[key];
+
+    var formatter;
+    if (options) {
+      // If options specified - create one time number formatter
+      formatter = new Intl.NumberFormat(_locale, Object.assign({}, format, options));
+    } else {
+      var id = _locale + "__" + key;
+      formatter = this._numberFormatters[id];
+      if (!formatter) {
+        formatter = this._numberFormatters[id] = new Intl.NumberFormat(_locale, format);
+      }
+    }
+    return formatter
+  }
+};
+
+VueI18n.prototype._n = function _n (value, locale, key, options) {
+  /* istanbul ignore if */
+  if (!VueI18n.availabilities.numberFormat) {
+    if (true) {
+      warn('Cannot format a Number value due to not supported Intl.NumberFormat.');
+    }
+    return ''
+  }
+
+  if (!key) {
+    var nf = !options ? new Intl.NumberFormat(locale) : new Intl.NumberFormat(locale, options);
+    return nf.format(value)
+  }
+
+  var formatter = this._getNumberFormatter(value, locale, this.fallbackLocale, this._getNumberFormats(), key, options);
+  var ret = formatter && formatter.format(value);
+  if (this._isFallbackRoot(ret)) {
+    if ( true && !this._isSilentTranslationWarn(key) && !this._isSilentFallbackWarn(key)) {
+      warn(("Fall back to number localization of root: key '" + key + "'."));
+    }
+    /* istanbul ignore if */
+    if (!this._root) { throw Error('unexpected error') }
+    return this._root.$i18n.n(value, Object.assign({}, { key: key, locale: locale }, options))
+  } else {
+    return ret || ''
+  }
+};
+
+VueI18n.prototype.n = function n (value) {
+    var args = [], len = arguments.length - 1;
+    while ( len-- > 0 ) args[ len ] = arguments[ len + 1 ];
+
+  var locale = this.locale;
+  var key = null;
+  var options = null;
+
+  if (args.length === 1) {
+    if (typeof args[0] === 'string') {
+      key = args[0];
+    } else if (isObject(args[0])) {
+      if (args[0].locale) {
+        locale = args[0].locale;
+      }
+      if (args[0].key) {
+        key = args[0].key;
+      }
+
+      // Filter out number format options only
+      options = Object.keys(args[0]).reduce(function (acc, key) {
+          var obj;
+
+        if (includes(numberFormatKeys, key)) {
+          return Object.assign({}, acc, ( obj = {}, obj[key] = args[0][key], obj ))
+        }
+        return acc
+      }, null);
+    }
+  } else if (args.length === 2) {
+    if (typeof args[0] === 'string') {
+      key = args[0];
+    }
+    if (typeof args[1] === 'string') {
+      locale = args[1];
+    }
+  }
+
+  return this._n(value, locale, key, options)
+};
+
+VueI18n.prototype._ntp = function _ntp (value, locale, key, options) {
+  /* istanbul ignore if */
+  if (!VueI18n.availabilities.numberFormat) {
+    if (true) {
+      warn('Cannot format to parts a Number value due to not supported Intl.NumberFormat.');
+    }
+    return []
+  }
+
+  if (!key) {
+    var nf = !options ? new Intl.NumberFormat(locale) : new Intl.NumberFormat(locale, options);
+    return nf.formatToParts(value)
+  }
+
+  var formatter = this._getNumberFormatter(value, locale, this.fallbackLocale, this._getNumberFormats(), key, options);
+  var ret = formatter && formatter.formatToParts(value);
+  if (this._isFallbackRoot(ret)) {
+    if ( true && !this._isSilentTranslationWarn(key)) {
+      warn(("Fall back to format number to parts of root: key '" + key + "' ."));
+    }
+    /* istanbul ignore if */
+    if (!this._root) { throw Error('unexpected error') }
+    return this._root.$i18n._ntp(value, locale, key, options)
+  } else {
+    return ret || []
+  }
+};
+
+Object.defineProperties( VueI18n.prototype, prototypeAccessors );
+
+var availabilities;
+// $FlowFixMe
+Object.defineProperty(VueI18n, 'availabilities', {
+  get: function get () {
+    if (!availabilities) {
+      var intlDefined = typeof Intl !== 'undefined';
+      availabilities = {
+        dateTimeFormat: intlDefined && typeof Intl.DateTimeFormat !== 'undefined',
+        numberFormat: intlDefined && typeof Intl.NumberFormat !== 'undefined'
+      };
+    }
+
+    return availabilities
+  }
+});
+
+VueI18n.install = install;
+VueI18n.version = '8.17.4';
+
+/* harmony default export */ __webpack_exports__["default"] = (VueI18n);
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ConsultantComponent.vue?vue&type=template&id=4ec39da7&":
 /*!**********************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ConsultantComponent.vue?vue&type=template&id=4ec39da7& ***!
@@ -72778,9 +75547,11 @@ var render = function() {
   return _c("div", { staticClass: "full-chat-section d-flex" }, [
     _c(
       "div",
-      { staticClass: "chat-left d-flex flex-column" },
+      {
+        class: [_vm.is_chat && _vm.is_mobile ? "chat-left none" : "chat-left"]
+      },
       [
-        _c("h2", [_vm._v("My Customers")]),
+        _c("h2", [_vm._v(_vm._s(_vm.$t("member.my-sessions")))]),
         _vm._v(" "),
         _vm._l(_vm.customers, function(customer) {
           return _c(
@@ -72791,15 +75562,22 @@ var render = function() {
                 customer.id == _vm.current_customer.id
                   ? "chat-model d-flex active"
                   : "chat-model d-flex"
-              ]
+              ],
+              on: {
+                click: function($event) {
+                  return _vm.checkChannel(customer)
+                }
+              }
             },
             [
               _c("div", { staticClass: "chat-icon" }, [
-                customer.prof_image != "" && customer.prof_image != undefined
+                customer.profile != null &&
+                customer.profile.avatar != "" &&
+                customer.profile.avatar != undefined
                   ? _c("img", {
-                      attrs: { src: customer.prof_image, alt: "no-image" }
+                      attrs: { src: customer.profile.avatar, alt: "no-image" }
                     })
-                  : _c("b", [
+                  : _c("label", [
                       _vm._v(
                         _vm._s(customer.user.first_name[0]) +
                           _vm._s(customer.user.last_name[0])
@@ -72819,17 +75597,22 @@ var render = function() {
                   ]
                 },
                 [
-                  _c("b", [
+                  _c("label", [
                     _vm._v(
-                      _vm._s(customer.user.first_name) +
+                      "\n          " +
+                        _vm._s(customer.user.first_name) +
                         " " +
                         _vm._s(customer.user.last_name) +
-                        " "
+                        "\n          "
                     ),
                     _c("span", [_vm._v(_vm._s(customer.user.status))])
                   ]),
                   _vm._v(" "),
-                  _c("legend", [_vm._v(_vm._s(customer.industry_expertise))]),
+                  customer.profile && customer.profile.profession
+                    ? _c("legend", [
+                        _vm._v(_vm._s(customer.profile.profession))
+                      ])
+                    : _vm._e(),
                   _vm._v(" "),
                   _c("p", [_vm._v("Lorem Ipsum er rett og slett dummy")]),
                   _vm._v(" "),
@@ -72843,97 +75626,246 @@ var render = function() {
       2
     ),
     _vm._v(" "),
-    _c("div", { class: [!_vm.is_chat ? "select-box" : "select-box none"] }, [
-      _vm._m(0)
-    ]),
+    _c(
+      "div",
+      {
+        class: [
+          !_vm.is_chat && !_vm.is_mobile ? "select-box" : "select-box none"
+        ]
+      },
+      [
+        _c("div", { staticClass: "step" }, [
+          _c("img", { attrs: { src: "/images/chat.png", alt: "no-image" } }),
+          _vm._v(" "),
+          _c("label", [_vm._v(_vm._s(_vm.$t("member.no-customers")))]),
+          _vm._v(" "),
+          _c("p", { staticClass: "text" }, [
+            _vm._v(_vm._s(_vm.$t("member.no-customers-des")))
+          ])
+        ])
+      ]
+    ),
     _vm._v(" "),
     _c("div", { class: [_vm.is_chat ? "chat-room" : "chat-room none"] }, [
-      _c("div", { staticClass: "chat-right d-flex flex-column" }, [
-        _vm._m(1),
+      _c("div", { staticClass: "chat-right" }, [
+        _c("div", { staticClass: "chat-profile d-flex flex-wrap" }, [
+          _c("div", { staticClass: "end-chat-right d-flex" }, [
+            _c("div", { staticClass: "mr-3 d-flex" }, [
+              _c("img", { attrs: { src: "/images/timer.svg" } }),
+              _vm._v(" "),
+              _c("p", { staticClass: "m-0 pl-1" }, [
+                _c("b", [_vm._v(_vm._s(_vm.toHHMMSS(_vm.time_clock)))])
+              ])
+            ]),
+            _vm._v(" "),
+            _c("button", { staticClass: "btn" }, [
+              _vm._v(_vm._s(_vm.$t("member.end_session")))
+            ])
+          ])
+        ]),
         _vm._v(" "),
         _c(
           "div",
-          {
-            staticClass: "chat-history d-flex flex-column",
-            attrs: { id: "scroll-view" }
-          },
-          _vm._l(_vm.messages, function(message, index) {
-            return _c("div", { key: message.index, staticClass: "chat-list" }, [
-              (_vm.messages[index + 1] &&
-                _vm.messages[index + 1].timestamp.toDateString() !=
-                  message.timestamp.toDateString() &&
-                _vm.messages[0].timestamp.toDateString() !=
-                  message.timestamp.toDateString()) ||
-              index == 0
+          { staticClass: "chat-history", attrs: { id: "scroll-view" } },
+          [
+            _vm._l(_vm.messages, function(message, index) {
+              return _c(
+                "div",
+                { key: message.index, staticClass: "chat-list" },
+                [
+                  index == 0
+                    ? _c("div", { staticClass: "date-separate" }, [
+                        _c("legend", [
+                          _c("span", [
+                            _vm._v(
+                              _vm._s(
+                                message.timestamp.toDateString() == _vm.today
+                                  ? "Today"
+                                  : message.timestamp.toDateString()
+                              )
+                            )
+                          ])
+                        ])
+                      ])
+                    : index > 0 &&
+                      _vm.messages[index - 1].timestamp.toDateString() !==
+                        message.timestamp.toDateString()
+                    ? _c("div", { staticClass: "date-separate" }, [
+                        _c("legend", [
+                          _c("span", [
+                            _vm._v(
+                              _vm._s(
+                                message.timestamp.toDateString() == _vm.today
+                                  ? "Today"
+                                  : message.timestamp.toDateString()
+                              )
+                            )
+                          ])
+                        ])
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  message.author === _vm.authUser.email
+                    ? _c("div", { staticClass: "self" }, [
+                        _c("label", [
+                          _vm._v(_vm._s(message.timestamp.toLocaleTimeString()))
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "identity" }, [
+                          _c("p", [_vm._v(_vm._s(message.body))]),
+                          _vm._v(" "),
+                          _vm.authConsultant.profile &&
+                          _vm.authConsultant.profile.avatar != ""
+                            ? _c("img", {
+                                attrs: {
+                                  src: _vm.authConsultant.profile.avatar,
+                                  alt: "no-image"
+                                }
+                              })
+                            : _c("b", [
+                                _vm._v(
+                                  _vm._s(_vm.authUser.first_name[0]) +
+                                    _vm._s(_vm.authUser.last_name[0])
+                                )
+                              ])
+                        ])
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  message.author != _vm.authUser.email
+                    ? _c("div", { staticClass: "other" }, [
+                        _c("label", [
+                          _vm._v(_vm._s(message.timestamp.toLocaleTimeString()))
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "identity" }, [
+                          _vm.current_customer.profile &&
+                          _vm.current_customer.profile.avatar != ""
+                            ? _c("img", {
+                                attrs: {
+                                  src: _vm.current_customer.profile.avatar,
+                                  alt: "no-image"
+                                }
+                              })
+                            : _vm.current_customer.user
+                            ? _c("b", [
+                                _vm._v(
+                                  _vm._s(
+                                    _vm.current_customer.user.first_name[0]
+                                  ) +
+                                    _vm._s(
+                                      _vm.current_customer.user.last_name[0]
+                                    )
+                                )
+                              ])
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _c("p", [_vm._v(_vm._s(message.body))])
+                        ])
+                      ])
+                    : _vm._e()
+                ]
+              )
+            }),
+            _vm._v(" "),
+            _c("div", { staticClass: "rate-session" }, [
+              _vm.time_clock <= 15 && _vm.time_clock > 0
                 ? _c("div", { staticClass: "date-separate" }, [
                     _c("legend", [
                       _c("span", [
-                        _vm._v(
-                          _vm._s(
-                            message.timestamp.toDateString() == _vm.today
-                              ? "Today"
-                              : message.timestamp.toDateString()
-                          )
-                        )
+                        _vm._v(_vm._s(_vm.$t("member.session-end-alert")))
                       ])
                     ])
                   ])
                 : _vm._e(),
               _vm._v(" "),
-              message.author === _vm.authUser.email
-                ? _c("div", { staticClass: "self" }, [
-                    _c("label", [
-                      _vm._v(_vm._s(message.timestamp.toLocaleTimeString()))
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "identity" }, [
-                      _c("p", [_vm._v(_vm._s(message.body) + " ")]),
-                      _vm._v(" "),
-                      _vm.authConsultant.prof_image != ""
-                        ? _c("img", {
-                            attrs: {
-                              src: _vm.authConsultant.prof_image,
-                              alt: "no-image"
-                            }
-                          })
-                        : _c("b", [
-                            _vm._v(
-                              _vm._s(_vm.authUser.first_name[0]) +
-                                _vm._s(_vm.authUser.last_name[0])
-                            )
-                          ])
+              _vm.time_clock == 0
+                ? _c("div", { staticClass: "date-separate" }, [
+                    _c("legend", [
+                      _c("span", [_vm._v(_vm._s(_vm.$t("member.chat-end")))])
                     ])
                   ])
                 : _vm._e(),
               _vm._v(" "),
-              message.author != _vm.authUser.email
-                ? _c("div", { staticClass: "other" }, [
-                    _c("label", [
-                      _vm._v(_vm._s(message.timestamp.toLocaleTimeString()))
-                    ]),
+              _vm.time_clock == 0
+                ? _c("div", { staticClass: "end-session" }, [
+                    _vm.current_customer.profile &&
+                    _vm.current_customer.profile.avatar != ""
+                      ? _c("img", {
+                          staticClass: "avatar",
+                          attrs: {
+                            src: _vm.current_customer.profile.avatar,
+                            alt: "no-image"
+                          }
+                        })
+                      : _vm._e(),
                     _vm._v(" "),
-                    _c("div", { staticClass: "identity" }, [
-                      _vm.current_customer.prof_image != ""
-                        ? _c("img", {
-                            attrs: {
-                              src: _vm.current_customer.prof_image,
-                              alt: "no-image"
-                            }
-                          })
-                        : _c("b", [
-                            _vm._v(
-                              _vm._s(_vm.current_customer.user.first_name[0]) +
-                                _vm._s(_vm.current_customer.user.last_name[0])
-                            )
-                          ]),
-                      _vm._v(" "),
-                      _c("p", [_vm._v(_vm._s(message.body) + " ")])
-                    ])
+                    _vm.isSessionEnded
+                      ? _c(
+                          "div",
+                          { staticClass: "review-sec" },
+                          [
+                            _c("h2", [
+                              _vm._v(_vm._s(_vm.$t("member.rate-session")))
+                            ]),
+                            _vm._v(" "),
+                            _c("vue-start-rate", {
+                              attrs: { "font-size": "30px", type: "star1" },
+                              model: {
+                                value: _vm.rate,
+                                callback: function($$v) {
+                                  _vm.rate = $$v
+                                },
+                                expression: "rate"
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("textarea", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.review_des,
+                                  expression: "review_des"
+                                }
+                              ],
+                              attrs: {
+                                placeholder: _vm.$t("member.write-review-msg")
+                              },
+                              domProps: { value: _vm.review_des },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.review_des = $event.target.value
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "btn-group" }, [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-review",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.submitReview()
+                                    }
+                                  }
+                                },
+                                [_vm._v(_vm._s(_vm.$t("member.submit-review")))]
+                              )
+                            ])
+                          ],
+                          1
+                        )
+                      : _vm._e()
                   ])
                 : _vm._e()
             ])
-          }),
-          0
+          ],
+          2
         ),
         _vm._v(" "),
         _c("div", { staticClass: "write-text d-flex flex-column" }, [
@@ -72947,7 +75879,10 @@ var render = function() {
                   expression: "newMessage"
                 }
               ],
-              attrs: { type: "text", placeholder: "Write message here...." },
+              attrs: {
+                type: "text",
+                placeholder: _vm.$t("member.write-message")
+              },
               domProps: { value: _vm.newMessage },
               on: {
                 keyup: function($event) {
@@ -72980,7 +75915,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("Send")]
+              [_vm._v(_vm._s(_vm.$t("member.send")))]
             ),
             _vm._v(" "),
             _c("input", {
@@ -72993,7 +75928,7 @@ var render = function() {
             }),
             _vm._v(" "),
             _c("label", { attrs: { id: "sms", for: "fruit1" } }, [
-              _vm._v("SMS")
+              _vm._v(_vm._s(_vm.$t("member.sms")))
             ]),
             _vm._v(" "),
             _c("input", {
@@ -73006,7 +75941,7 @@ var render = function() {
             }),
             _vm._v(" "),
             _c("label", { attrs: { id: "inapp", for: "fruit4" } }, [
-              _vm._v("In App")
+              _vm._v(_vm._s(_vm.$t("member.in_app")))
             ])
           ])
         ])
@@ -73030,7 +75965,7 @@ var render = function() {
       [
         _c("div", { staticClass: "modal-wrapper" }, [
           _c("div", { staticClass: "modal-container" }, [
-            _vm._m(2),
+            _vm._m(0),
             _vm._v(" "),
             _c("div", { staticClass: "modal-body" }, [
               _vm.incoming_user.prof_image != "" &&
@@ -73044,7 +75979,11 @@ var render = function() {
                 : _c("img", { attrs: { src: "/images/home/person.png" } }),
               _vm._v(" "),
               _c("p", [
-                _vm._v("Incoming call from " + _vm._s(_vm.incoming_user.name))
+                _vm._v(
+                  _vm._s(_vm.$t("member.incoming-call")) +
+                    " " +
+                    _vm._s(_vm.incoming_user.name)
+                )
               ])
             ]),
             _vm._v(" "),
@@ -73079,7 +76018,7 @@ var render = function() {
       [
         _c("div", { staticClass: "modal-wrapper" }, [
           _c("div", { staticClass: "modal-container" }, [
-            _vm._m(3),
+            _vm._m(1),
             _vm._v(" "),
             _c("div", { staticClass: "modal-body" }, [
               _vm.incoming_user.prof_image != "" &&
@@ -73094,7 +76033,9 @@ var render = function() {
               _vm._v(" "),
               _c("p", [
                 _vm._v(
-                  "Incoming video call from " + _vm._s(_vm.incoming_user.name)
+                  _vm._s(_vm.$t("member.incoming-video")) +
+                    " " +
+                    _vm._s(_vm.incoming_user.name)
                 )
               ])
             ]),
@@ -73130,7 +76071,7 @@ var render = function() {
       [
         _c("div", { staticClass: "modal-wrapper" }, [
           _c("div", { staticClass: "modal-container" }, [
-            _vm._m(4),
+            _vm._m(2),
             _vm._v(" "),
             _c("div", { staticClass: "modal-body" }, [
               _c("div", { ref: "video_tag", staticClass: "main" }),
@@ -73167,7 +76108,7 @@ var render = function() {
       [
         _c("div", { staticClass: "modal-wrapper" }, [
           _c("div", { staticClass: "modal-container" }, [
-            _vm._m(5),
+            _vm._m(3),
             _vm._v(" "),
             _c("div", { staticClass: "modal-body" }, [
               _vm.incoming_user.prof_image != "" &&
@@ -73182,7 +76123,15 @@ var render = function() {
               _vm._v(" "),
               _c("p", [
                 _vm._v(
-                  "Incoming chat request from " + _vm._s(_vm.incoming_user.name)
+                  "\n            " +
+                    _vm._s(_vm.$t("member.incoming-chat")) +
+                    "\n            "
+                ),
+                _c("br"),
+                _vm._v(
+                  "\n            " +
+                    _vm._s(_vm.incoming_user.name) +
+                    "\n          "
                 )
               ])
             ]),
@@ -73221,32 +76170,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "step" }, [
-      _c("img", { attrs: { src: "/images/chat.png", alt: "no-image" } }),
-      _vm._v(" "),
-      _c("p", [_c("b", [_vm._v("No customers selected.")])]),
-      _vm._v(" "),
-      _c("p", { staticClass: "text" }, [
-        _vm._v(
-          "Select a customer you would like to chat, voice or video call with."
-        )
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "chat-profile d-flex flex-wrap" }, [
-      _c("div", { staticClass: "end-chat-right d-flex" }, [
-        _c("button", { staticClass: "btn" }, [_vm._v("End Session")])
-      ])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -73332,9 +76255,13 @@ var render = function() {
   return _c("div", { staticClass: "full-chat-section d-flex" }, [
     _c(
       "div",
-      { staticClass: "chat-left d-flex flex-column" },
+      {
+        class: [
+          _vm.is_selected && _vm.is_mobile ? "chat-left none" : "chat-left"
+        ]
+      },
       [
-        _c("h2", [_vm._v("My Consultants")]),
+        _c("h2", [_vm._v(_vm._s(_vm.$t("member.my-sessions")))]),
         _vm._v(" "),
         _vm._l(_vm.consultants, function(consultant) {
           return _c(
@@ -73354,11 +76281,11 @@ var render = function() {
             },
             [
               _c("div", { staticClass: "chat-icon" }, [
-                consultant.prof_image != ""
+                consultant.profile && consultant.profile.avatar != ""
                   ? _c("img", {
-                      attrs: { src: consultant.prof_image, alt: "no-image" }
+                      attrs: { src: consultant.profile.avatar, alt: "no-image" }
                     })
-                  : _c("b", [
+                  : _c("label", [
                       _vm._v(
                         _vm._s(consultant.user.first_name[0]) +
                           _vm._s(consultant.user.last_name[0])
@@ -73378,17 +76305,22 @@ var render = function() {
                   ]
                 },
                 [
-                  _c("b", [
+                  _c("label", [
                     _vm._v(
-                      _vm._s(consultant.user.first_name) +
+                      "\n          " +
+                        _vm._s(consultant.user.first_name) +
                         " " +
                         _vm._s(consultant.user.last_name) +
-                        " "
+                        "\n          "
                     ),
                     _c("span", [_vm._v(_vm._s(consultant.user.status))])
                   ]),
                   _vm._v(" "),
-                  _c("legend", [_vm._v(_vm._s(consultant.industry_expertise))]),
+                  consultant.profile && consultant.profile.profession
+                    ? _c("legend", [
+                        _vm._v(_vm._s(consultant.profile.profession))
+                      ])
+                    : _vm._e(),
                   _vm._v(" "),
                   _c("p", [_vm._v("Lorem Ipsum er rett og slett dummy")]),
                   _vm._v(" "),
@@ -73402,225 +76334,786 @@ var render = function() {
       2
     ),
     _vm._v(" "),
-    _c("div", { class: [!_vm.is_chat ? "select-box" : "select-box none"] }, [
-      !_vm.is_selected && _vm.step == "step0"
-        ? _c("div", { staticClass: "step" }, [
-            _c("img", { attrs: { src: "/images/chat.png", alt: "no-image" } }),
-            _vm._v(" "),
-            _vm._m(0),
-            _vm._v(" "),
-            _c("p", { staticClass: "text" }, [
-              _vm._v(
-                "Select a consultant you would like to chat, voice or video call with."
-              )
-            ])
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.is_selected && _vm.step == "step1"
-        ? _c("div", { staticClass: "step" }, [
-            _c("img", { attrs: { src: "/images/like.png", alt: "no-image" } }),
-            _vm._v(" "),
-            _c("p", [
-              _c("b", [
-                _vm._v(
-                  "You have selected " +
-                    _vm._s(_vm.current_consultant.user.first_name) +
-                    "."
-                )
-              ])
-            ]),
-            _vm._v(" "),
-            _c("p", [
-              _vm._v("Let's get started with chat, voice or video call.")
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "button-group" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "btn",
-                  attrs: {
-                    disabled: _vm.current_consultant.user.status != "Available"
-                  }
-                },
-                [
-                  _c("img", {
-                    attrs: {
-                      src: [
-                        _vm.current_consultant.user.status == "Available"
-                          ? "/images/home/ph.png"
-                          : _vm.current_consultant.user.status == "In a call"
-                          ? "/images/home/ph-y.png"
-                          : "/images/home/ph-g.png"
-                      ],
-                      alt: "no-img"
-                    },
-                    on: {
-                      click: function($event) {
-                        return _vm.Step2("voice")
-                      }
-                    }
-                  })
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-mid",
-                  attrs: {
-                    disabled: _vm.current_consultant.user.status != "Available"
-                  }
-                },
-                [
-                  _c("img", {
-                    attrs: {
-                      src: [
-                        _vm.current_consultant.user.status == "Available"
-                          ? "/images/home/video.png"
-                          : _vm.current_consultant.user.status == "In a call"
-                          ? "/images/home/video-y.png"
-                          : "/images/home/video-g.png"
-                      ],
-                      alt: "no-img"
-                    },
-                    on: {
-                      click: function($event) {
-                        return _vm.Step2("video")
-                      }
-                    }
-                  })
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn",
-                  attrs: {
-                    disabled: _vm.current_consultant.user.status != "Available"
-                  }
-                },
-                [
-                  _c("img", {
-                    attrs: {
-                      src: [
-                        _vm.current_consultant.user.status == "Available"
-                          ? "/images/home/msg.png"
-                          : _vm.current_consultant.user.status == "In a call"
-                          ? "/images/home/msg-y.png"
-                          : "/images/home/msg-g.png"
-                      ],
-                      alt: "no-img"
-                    },
-                    on: {
-                      click: function($event) {
-                        return _vm.Step2("chat")
-                      }
-                    }
-                  })
-                ]
-              )
-            ])
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      _vm.is_selected && _vm.step == "step2"
-        ? _c("div", { staticClass: "step" }, [
-            _c("img", {
-              attrs: { src: "/images/credit-card.png", alt: "no-image" }
-            }),
-            _vm._v(" "),
-            _c("p", [
-              _c("b", [
-                _vm._v(
-                  "Your account balance is " +
-                    _vm._s(_vm.authUser.balance) +
-                    " kr."
-                )
-              ])
-            ]),
-            _vm._v(" "),
-            _c("p", [_vm._v("How many minutes do you want to use?")]),
-            _vm._v(" "),
-            _c("div", { staticClass: "input-box" }, [
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.minute,
-                    expression: "minute"
-                  }
-                ],
-                attrs: { type: "text" },
-                domProps: { value: _vm.minute },
-                on: {
-                  change: _vm.minuteChange,
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.minute = $event.target.value
-                  }
-                }
+    _c(
+      "div",
+      {
+        class: [
+          _vm.is_mobile && _vm.is_selected && !_vm.is_chat
+            ? "select-box"
+            : !_vm.is_chat && !_vm.is_mobile
+            ? "select-box"
+            : "select-box none"
+        ]
+      },
+      [
+        !_vm.is_selected && _vm.step == "step0"
+          ? _c("div", { staticClass: "step" }, [
+              _c("img", {
+                attrs: { src: "/images/chat.png", alt: "no-image" }
               }),
               _vm._v(" "),
-              _c("label", [_vm._v("min")])
-            ]),
-            _vm._v(" "),
-            _c("p", [
-              _vm._v("Total cost: "),
-              _c("b", [_vm._v(_vm._s(_vm.cost) + " kr")])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "button-group column" }, [
+              _c("label", [
+                _vm._v(
+                  "\n        " +
+                    _vm._s(_vm.$t("member.no-consultants")) +
+                    "\n      "
+                )
+              ]),
+              _vm._v(" "),
+              _c("p", { staticClass: "text" }, [
+                _vm._v(_vm._s(_vm.$t("member.no-consultants-des")))
+              ])
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.is_selected && _vm.step == "step1"
+          ? _c("div", { staticClass: "step" }, [
+              !_vm.is_mobile
+                ? _c("div", { staticClass: "desktop-session" }, [
+                    _c("img", {
+                      attrs: { src: "/images/like.png", alt: "no-image" }
+                    }),
+                    _vm._v(" "),
+                    _c("label", [
+                      _vm._v(
+                        _vm._s(_vm.$t("member.selected")) +
+                          " " +
+                          _vm._s(_vm.current_consultant.user.first_name) +
+                          "."
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("p", [_vm._v(_vm._s(_vm.$t("member.selected-des")))]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "button-group" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn",
+                          attrs: {
+                            disabled:
+                              _vm.current_consultant.user.status != "Available"
+                          }
+                        },
+                        [
+                          _c("img", {
+                            attrs: {
+                              src: [
+                                _vm.current_consultant.user.status ==
+                                "Available"
+                                  ? "/images/home/ph.png"
+                                  : _vm.current_consultant.user.status ==
+                                    "In a call"
+                                  ? "/images/home/ph-y.png"
+                                  : "/images/home/ph-g.png"
+                              ],
+                              alt: "no-img"
+                            },
+                            on: {
+                              click: function($event) {
+                                return _vm.Step2("voice")
+                              }
+                            }
+                          })
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-mid",
+                          attrs: {
+                            disabled:
+                              _vm.current_consultant.user.status != "Available"
+                          }
+                        },
+                        [
+                          _c("img", {
+                            attrs: {
+                              src: [
+                                _vm.current_consultant.user.status ==
+                                "Available"
+                                  ? "/images/home/video.png"
+                                  : _vm.current_consultant.user.status ==
+                                    "In a call"
+                                  ? "/images/home/video-y.png"
+                                  : "/images/home/video-g.png"
+                              ],
+                              alt: "no-img"
+                            },
+                            on: {
+                              click: function($event) {
+                                return _vm.Step2("video")
+                              }
+                            }
+                          })
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn",
+                          attrs: {
+                            disabled:
+                              _vm.current_consultant.user.status != "Available"
+                          }
+                        },
+                        [
+                          _c("img", {
+                            attrs: {
+                              src: [
+                                _vm.current_consultant.user.status ==
+                                "Available"
+                                  ? "/images/home/msg.png"
+                                  : _vm.current_consultant.user.status ==
+                                    "In a call"
+                                  ? "/images/home/msg-y.png"
+                                  : "/images/home/msg-g.png"
+                              ],
+                              alt: "no-img"
+                            },
+                            on: {
+                              click: function($event) {
+                                return _vm.Step2("chat")
+                              }
+                            }
+                          })
+                        ]
+                      )
+                    ])
+                  ])
+                : _c("div", { staticClass: "mobile-session" }, [
+                    _c("h2", [_vm._v(_vm._s(_vm.$t("member.start-session")))]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        class: [
+                          _vm.current_consultant.user.status == "Available"
+                            ? "rate-session chat-setting"
+                            : _vm.current_consultant.user.status == "Offline"
+                            ? "rate-session offline"
+                            : "rate-session in-call"
+                        ]
+                      },
+                      [
+                        _vm.current_consultant.profile &&
+                        _vm.current_consultant.profile.avatar != ""
+                          ? _c("img", {
+                              staticClass: "avatar",
+                              attrs: {
+                                src: _vm.current_consultant.profile.avatar,
+                                alt: "no-image"
+                              }
+                            })
+                          : _c("b", [
+                              _vm._v(
+                                _vm._s(
+                                  _vm.current_consultant.user.first_name[0]
+                                ) +
+                                  _vm._s(
+                                    _vm.current_consultant.user.last_name[0]
+                                  )
+                              )
+                            ]),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "mobile-prev-step",
+                            on: {
+                              click: function($event) {
+                                return _vm.mobilePrevStep()
+                              }
+                            }
+                          },
+                          [
+                            _c("i", {
+                              staticClass: "fa fa-chevron-left",
+                              attrs: { "aria-hidden": "true" }
+                            })
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "span",
+                          {
+                            class: [
+                              _vm.current_consultant.user.status == "Available"
+                                ? "absol-span Available"
+                                : _vm.current_consultant.user.status ==
+                                  "Offline"
+                                ? "absol-span Offline"
+                                : "absol-span in-call"
+                            ]
+                          },
+                          [_vm._v("•")]
+                        ),
+                        _vm._v(" "),
+                        _vm.current_consultant.profile &&
+                        _vm.current_consultant.profile.profession
+                          ? _c("p", [
+                              _vm._v(
+                                _vm._s(
+                                  _vm.current_consultant.profile.profession
+                                )
+                              )
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c("label", [
+                          _vm._v(
+                            _vm._s(_vm.current_consultant.user.first_name) +
+                              " " +
+                              _vm._s(_vm.current_consultant.user.last_name)
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("small", [
+                          _vm._v(
+                            _vm._s(_vm.current_consultant.hourly_rate) +
+                              " kr p/m"
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _vm.current_consultant.rate >= 4.5
+                          ? _c("div", { staticClass: "rate-stars" }, [
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-dg.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-dg.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-dg.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-dg.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-dg.png",
+                                  alt: "no-image"
+                                }
+                              })
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.current_consultant.rate >= 3.5 &&
+                        _vm.current_consultant.rate < 4.5
+                          ? _c("div", { staticClass: "rate-stars" }, [
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-g.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-g.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-g.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-g.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-w.png",
+                                  alt: "no-image"
+                                }
+                              })
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.current_consultant.rate >= 2.5 &&
+                        _vm.current_consultant.rate < 3.5
+                          ? _c("div", { staticClass: "rate-stars" }, [
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-y.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-y.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-y.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-w.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-w.png",
+                                  alt: "no-image"
+                                }
+                              })
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.current_consultant.rate >= 1.5 &&
+                        _vm.current_consultant.rate < 2.5
+                          ? _c("div", { staticClass: "rate-stars" }, [
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-o.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-o.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-w.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-w.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-w.png",
+                                  alt: "no-image"
+                                }
+                              })
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.current_consultant.rate >= 0.5 &&
+                        _vm.current_consultant.rate < 1.5
+                          ? _c("div", { staticClass: "rate-stars" }, [
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-r.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-w.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-w.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-w.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-w.png",
+                                  alt: "no-image"
+                                }
+                              })
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _vm.current_consultant.rate < 0.5
+                          ? _c("div", { staticClass: "rate-stars" }, [
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-w.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-w.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-w.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-w.png",
+                                  alt: "no-image"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("img", {
+                                attrs: {
+                                  src: "/images/home/star-w.png",
+                                  alt: "no-image"
+                                }
+                              })
+                            ])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "button-group" }, [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn",
+                              attrs: {
+                                disabled:
+                                  _vm.current_consultant.user.status !=
+                                  "Available"
+                              }
+                            },
+                            [
+                              _c("img", {
+                                attrs: {
+                                  src: [
+                                    _vm.current_consultant.user.status ==
+                                    "Available"
+                                      ? "/images/home/ph.png"
+                                      : _vm.current_consultant.user.status ==
+                                        "In a call"
+                                      ? "/images/home/ph-y.png"
+                                      : "/images/home/ph-g.png"
+                                  ],
+                                  alt: "no-img"
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.Step2("voice")
+                                  }
+                                }
+                              })
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-mid",
+                              attrs: {
+                                disabled:
+                                  _vm.current_consultant.user.status !=
+                                  "Available"
+                              }
+                            },
+                            [
+                              _c("img", {
+                                attrs: {
+                                  src: [
+                                    _vm.current_consultant.user.status ==
+                                    "Available"
+                                      ? "/images/home/video.png"
+                                      : _vm.current_consultant.user.status ==
+                                        "In a call"
+                                      ? "/images/home/video-y.png"
+                                      : "/images/home/video-g.png"
+                                  ],
+                                  alt: "no-img"
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.Step2("video")
+                                  }
+                                }
+                              })
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn",
+                              attrs: {
+                                disabled:
+                                  _vm.current_consultant.user.status !=
+                                  "Available"
+                              }
+                            },
+                            [
+                              _c("img", {
+                                attrs: {
+                                  src: [
+                                    _vm.current_consultant.user.status ==
+                                    "Available"
+                                      ? "/images/home/msg.png"
+                                      : _vm.current_consultant.user.status ==
+                                        "In a call"
+                                      ? "/images/home/msg-y.png"
+                                      : "/images/home/msg-g.png"
+                                  ],
+                                  alt: "no-img"
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.Step2("chat")
+                                  }
+                                }
+                              })
+                            ]
+                          )
+                        ])
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "chat-records" }, [
+                      _c("div", { staticClass: "records-left" }, [
+                        _c("label", [
+                          _vm._v(
+                            _vm._s(
+                              _vm.current_consultant.completed_sessions > 0
+                                ? _vm.current_consultant.completed_sessions
+                                : 0
+                            )
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("span", [_vm._v(_vm._s(_vm.$t("member.sessions")))])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "records-right" }, [
+                        _c("label", [_vm._v("30 min")]),
+                        _vm._v(" "),
+                        _c("span", [
+                          _vm._v(_vm._s(_vm.$t("member.last-online")))
+                        ])
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "chat-drop" }, [
+                      _c(
+                        "select",
+                        { attrs: { id: "selected-details", name: "details" } },
+                        [
+                          _c(
+                            "option",
+                            { attrs: { disabled: "", selected: "" } },
+                            [_vm._v(_vm._s(_vm.$t("member.details")))]
+                          ),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "link1" } }, [
+                            _vm._v("Link 1")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "link2" } }, [
+                            _vm._v("Link 2")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "link3" } }, [
+                            _vm._v("Link 3")
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "select",
+                        { attrs: { id: "selected-ratings", name: "ratings" } },
+                        [
+                          _c(
+                            "option",
+                            { attrs: { disabled: "", selected: "" } },
+                            [_vm._v(_vm._s(_vm.$t("member.ratings")))]
+                          ),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "link1" } }, [
+                            _vm._v("Link 1")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "link2" } }, [
+                            _vm._v("Link 2")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "link3" } }, [
+                            _vm._v("Link 3")
+                          ])
+                        ]
+                      )
+                    ])
+                  ])
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.is_selected && _vm.step == "step2"
+          ? _c("div", { staticClass: "step" }, [
+              _c("img", {
+                attrs: { src: "/images/credit-card.png", alt: "no-image" }
+              }),
+              _vm._v(" "),
+              _c("p", [
+                _c("b", [
+                  _vm._v(
+                    _vm._s(_vm.$t("member.account-balance")) +
+                      " " +
+                      _vm._s(_vm.authCustomer.user.balance) +
+                      " kr."
+                  )
+                ])
+              ]),
+              _vm._v(" "),
+              _c("p", [
+                _vm._v(_vm._s(_vm.$t("member.balance-charge-question")))
+              ]),
+              _vm._v(" "),
               _c(
-                "button",
+                "div",
                 {
-                  staticClass: "btn btn-green-gradient",
-                  attrs: { disabled: _vm.authUser.balance == 0 },
-                  on: {
-                    click: function($event) {
-                      return _vm.startMethod()
-                    }
-                  }
+                  class: [
+                    _vm.$v.form.$error ? "hasError input-box" : "input-box"
+                  ]
                 },
                 [
-                  _vm._v(
-                    _vm._s(
-                      _vm.selected_type == "voice"
-                        ? "Start Call"
-                        : _vm.selected_type == "video"
-                        ? "Start Video Call"
-                        : "Start Conversation"
-                    )
-                  )
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.minute,
+                        expression: "form.minute"
+                      }
+                    ],
+                    attrs: { type: "text" },
+                    domProps: { value: _vm.form.minute },
+                    on: {
+                      change: _vm.minuteChange,
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.form, "minute", $event.target.value)
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("label", [_vm._v("min")])
                 ]
               ),
               _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-grey",
-                  on: {
-                    click: function($event) {
-                      return _vm.goBack()
+              _c("p", [
+                _vm._v(
+                  "\n        " +
+                    _vm._s(_vm.$t("member.total-cost")) +
+                    ":\n        "
+                ),
+                _c("b", [_vm._v(_vm._s(_vm.cost) + " kr")])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "button-group column" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-green-gradient",
+                    attrs: { disabled: _vm.authCustomer.user.balance == 0 },
+                    on: {
+                      click: function($event) {
+                        return _vm.startMethod()
+                      }
                     }
-                  }
-                },
-                [_vm._v("Go Back")]
-              )
+                  },
+                  [
+                    _vm._v(
+                      _vm._s(
+                        _vm.selected_type == "voice"
+                          ? _vm.$t("member.start-call")
+                          : _vm.selected_type == "video"
+                          ? _vm.$t("member.start-video-call")
+                          : _vm.$t("member.start-conversation")
+                      )
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-grey",
+                    on: {
+                      click: function($event) {
+                        return _vm.goBack()
+                      }
+                    }
+                  },
+                  [_vm._v(_vm._s(_vm.$t("member.btn-go-back")))]
+                )
+              ])
             ])
-          ])
-        : _vm._e()
-    ]),
+          : _vm._e()
+      ]
+    ),
     _vm._v(" "),
     _c("div", { class: [_vm.is_chat ? "chat-room" : "chat-room none"] }, [
-      _c("div", { staticClass: "chat-right d-flex flex-column" }, [
+      _c("div", { staticClass: "chat-right" }, [
         _c("div", { staticClass: "chat-profile d-flex flex-wrap" }, [
           _c("div", { staticClass: "end-chat-right d-flex" }, [
+            _c("div", { staticClass: "mr-3 d-flex" }, [
+              _c("img", { attrs: { src: "/images/timer.svg" } }),
+              _vm._v(" "),
+              _c("p", { staticClass: "m-0 pl-1" }, [
+                _c("b", [_vm._v(_vm._s(_vm.toHHMMSS(_vm.time_clock)))])
+              ])
+            ]),
+            _vm._v(" "),
             _c(
               "button",
               {
@@ -73631,12 +77124,12 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("End Session")]
+              [_vm._v(_vm._s(_vm.$t("member.end_session")))]
             ),
             _vm._v(" "),
-            !_vm.is_setting
+            !_vm.is_setting && !_vm.is_mobile
               ? _c("img", {
-                  attrs: { src: "/images/setting-icon.png" },
+                  attrs: { src: "/images/settings-icon.svg" },
                   on: {
                     click: function($event) {
                       return _vm.showSetting()
@@ -73649,22 +77142,30 @@ var render = function() {
         _vm._v(" "),
         _c(
           "div",
-          {
-            staticClass: "chat-history d-flex flex-column",
-            attrs: { id: "scroll-view" }
-          },
+          { staticClass: "chat-history", attrs: { id: "scroll-view" } },
           [
             _vm._l(_vm.messages, function(message, index) {
               return _c(
                 "div",
                 { key: message.index, staticClass: "chat-list" },
                 [
-                  (_vm.messages[index + 1] &&
-                    _vm.messages[index + 1].timestamp.toDateString() !=
-                      message.timestamp.toDateString() &&
-                    _vm.messages[0].timestamp.toDateString() !=
-                      message.timestamp.toDateString()) ||
                   index == 0
+                    ? _c("div", { staticClass: "date-separate" }, [
+                        _c("legend", [
+                          _c("span", [
+                            _vm._v(
+                              _vm._s(
+                                message.timestamp.toDateString() == _vm.today
+                                  ? "Today"
+                                  : message.timestamp.toDateString()
+                              )
+                            )
+                          ])
+                        ])
+                      ])
+                    : index > 0 &&
+                      _vm.messages[index - 1].timestamp.toDateString() !==
+                        message.timestamp.toDateString()
                     ? _c("div", { staticClass: "date-separate" }, [
                         _c("legend", [
                           _c("span", [
@@ -73680,43 +77181,45 @@ var render = function() {
                       ])
                     : _vm._e(),
                   _vm._v(" "),
-                  message.author === _vm.authUser.email
+                  message.author === _vm.authCustomer.user.email
                     ? _c("div", { staticClass: "self" }, [
                         _c("label", [
                           _vm._v(_vm._s(message.timestamp.toLocaleTimeString()))
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "identity" }, [
-                          _c("p", [_vm._v(_vm._s(message.body) + " ")]),
+                          _c("p", [_vm._v(_vm._s(message.body))]),
                           _vm._v(" "),
-                          _vm.authCustomer.prof_image != ""
+                          _vm.authCustomer.profile &&
+                          _vm.authCustomer.profile.avatar != ""
                             ? _c("img", {
                                 attrs: {
-                                  src: _vm.authCustomer.prof_image,
+                                  src: _vm.authCustomer.profile.avatar,
                                   alt: "no-image"
                                 }
                               })
                             : _c("b", [
                                 _vm._v(
-                                  _vm._s(_vm.authUser.first_name[0]) +
-                                    _vm._s(_vm.authUser.last_name[0])
+                                  _vm._s(_vm.authCustomer.user.first_name[0]) +
+                                    _vm._s(_vm.authCustomer.user.last_name[0])
                                 )
                               ])
                         ])
                       ])
                     : _vm._e(),
                   _vm._v(" "),
-                  message.author != _vm.authUser.email
+                  message.author != _vm.authCustomer.user.email
                     ? _c("div", { staticClass: "other" }, [
                         _c("label", [
                           _vm._v(_vm._s(message.timestamp.toLocaleTimeString()))
                         ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "identity" }, [
-                          _vm.current_consultant.prof_image != ""
+                          _vm.current_consultant.profile &&
+                          _vm.current_consultant.profile.avatar != ""
                             ? _c("img", {
                                 attrs: {
-                                  src: _vm.current_consultant.prof_image,
+                                  src: _vm.current_consultant.profile.avatar,
                                   alt: "no-image"
                                 }
                               })
@@ -73731,7 +77234,7 @@ var render = function() {
                                 )
                               ]),
                           _vm._v(" "),
-                          _c("p", [_vm._v(_vm._s(message.body) + " ")])
+                          _c("p", [_vm._v(_vm._s(message.body))])
                         ])
                       ])
                     : _vm._e()
@@ -73740,90 +77243,238 @@ var render = function() {
             }),
             _vm._v(" "),
             _c("div", { staticClass: "rate-session" }, [
-              _vm.left_sec <= 15 && _vm.left_sec > 0
-                ? _c("div", { staticClass: "date-separate" }, [_vm._m(1)])
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.left_sec == 0
-                ? _c("div", { staticClass: "date-separate" }, [_vm._m(2)])
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.left_sec == 0
-                ? _c(
-                    "div",
-                    { staticClass: "end-session" },
-                    [
-                      _vm.current_consultant.prof_image != ""
-                        ? _c("img", {
-                            staticClass: "avatar",
-                            attrs: {
-                              src: _vm.current_consultant.prof_image,
-                              alt: "no-image"
-                            }
-                          })
-                        : _vm._e(),
-                      _vm._v(" "),
-                      _c("h2", [_vm._v("Rate this session")]),
-                      _vm._v(" "),
-                      _c("vue-start-rate", {
-                        attrs: { "font-size": "30px", type: "star1" },
-                        model: {
-                          value: _vm.rate,
-                          callback: function($$v) {
-                            _vm.rate = $$v
-                          },
-                          expression: "rate"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("h2", [_vm._v("Continue?")]),
-                      _vm._v(" "),
-                      _c("p", [_vm._v("How many minutes do you want to use?")]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "button-group" }, [
-                        _c("div", { staticClass: "input-box" }, [
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.minute,
-                                expression: "minute"
-                              }
-                            ],
-                            attrs: { type: "text" },
-                            domProps: { value: _vm.minute },
-                            on: {
-                              change: _vm.minuteChange,
-                              input: function($event) {
-                                if ($event.target.composing) {
-                                  return
-                                }
-                                _vm.minute = $event.target.value
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("label", [_vm._v("min")])
-                        ]),
-                        _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-green-gradient",
-                            attrs: { disabled: _vm.authUser.balance == 0 },
-                            on: {
-                              click: function($event) {
-                                return _vm.continueChat()
-                              }
-                            }
-                          },
-                          [_vm._v("Continue")]
-                        )
+              _vm.time_clock <= 15 && _vm.time_clock > 0
+                ? _c("div", { staticClass: "date-separate" }, [
+                    _c("legend", [
+                      _c("span", [
+                        _vm._v(_vm._s(_vm.$t("member.session-end-alert")))
                       ])
-                    ],
-                    1
-                  )
+                    ])
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.time_clock == 0
+                ? _c("div", { staticClass: "date-separate" }, [
+                    _c("legend", [
+                      _c("span", [_vm._v(_vm._s(_vm.$t("member.chat-end")))])
+                    ])
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.time_clock == 0
+                ? _c("div", { staticClass: "end-session" }, [
+                    _vm.current_consultant.profile &&
+                    _vm.current_consultant.profile.avatar != ""
+                      ? _c("img", {
+                          staticClass: "avatar",
+                          attrs: {
+                            src: _vm.current_consultant.profile.avatar,
+                            alt: "no-image"
+                          }
+                        })
+                      : _vm._e(),
+                    _vm._v(" "),
+                    !_vm.isCheckReview && !_vm.isCheckContinue
+                      ? _c("div", { staticClass: "btn-group" }, [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-review",
+                              on: {
+                                click: function($event) {
+                                  return _vm.goToReview()
+                                }
+                              }
+                            },
+                            [_vm._v(_vm._s(_vm.$t("member.write-review")))]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-session",
+                              on: {
+                                click: function($event) {
+                                  return _vm.goToContinue()
+                                }
+                              }
+                            },
+                            [_vm._v(_vm._s(_vm.$t("member.continue-session")))]
+                          )
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.isCheckReview && !_vm.isCheckContinue
+                      ? _c(
+                          "div",
+                          { staticClass: "review-sec" },
+                          [
+                            _c("h2", [
+                              _vm._v(_vm._s(_vm.$t("member.rate-session")))
+                            ]),
+                            _vm._v(" "),
+                            _c("vue-start-rate", {
+                              attrs: { "font-size": "30px", type: "star1" },
+                              model: {
+                                value: _vm.rate,
+                                callback: function($$v) {
+                                  _vm.rate = $$v
+                                },
+                                expression: "rate"
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("textarea", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.review_des,
+                                  expression: "review_des"
+                                }
+                              ],
+                              attrs: {
+                                placeholder: _vm.$t("member.write-review-msg")
+                              },
+                              domProps: { value: _vm.review_des },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.review_des = $event.target.value
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "btn-group" }, [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-session",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.goToContinue()
+                                    }
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    _vm._s(_vm.$t("member.continue-session"))
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-review",
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.submitReview()
+                                    }
+                                  }
+                                },
+                                [_vm._v(_vm._s(_vm.$t("member.submit-review")))]
+                              )
+                            ])
+                          ],
+                          1
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.isCheckContinue && !_vm.isCheckReview
+                      ? _c("div", { staticClass: "continue-sec" }, [
+                          _c("h2", [
+                            _vm._v(_vm._s(_vm.$t("member.continue-session")))
+                          ]),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "button-group" }, [
+                            _c(
+                              "div",
+                              {
+                                class: [
+                                  _vm.$v.form.$error
+                                    ? "hasError input-box"
+                                    : "input-box"
+                                ]
+                              },
+                              [
+                                _c("input", {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.form.minute,
+                                      expression: "form.minute"
+                                    }
+                                  ],
+                                  attrs: { type: "text" },
+                                  domProps: { value: _vm.form.minute },
+                                  on: {
+                                    change: _vm.minuteChange,
+                                    input: function($event) {
+                                      if ($event.target.composing) {
+                                        return
+                                      }
+                                      _vm.$set(
+                                        _vm.form,
+                                        "minute",
+                                        $event.target.value
+                                      )
+                                    }
+                                  }
+                                }),
+                                _vm._v(" "),
+                                _c("label", [_vm._v("min")])
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c("p", [
+                              _vm._v(
+                                "\n                  " +
+                                  _vm._s(_vm.$t("member.total-cost")) +
+                                  ":\n                  "
+                              ),
+                              _c("b", [_vm._v(_vm._s(_vm.cost) + " kr")])
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-review",
+                                on: {
+                                  click: function($event) {
+                                    return _vm.goToReview()
+                                  }
+                                }
+                              },
+                              [_vm._v(_vm._s(_vm.$t("member.write-review")))]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                staticClass: "btn btn-session",
+                                attrs: {
+                                  disabled: _vm.authCustomer.user.balance == 0
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.continueChat()
+                                  }
+                                }
+                              },
+                              [
+                                _vm._v(
+                                  _vm._s(_vm.$t("member.continue-session"))
+                                )
+                              ]
+                            )
+                          ])
+                        ])
+                      : _vm._e()
+                  ])
                 : _vm._e()
             ])
           ],
@@ -73841,7 +77492,10 @@ var render = function() {
                   expression: "newMessage"
                 }
               ],
-              attrs: { type: "text", placeholder: "Write message here...." },
+              attrs: {
+                type: "text",
+                placeholder: _vm.$t("member.write-message")
+              },
               domProps: { value: _vm.newMessage },
               on: {
                 keyup: function($event) {
@@ -73874,7 +77528,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("Send")]
+              [_vm._v(_vm._s(_vm.$t("member.send")))]
             ),
             _vm._v(" "),
             _c("input", {
@@ -73887,7 +77541,7 @@ var render = function() {
             }),
             _vm._v(" "),
             _c("label", { attrs: { id: "sms", for: "fruit1" } }, [
-              _vm._v("SMS")
+              _vm._v(_vm._s(_vm.$t("member.sms")))
             ]),
             _vm._v(" "),
             _c("input", {
@@ -73900,7 +77554,7 @@ var render = function() {
             }),
             _vm._v(" "),
             _c("label", { attrs: { id: "inapp", for: "fruit4" } }, [
-              _vm._v("In App")
+              _vm._v(_vm._s(_vm.$t("member.in_app")))
             ])
           ])
         ])
@@ -73911,10 +77565,8 @@ var render = function() {
       "div",
       {
         class: [
-          _vm.is_selected
-            ? "chatter-pro flex-column d-flex"
-            : _vm.is_setting
-            ? "chatter-pro flex-column d-flex"
+          (!_vm.is_mobile && _vm.is_selected) || _vm.is_setting
+            ? "chatter-pro"
             : "chatter-pro none"
         ]
       },
@@ -73940,18 +77592,19 @@ var render = function() {
           {
             class: [
               _vm.current_consultant.user.status == "Available"
-                ? "rate-session d-flex flex-column"
-                : _vm.current_consultant.user.status == "In a call"
-                ? "rate-session d-flex flex-column in-call"
-                : "rate-session d-flex flex-column offline"
+                ? "rate-session chat-setting d-flex flex-column"
+                : _vm.current_consultant.user.status == "Offline"
+                ? "rate-session d-flex flex-column offline"
+                : "rate-session d-flex flex-column in-call"
             ]
           },
           [
-            _vm.current_consultant.prof_image != ""
+            _vm.current_consultant.profile &&
+            _vm.current_consultant.profile.avatar != ""
               ? _c("img", {
                   staticClass: "avatar",
                   attrs: {
-                    src: _vm.current_consultant.prof_image,
+                    src: _vm.current_consultant.profile.avatar,
                     alt: "no-image"
                   }
                 })
@@ -73962,11 +77615,26 @@ var render = function() {
                   )
                 ]),
             _vm._v(" "),
-            _c("span", { staticClass: "absol-span" }, [_vm._v("•")]),
+            _c(
+              "span",
+              {
+                class: [
+                  _vm.current_consultant.user.status == "Available"
+                    ? "absol-span Available"
+                    : _vm.current_consultant.user.status == "Offline"
+                    ? "absol-span Offline"
+                    : "absol-span in-call"
+                ]
+              },
+              [_vm._v("•")]
+            ),
             _vm._v(" "),
-            _c("p", [
-              _vm._v(_vm._s(_vm.current_consultant.industry_expertise))
-            ]),
+            _vm.current_consultant.profile &&
+            _vm.current_consultant.profile.profession
+              ? _c("p", [
+                  _vm._v(_vm._s(_vm.current_consultant.profile.profession))
+                ])
+              : _vm._e(),
             _vm._v(" "),
             _c("h2", [
               _vm._v(
@@ -73977,13 +77645,11 @@ var render = function() {
             ]),
             _vm._v(" "),
             _c("small", [
-              _vm._v(
-                _vm._s(_vm.current_consultant.user.hourly_rate) + " kr p/m"
-              )
+              _vm._v(_vm._s(_vm.current_consultant.hourly_rate) + " kr p/m")
             ]),
             _vm._v(" "),
-            _vm.current_consultant.user.rate >= 4.5
-              ? _c("div", { staticClass: "rate-stars d-flex" }, [
+            _vm.current_consultant.rate >= 4.5
+              ? _c("div", { staticClass: "rate-stars" }, [
                   _c("img", {
                     attrs: { src: "/images/home/star-dg.png", alt: "no-image" }
                   }),
@@ -74006,9 +77672,9 @@ var render = function() {
                 ])
               : _vm._e(),
             _vm._v(" "),
-            _vm.current_consultant.user.rate >= 3.5 &&
-            _vm.current_consultant.user.rate < 4.5
-              ? _c("div", { staticClass: "rate-stars d-flex" }, [
+            _vm.current_consultant.rate >= 3.5 &&
+            _vm.current_consultant.rate < 4.5
+              ? _c("div", { staticClass: "rate-stars" }, [
                   _c("img", {
                     attrs: { src: "/images/home/star-g.png", alt: "no-image" }
                   }),
@@ -74031,9 +77697,9 @@ var render = function() {
                 ])
               : _vm._e(),
             _vm._v(" "),
-            _vm.current_consultant.user.rate >= 2.5 &&
-            _vm.current_consultant.user.rate < 3.5
-              ? _c("div", { staticClass: "rate-stars d-flex" }, [
+            _vm.current_consultant.rate >= 2.5 &&
+            _vm.current_consultant.rate < 3.5
+              ? _c("div", { staticClass: "rate-stars" }, [
                   _c("img", {
                     attrs: { src: "/images/home/star-y.png", alt: "no-image" }
                   }),
@@ -74056,15 +77722,15 @@ var render = function() {
                 ])
               : _vm._e(),
             _vm._v(" "),
-            _vm.current_consultant.user.rate >= 1.5 &&
-            _vm.current_consultant.user.rate < 2.5
-              ? _c("div", { staticClass: "rate-stars d-flex" }, [
+            _vm.current_consultant.rate >= 1.5 &&
+            _vm.current_consultant.rate < 2.5
+              ? _c("div", { staticClass: "rate-stars" }, [
                   _c("img", {
-                    attrs: { src: "/images/home/star-0.png", alt: "no-image" }
+                    attrs: { src: "/images/home/star-o.png", alt: "no-image" }
                   }),
                   _vm._v(" "),
                   _c("img", {
-                    attrs: { src: "/images/home/star-0.png", alt: "no-image" }
+                    attrs: { src: "/images/home/star-o.png", alt: "no-image" }
                   }),
                   _vm._v(" "),
                   _c("img", {
@@ -74081,9 +77747,9 @@ var render = function() {
                 ])
               : _vm._e(),
             _vm._v(" "),
-            _vm.current_consultant.user.rate >= 0.5 &&
-            _vm.current_consultant.user.rate < 1.5
-              ? _c("div", { staticClass: "rate-stars d-flex" }, [
+            _vm.current_consultant.rate >= 0.5 &&
+            _vm.current_consultant.rate < 1.5
+              ? _c("div", { staticClass: "rate-stars" }, [
                   _c("img", {
                     attrs: { src: "/images/home/star-r.png", alt: "no-image" }
                   }),
@@ -74106,8 +77772,8 @@ var render = function() {
                 ])
               : _vm._e(),
             _vm._v(" "),
-            _vm.current_consultant.user.rate < 0.5
-              ? _c("div", { staticClass: "rate-stars d-flex" }, [
+            _vm.current_consultant.rate < 0.5
+              ? _c("div", { staticClass: "rate-stars" }, [
                   _c("img", {
                     attrs: { src: "/images/home/star-w.png", alt: "no-image" }
                   }),
@@ -74132,9 +77798,53 @@ var render = function() {
           ]
         ),
         _vm._v(" "),
-        _vm._m(3),
+        _c("div", { staticClass: "chat-records" }, [
+          _c("div", { staticClass: "records-left" }, [
+            _c("label", [
+              _vm._v(
+                _vm._s(
+                  _vm.current_consultant.completed_sessions > 0
+                    ? _vm.current_consultant.completed_sessions
+                    : 0
+                )
+              )
+            ]),
+            _vm._v(" "),
+            _c("span", [_vm._v(_vm._s(_vm.$t("member.sessions")))])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "records-right" }, [
+            _c("label", [_vm._v("30 min")]),
+            _vm._v(" "),
+            _c("span", [_vm._v(_vm._s(_vm.$t("member.last-online")))])
+          ])
+        ]),
         _vm._v(" "),
-        _vm._m(4)
+        _c("div", { staticClass: "chat-drop" }, [
+          _c("select", { attrs: { id: "selected-details", name: "details" } }, [
+            _c("option", { attrs: { disabled: "", selected: "" } }, [
+              _vm._v(_vm._s(_vm.$t("member.details")))
+            ]),
+            _vm._v(" "),
+            _c("option", { attrs: { value: "link1" } }, [_vm._v("Link 1")]),
+            _vm._v(" "),
+            _c("option", { attrs: { value: "link2" } }, [_vm._v("Link 2")]),
+            _vm._v(" "),
+            _c("option", { attrs: { value: "link3" } }, [_vm._v("Link 3")])
+          ]),
+          _vm._v(" "),
+          _c("select", { attrs: { id: "selected-ratings", name: "ratings" } }, [
+            _c("option", { attrs: { disabled: "", selected: "" } }, [
+              _vm._v(_vm._s(_vm.$t("member.ratings")))
+            ]),
+            _vm._v(" "),
+            _c("option", { attrs: { value: "link1" } }, [_vm._v("Link 1")]),
+            _vm._v(" "),
+            _c("option", { attrs: { value: "link2" } }, [_vm._v("Link 2")]),
+            _vm._v(" "),
+            _c("option", { attrs: { value: "link3" } }, [_vm._v("Link 3")])
+          ])
+        ])
       ]
     ),
     _vm._v(" "),
@@ -74155,18 +77865,19 @@ var render = function() {
       [
         _c("div", { staticClass: "modal-wrapper" }, [
           _c("div", { staticClass: "modal-container" }, [
-            _vm._m(5),
+            _vm._m(0),
             _vm._v(" "),
             _c("div", { staticClass: "modal-body" }, [
-              _vm.current_consultant.prof_image != "" &&
-              _vm.current_consultant.prof_image != undefined
+              _vm.current_consultant.profile &&
+              _vm.current_consultant.profile.avatar != "" &&
+              _vm.current_consultant.profile.avatar != undefined
                 ? _c("img", {
                     attrs: {
-                      src: _vm.current_consultant.prof_image,
+                      src: _vm.current_consultant.profile.avatar,
                       alt: "no-image"
                     }
                   })
-                : _c("img", { attrs: { src: "/images/home/person.png" } })
+                : _c("img", { attrs: { src: "/images/user.svg" } })
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "modal-footer" }, [
@@ -74200,7 +77911,7 @@ var render = function() {
       [
         _c("div", { staticClass: "modal-wrapper" }, [
           _c("div", { staticClass: "modal-container" }, [
-            _vm._m(6),
+            _vm._m(1),
             _vm._v(" "),
             _c("div", { staticClass: "modal-body" }, [
               _c("div", { ref: "video_tag", staticClass: "main" }),
@@ -74249,53 +77960,83 @@ var render = function() {
       [
         _c("div", { staticClass: "modal-wrapper" }, [
           _c("div", { staticClass: "modal-container" }, [
-            _vm._m(7),
+            _vm._m(2),
             _vm._v(" "),
             _c("div", { staticClass: "modal-body" }, [
               _c("img", {
-                attrs: { src: "/images/credit-card.png", alt: "no-image" }
+                attrs: {
+                  src: "/images/session-ended-icon.svg",
+                  alt: "no-image"
+                }
               }),
               _vm._v(" "),
-              _c("h2", [_vm._v("Your session has ended. Continue?")]),
+              _c("h2", [_vm._v(_vm._s(_vm.$t("member.session-continue")))]),
               _vm._v(" "),
-              _c("p", [_vm._v("How many minutes do you want to use?")]),
+              _c("p", [_vm._v(_vm._s(_vm.$t("member.minutes-question")))]),
               _vm._v(" "),
-              _c("div", { staticClass: "input-box" }, [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.minute,
-                      expression: "minute"
-                    }
-                  ],
-                  attrs: { type: "text" },
-                  domProps: { value: _vm.minute },
-                  on: {
-                    change: _vm.minuteChange,
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+              _c(
+                "div",
+                {
+                  class: [
+                    _vm.$v.form.$error ? "hasError input-box" : "input-box"
+                  ]
+                },
+                [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.form.minute,
+                        expression: "form.minute"
                       }
-                      _vm.minute = $event.target.value
+                    ],
+                    attrs: { type: "text" },
+                    domProps: { value: _vm.form.minute },
+                    on: {
+                      change: _vm.minuteChange,
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(_vm.form, "minute", $event.target.value)
+                      }
                     }
-                  }
-                }),
-                _vm._v(" "),
-                _c("label", [_vm._v("min")])
-              ]),
+                  }),
+                  _vm._v(" "),
+                  _c("label", [_vm._v("min")])
+                ]
+              ),
               _vm._v(" "),
               _c("p", [
-                _vm._v("Total cost: "),
+                _vm._v(
+                  "\n            " +
+                    _vm._s(_vm.$t("member.total-cost")) +
+                    ":\n            "
+                ),
                 _c("b", [_vm._v(_vm._s(_vm.cost) + " kr")])
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "button-group" }, [
+                _vm.selected_type == "chat"
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-review",
+                        on: {
+                          click: function($event) {
+                            return _vm.viewSession()
+                          }
+                        }
+                      },
+                      [_vm._v(_vm._s(_vm.$t("member.btn-view-session")))]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
                 _c(
                   "button",
                   {
-                    staticClass: "btn btn-green-gradient",
+                    staticClass: "btn btn-continue",
                     on: {
                       click: function($event) {
                         return _vm.restartMethod()
@@ -74306,60 +78047,15 @@ var render = function() {
                     _vm._v(
                       _vm._s(
                         _vm.selected_type == "voice"
-                          ? "Continue Call"
+                          ? _vm.$t("member.btn-continue-call")
                           : _vm.selected_type == "video"
-                          ? "Continue Video Call"
-                          : "Continue Conversation"
+                          ? _vm.$t("member.btn-continue-video-call")
+                          : _vm.$t("member.btn-continue-session")
                       )
                     )
                   ]
-                ),
-                _vm._v(" "),
-                _vm.selected_type == "chat"
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-review",
-                        on: {
-                          click: function($event) {
-                            return _vm.viewConversation()
-                          }
-                        }
-                      },
-                      [_vm._v("View Conversation")]
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.selected_type != "chat"
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-back",
-                        on: {
-                          click: function($event) {
-                            return _vm.goBack()
-                          }
-                        }
-                      },
-                      [_vm._v("Go Back")]
-                    )
-                  : _vm._e()
-              ]),
-              _vm._v(" "),
-              _vm.selected_type == "chat"
-                ? _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-back",
-                      on: {
-                        click: function($event) {
-                          return _vm.goBack()
-                        }
-                      }
-                    },
-                    [_vm._v("Go Back")]
-                  )
-                : _vm._e()
+                )
+              ])
             ])
           ])
         ])
@@ -74368,100 +78064,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("p", [_c("b", [_vm._v("No consultants selected.")])])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("legend", [
-      _c("span", [_vm._v("Your session ends in 15 seconds")])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("legend", [_c("span", [_vm._v("Your chat has ended ")])])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "chat-records d-flex" }, [
-      _c("div", { staticClass: "records-left flex-column" }, [
-        _c("h2", [_vm._v("43")]),
-        _vm._v(" "),
-        _c("span", [_vm._v("Completed Chats")])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "records-right flex-column" }, [
-        _c("h2", [_vm._v("30 min")]),
-        _vm._v(" "),
-        _c("span", [_vm._v("Last Online")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "chat-drop d-flex flex-column" }, [
-      _c("div", { staticClass: "dropdown" }, [
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-primary dropdown-toggle btn-user",
-            attrs: { type: "button", "data-toggle": "dropdown" }
-          },
-          [_vm._v("Details")]
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "dropdown-menu" }, [
-          _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
-            _vm._v("Link 1")
-          ]),
-          _vm._v(" "),
-          _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
-            _vm._v("Link 2")
-          ]),
-          _vm._v(" "),
-          _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
-            _vm._v("Link 3")
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "dropdown" }, [
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-primary dropdown-toggle btn-user",
-            attrs: { type: "button", "data-toggle": "dropdown" }
-          },
-          [_vm._v("Ratings")]
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "dropdown-menu" }, [
-          _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
-            _vm._v("Link 1")
-          ]),
-          _vm._v(" "),
-          _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
-            _vm._v("Link 2")
-          ]),
-          _vm._v(" "),
-          _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
-            _vm._v("Link 3")
-          ])
-        ])
-      ])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -86618,6 +90220,1951 @@ if (false) {} else {
 
 /***/ }),
 
+/***/ "./node_modules/vuelidate/lib/index.js":
+/*!*********************************************!*\
+  !*** ./node_modules/vuelidate/lib/index.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Vuelidate = Vuelidate;
+Object.defineProperty(exports, "withParams", {
+  enumerable: true,
+  get: function get() {
+    return _params.withParams;
+  }
+});
+exports.default = exports.validationMixin = void 0;
+
+var _vval = __webpack_require__(/*! ./vval */ "./node_modules/vuelidate/lib/vval.js");
+
+var _params = __webpack_require__(/*! ./params */ "./node_modules/vuelidate/lib/params.js");
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var NIL = function NIL() {
+  return null;
+};
+
+var buildFromKeys = function buildFromKeys(keys, fn, keyFn) {
+  return keys.reduce(function (build, key) {
+    build[keyFn ? keyFn(key) : key] = fn(key);
+    return build;
+  }, {});
+};
+
+function isFunction(val) {
+  return typeof val === 'function';
+}
+
+function isObject(val) {
+  return val !== null && (_typeof(val) === 'object' || isFunction(val));
+}
+
+function isPromise(object) {
+  return isObject(object) && isFunction(object.then);
+}
+
+var getPath = function getPath(ctx, obj, path, fallback) {
+  if (typeof path === 'function') {
+    return path.call(ctx, obj, fallback);
+  }
+
+  path = Array.isArray(path) ? path : path.split('.');
+
+  for (var i = 0; i < path.length; i++) {
+    if (obj && _typeof(obj) === 'object') {
+      obj = obj[path[i]];
+    } else {
+      return fallback;
+    }
+  }
+
+  return typeof obj === 'undefined' ? fallback : obj;
+};
+
+var __isVuelidateAsyncVm = '__isVuelidateAsyncVm';
+
+function makePendingAsyncVm(Vue, promise) {
+  var asyncVm = new Vue({
+    data: {
+      p: true,
+      v: false
+    }
+  });
+  promise.then(function (value) {
+    asyncVm.p = false;
+    asyncVm.v = value;
+  }, function (error) {
+    asyncVm.p = false;
+    asyncVm.v = false;
+    throw error;
+  });
+  asyncVm[__isVuelidateAsyncVm] = true;
+  return asyncVm;
+}
+
+var validationGetters = {
+  $invalid: function $invalid() {
+    var _this = this;
+
+    var proxy = this.proxy;
+    return this.nestedKeys.some(function (nested) {
+      return _this.refProxy(nested).$invalid;
+    }) || this.ruleKeys.some(function (rule) {
+      return !proxy[rule];
+    });
+  },
+  $dirty: function $dirty() {
+    var _this2 = this;
+
+    if (this.dirty) {
+      return true;
+    }
+
+    if (this.nestedKeys.length === 0) {
+      return false;
+    }
+
+    return this.nestedKeys.every(function (key) {
+      return _this2.refProxy(key).$dirty;
+    });
+  },
+  $anyDirty: function $anyDirty() {
+    var _this3 = this;
+
+    if (this.dirty) {
+      return true;
+    }
+
+    if (this.nestedKeys.length === 0) {
+      return false;
+    }
+
+    return this.nestedKeys.some(function (key) {
+      return _this3.refProxy(key).$anyDirty;
+    });
+  },
+  $error: function $error() {
+    return this.$dirty && !this.$pending && this.$invalid;
+  },
+  $anyError: function $anyError() {
+    var _this4 = this;
+
+    if (this.$error) return true;
+    return this.nestedKeys.some(function (key) {
+      return _this4.refProxy(key).$anyError;
+    });
+  },
+  $pending: function $pending() {
+    var _this5 = this;
+
+    return this.ruleKeys.some(function (key) {
+      return _this5.getRef(key).$pending;
+    }) || this.nestedKeys.some(function (key) {
+      return _this5.refProxy(key).$pending;
+    });
+  },
+  $params: function $params() {
+    var _this6 = this;
+
+    var vals = this.validations;
+    return _objectSpread({}, buildFromKeys(this.nestedKeys, function (key) {
+      return vals[key] && vals[key].$params || null;
+    }), {}, buildFromKeys(this.ruleKeys, function (key) {
+      return _this6.getRef(key).$params;
+    }));
+  }
+};
+
+function setDirtyRecursive(newState) {
+  this.dirty = newState;
+  var proxy = this.proxy;
+  var method = newState ? '$touch' : '$reset';
+  this.nestedKeys.forEach(function (key) {
+    proxy[key][method]();
+  });
+}
+
+var validationMethods = {
+  $touch: function $touch() {
+    setDirtyRecursive.call(this, true);
+  },
+  $reset: function $reset() {
+    setDirtyRecursive.call(this, false);
+  },
+  $flattenParams: function $flattenParams() {
+    var proxy = this.proxy;
+    var params = [];
+
+    for (var key in this.$params) {
+      if (this.isNested(key)) {
+        var childParams = proxy[key].$flattenParams();
+
+        for (var j = 0; j < childParams.length; j++) {
+          childParams[j].path.unshift(key);
+        }
+
+        params = params.concat(childParams);
+      } else {
+        params.push({
+          path: [],
+          name: key,
+          params: this.$params[key]
+        });
+      }
+    }
+
+    return params;
+  }
+};
+var getterNames = Object.keys(validationGetters);
+var methodNames = Object.keys(validationMethods);
+var _cachedComponent = null;
+
+var getComponent = function getComponent(Vue) {
+  if (_cachedComponent) {
+    return _cachedComponent;
+  }
+
+  var VBase = Vue.extend({
+    computed: {
+      refs: function refs() {
+        var oldVval = this._vval;
+        this._vval = this.children;
+        (0, _vval.patchChildren)(oldVval, this._vval);
+        var refs = {};
+
+        this._vval.forEach(function (c) {
+          refs[c.key] = c.vm;
+        });
+
+        return refs;
+      }
+    },
+    beforeCreate: function beforeCreate() {
+      this._vval = null;
+    },
+    beforeDestroy: function beforeDestroy() {
+      if (this._vval) {
+        (0, _vval.patchChildren)(this._vval);
+        this._vval = null;
+      }
+    },
+    methods: {
+      getModel: function getModel() {
+        return this.lazyModel ? this.lazyModel(this.prop) : this.model;
+      },
+      getModelKey: function getModelKey(key) {
+        var model = this.getModel();
+
+        if (model) {
+          return model[key];
+        }
+      },
+      hasIter: function hasIter() {
+        return false;
+      }
+    }
+  });
+  var ValidationRule = VBase.extend({
+    data: function data() {
+      return {
+        rule: null,
+        lazyModel: null,
+        model: null,
+        lazyParentModel: null,
+        rootModel: null
+      };
+    },
+    methods: {
+      runRule: function runRule(parent) {
+        var model = this.getModel();
+        (0, _params.pushParams)();
+        var rawOutput = this.rule.call(this.rootModel, model, parent);
+        var output = isPromise(rawOutput) ? makePendingAsyncVm(Vue, rawOutput) : rawOutput;
+        var rawParams = (0, _params.popParams)();
+        var params = rawParams && rawParams.$sub ? rawParams.$sub.length > 1 ? rawParams : rawParams.$sub[0] : null;
+        return {
+          output: output,
+          params: params
+        };
+      }
+    },
+    computed: {
+      run: function run() {
+        var _this7 = this;
+
+        var parent = this.lazyParentModel();
+
+        var isArrayDependant = Array.isArray(parent) && parent.__ob__;
+
+        if (isArrayDependant) {
+          var arrayDep = parent.__ob__.dep;
+          arrayDep.depend();
+          var target = arrayDep.constructor.target;
+
+          if (!this._indirectWatcher) {
+            var Watcher = target.constructor;
+            this._indirectWatcher = new Watcher(this, function () {
+              return _this7.runRule(parent);
+            }, null, {
+              lazy: true
+            });
+          }
+
+          var model = this.getModel();
+
+          if (!this._indirectWatcher.dirty && this._lastModel === model) {
+            this._indirectWatcher.depend();
+
+            return target.value;
+          }
+
+          this._lastModel = model;
+
+          this._indirectWatcher.evaluate();
+
+          this._indirectWatcher.depend();
+        } else if (this._indirectWatcher) {
+          this._indirectWatcher.teardown();
+
+          this._indirectWatcher = null;
+        }
+
+        return this._indirectWatcher ? this._indirectWatcher.value : this.runRule(parent);
+      },
+      $params: function $params() {
+        return this.run.params;
+      },
+      proxy: function proxy() {
+        var output = this.run.output;
+
+        if (output[__isVuelidateAsyncVm]) {
+          return !!output.v;
+        }
+
+        return !!output;
+      },
+      $pending: function $pending() {
+        var output = this.run.output;
+
+        if (output[__isVuelidateAsyncVm]) {
+          return output.p;
+        }
+
+        return false;
+      }
+    },
+    destroyed: function destroyed() {
+      if (this._indirectWatcher) {
+        this._indirectWatcher.teardown();
+
+        this._indirectWatcher = null;
+      }
+    }
+  });
+  var Validation = VBase.extend({
+    data: function data() {
+      return {
+        dirty: false,
+        validations: null,
+        lazyModel: null,
+        model: null,
+        prop: null,
+        lazyParentModel: null,
+        rootModel: null
+      };
+    },
+    methods: _objectSpread({}, validationMethods, {
+      refProxy: function refProxy(key) {
+        return this.getRef(key).proxy;
+      },
+      getRef: function getRef(key) {
+        return this.refs[key];
+      },
+      isNested: function isNested(key) {
+        return typeof this.validations[key] !== 'function';
+      }
+    }),
+    computed: _objectSpread({}, validationGetters, {
+      nestedKeys: function nestedKeys() {
+        return this.keys.filter(this.isNested);
+      },
+      ruleKeys: function ruleKeys() {
+        var _this8 = this;
+
+        return this.keys.filter(function (k) {
+          return !_this8.isNested(k);
+        });
+      },
+      keys: function keys() {
+        return Object.keys(this.validations).filter(function (k) {
+          return k !== '$params';
+        });
+      },
+      proxy: function proxy() {
+        var _this9 = this;
+
+        var keyDefs = buildFromKeys(this.keys, function (key) {
+          return {
+            enumerable: true,
+            configurable: true,
+            get: function get() {
+              return _this9.refProxy(key);
+            }
+          };
+        });
+        var getterDefs = buildFromKeys(getterNames, function (key) {
+          return {
+            enumerable: true,
+            configurable: true,
+            get: function get() {
+              return _this9[key];
+            }
+          };
+        });
+        var methodDefs = buildFromKeys(methodNames, function (key) {
+          return {
+            enumerable: false,
+            configurable: true,
+            get: function get() {
+              return _this9[key];
+            }
+          };
+        });
+        var iterDefs = this.hasIter() ? {
+          $iter: {
+            enumerable: true,
+            value: Object.defineProperties({}, _objectSpread({}, keyDefs))
+          }
+        } : {};
+        return Object.defineProperties({}, _objectSpread({}, keyDefs, {}, iterDefs, {
+          $model: {
+            enumerable: true,
+            get: function get() {
+              var parent = _this9.lazyParentModel();
+
+              if (parent != null) {
+                return parent[_this9.prop];
+              } else {
+                return null;
+              }
+            },
+            set: function set(value) {
+              var parent = _this9.lazyParentModel();
+
+              if (parent != null) {
+                parent[_this9.prop] = value;
+
+                _this9.$touch();
+              }
+            }
+          }
+        }, getterDefs, {}, methodDefs));
+      },
+      children: function children() {
+        var _this10 = this;
+
+        return [].concat(_toConsumableArray(this.nestedKeys.map(function (key) {
+          return renderNested(_this10, key);
+        })), _toConsumableArray(this.ruleKeys.map(function (key) {
+          return renderRule(_this10, key);
+        }))).filter(Boolean);
+      }
+    })
+  });
+  var GroupValidation = Validation.extend({
+    methods: {
+      isNested: function isNested(key) {
+        return typeof this.validations[key]() !== 'undefined';
+      },
+      getRef: function getRef(key) {
+        var vm = this;
+        return {
+          get proxy() {
+            return vm.validations[key]() || false;
+          }
+
+        };
+      }
+    }
+  });
+  var EachValidation = Validation.extend({
+    computed: {
+      keys: function keys() {
+        var model = this.getModel();
+
+        if (isObject(model)) {
+          return Object.keys(model);
+        } else {
+          return [];
+        }
+      },
+      tracker: function tracker() {
+        var _this11 = this;
+
+        var trackBy = this.validations.$trackBy;
+        return trackBy ? function (key) {
+          return "".concat(getPath(_this11.rootModel, _this11.getModelKey(key), trackBy));
+        } : function (x) {
+          return "".concat(x);
+        };
+      },
+      getModelLazy: function getModelLazy() {
+        var _this12 = this;
+
+        return function () {
+          return _this12.getModel();
+        };
+      },
+      children: function children() {
+        var _this13 = this;
+
+        var def = this.validations;
+        var model = this.getModel();
+
+        var validations = _objectSpread({}, def);
+
+        delete validations['$trackBy'];
+        var usedTracks = {};
+        return this.keys.map(function (key) {
+          var track = _this13.tracker(key);
+
+          if (usedTracks.hasOwnProperty(track)) {
+            return null;
+          }
+
+          usedTracks[track] = true;
+          return (0, _vval.h)(Validation, track, {
+            validations: validations,
+            prop: key,
+            lazyParentModel: _this13.getModelLazy,
+            model: model[key],
+            rootModel: _this13.rootModel
+          });
+        }).filter(Boolean);
+      }
+    },
+    methods: {
+      isNested: function isNested() {
+        return true;
+      },
+      getRef: function getRef(key) {
+        return this.refs[this.tracker(key)];
+      },
+      hasIter: function hasIter() {
+        return true;
+      }
+    }
+  });
+
+  var renderNested = function renderNested(vm, key) {
+    if (key === '$each') {
+      return (0, _vval.h)(EachValidation, key, {
+        validations: vm.validations[key],
+        lazyParentModel: vm.lazyParentModel,
+        prop: key,
+        lazyModel: vm.getModel,
+        rootModel: vm.rootModel
+      });
+    }
+
+    var validations = vm.validations[key];
+
+    if (Array.isArray(validations)) {
+      var root = vm.rootModel;
+      var refVals = buildFromKeys(validations, function (path) {
+        return function () {
+          return getPath(root, root.$v, path);
+        };
+      }, function (v) {
+        return Array.isArray(v) ? v.join('.') : v;
+      });
+      return (0, _vval.h)(GroupValidation, key, {
+        validations: refVals,
+        lazyParentModel: NIL,
+        prop: key,
+        lazyModel: NIL,
+        rootModel: root
+      });
+    }
+
+    return (0, _vval.h)(Validation, key, {
+      validations: validations,
+      lazyParentModel: vm.getModel,
+      prop: key,
+      lazyModel: vm.getModelKey,
+      rootModel: vm.rootModel
+    });
+  };
+
+  var renderRule = function renderRule(vm, key) {
+    return (0, _vval.h)(ValidationRule, key, {
+      rule: vm.validations[key],
+      lazyParentModel: vm.lazyParentModel,
+      lazyModel: vm.getModel,
+      rootModel: vm.rootModel
+    });
+  };
+
+  _cachedComponent = {
+    VBase: VBase,
+    Validation: Validation
+  };
+  return _cachedComponent;
+};
+
+var _cachedVue = null;
+
+function getVue(rootVm) {
+  if (_cachedVue) return _cachedVue;
+  var Vue = rootVm.constructor;
+
+  while (Vue.super) {
+    Vue = Vue.super;
+  }
+
+  _cachedVue = Vue;
+  return Vue;
+}
+
+var validateModel = function validateModel(model, validations) {
+  var Vue = getVue(model);
+
+  var _getComponent = getComponent(Vue),
+      Validation = _getComponent.Validation,
+      VBase = _getComponent.VBase;
+
+  var root = new VBase({
+    computed: {
+      children: function children() {
+        var vals = typeof validations === 'function' ? validations.call(model) : validations;
+        return [(0, _vval.h)(Validation, '$v', {
+          validations: vals,
+          lazyParentModel: NIL,
+          prop: '$v',
+          model: model,
+          rootModel: model
+        })];
+      }
+    }
+  });
+  return root;
+};
+
+var validationMixin = {
+  data: function data() {
+    var vals = this.$options.validations;
+
+    if (vals) {
+      this._vuelidate = validateModel(this, vals);
+    }
+
+    return {};
+  },
+  beforeCreate: function beforeCreate() {
+    var options = this.$options;
+    var vals = options.validations;
+    if (!vals) return;
+    if (!options.computed) options.computed = {};
+    if (options.computed.$v) return;
+
+    options.computed.$v = function () {
+      return this._vuelidate ? this._vuelidate.refs.$v.proxy : null;
+    };
+  },
+  beforeDestroy: function beforeDestroy() {
+    if (this._vuelidate) {
+      this._vuelidate.$destroy();
+
+      this._vuelidate = null;
+    }
+  }
+};
+exports.validationMixin = validationMixin;
+
+function Vuelidate(Vue) {
+  Vue.mixin(validationMixin);
+}
+
+var _default = Vuelidate;
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/params.js":
+/*!**********************************************!*\
+  !*** ./node_modules/vuelidate/lib/params.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.pushParams = pushParams;
+exports.popParams = popParams;
+exports.withParams = withParams;
+exports._setTarget = exports.target = void 0;
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var stack = [];
+var target = null;
+exports.target = target;
+
+var _setTarget = function _setTarget(x) {
+  exports.target = target = x;
+};
+
+exports._setTarget = _setTarget;
+
+function pushParams() {
+  if (target !== null) {
+    stack.push(target);
+  }
+
+  exports.target = target = {};
+}
+
+function popParams() {
+  var lastTarget = target;
+  var newTarget = exports.target = target = stack.pop() || null;
+
+  if (newTarget) {
+    if (!Array.isArray(newTarget.$sub)) {
+      newTarget.$sub = [];
+    }
+
+    newTarget.$sub.push(lastTarget);
+  }
+
+  return lastTarget;
+}
+
+function addParams(params) {
+  if (_typeof(params) === 'object' && !Array.isArray(params)) {
+    exports.target = target = _objectSpread({}, target, {}, params);
+  } else {
+    throw new Error('params must be an object');
+  }
+}
+
+function withParamsDirect(params, validator) {
+  return withParamsClosure(function (add) {
+    return function () {
+      add(params);
+
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      return validator.apply(this, args);
+    };
+  });
+}
+
+function withParamsClosure(closure) {
+  var validator = closure(addParams);
+  return function () {
+    pushParams();
+
+    try {
+      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        args[_key2] = arguments[_key2];
+      }
+
+      return validator.apply(this, args);
+    } finally {
+      popParams();
+    }
+  };
+}
+
+function withParams(paramsOrClosure, maybeValidator) {
+  if (_typeof(paramsOrClosure) === 'object' && maybeValidator !== undefined) {
+    return withParamsDirect(paramsOrClosure, maybeValidator);
+  }
+
+  return withParamsClosure(paramsOrClosure);
+}
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/alpha.js":
+/*!********************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/alpha.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = (0, _common.regex)('alpha', /^[a-zA-Z]*$/);
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/alphaNum.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/alphaNum.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = (0, _common.regex)('alphaNum', /^[a-zA-Z0-9]*$/);
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/and.js":
+/*!******************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/and.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = function _default() {
+  for (var _len = arguments.length, validators = new Array(_len), _key = 0; _key < _len; _key++) {
+    validators[_key] = arguments[_key];
+  }
+
+  return (0, _common.withParams)({
+    type: 'and'
+  }, function () {
+    var _this = this;
+
+    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      args[_key2] = arguments[_key2];
+    }
+
+    return validators.length > 0 && validators.reduce(function (valid, fn) {
+      return valid && fn.apply(_this, args);
+    }, true);
+  });
+};
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/between.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/between.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = function _default(min, max) {
+  return (0, _common.withParams)({
+    type: 'between',
+    min: min,
+    max: max
+  }, function (value) {
+    return !(0, _common.req)(value) || (!/\s/.test(value) || value instanceof Date) && +min <= +value && +max >= +value;
+  });
+};
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/common.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/common.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "withParams", {
+  enumerable: true,
+  get: function get() {
+    return _withParams.default;
+  }
+});
+exports.regex = exports.ref = exports.len = exports.req = void 0;
+
+var _withParams = _interopRequireDefault(__webpack_require__(/*! ../withParams */ "./node_modules/vuelidate/lib/withParams.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var req = function req(value) {
+  if (Array.isArray(value)) return !!value.length;
+
+  if (value === undefined || value === null) {
+    return false;
+  }
+
+  if (value === false) {
+    return true;
+  }
+
+  if (value instanceof Date) {
+    return !isNaN(value.getTime());
+  }
+
+  if (_typeof(value) === 'object') {
+    for (var _ in value) {
+      return true;
+    }
+
+    return false;
+  }
+
+  return !!String(value).length;
+};
+
+exports.req = req;
+
+var len = function len(value) {
+  if (Array.isArray(value)) return value.length;
+
+  if (_typeof(value) === 'object') {
+    return Object.keys(value).length;
+  }
+
+  return String(value).length;
+};
+
+exports.len = len;
+
+var ref = function ref(reference, vm, parentVm) {
+  return typeof reference === 'function' ? reference.call(vm, parentVm) : parentVm[reference];
+};
+
+exports.ref = ref;
+
+var regex = function regex(type, expr) {
+  return (0, _withParams.default)({
+    type: type
+  }, function (value) {
+    return !req(value) || expr.test(value);
+  });
+};
+
+exports.regex = regex;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/decimal.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/decimal.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = (0, _common.regex)('decimal', /^[-]?\d*(\.\d+)?$/);
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/email.js":
+/*!********************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/email.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var emailRegex = /(^$|^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$)/;
+
+var _default = (0, _common.regex)('email', emailRegex);
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/index.js":
+/*!********************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/index.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "alpha", {
+  enumerable: true,
+  get: function get() {
+    return _alpha.default;
+  }
+});
+Object.defineProperty(exports, "alphaNum", {
+  enumerable: true,
+  get: function get() {
+    return _alphaNum.default;
+  }
+});
+Object.defineProperty(exports, "numeric", {
+  enumerable: true,
+  get: function get() {
+    return _numeric.default;
+  }
+});
+Object.defineProperty(exports, "between", {
+  enumerable: true,
+  get: function get() {
+    return _between.default;
+  }
+});
+Object.defineProperty(exports, "email", {
+  enumerable: true,
+  get: function get() {
+    return _email.default;
+  }
+});
+Object.defineProperty(exports, "ipAddress", {
+  enumerable: true,
+  get: function get() {
+    return _ipAddress.default;
+  }
+});
+Object.defineProperty(exports, "macAddress", {
+  enumerable: true,
+  get: function get() {
+    return _macAddress.default;
+  }
+});
+Object.defineProperty(exports, "maxLength", {
+  enumerable: true,
+  get: function get() {
+    return _maxLength.default;
+  }
+});
+Object.defineProperty(exports, "minLength", {
+  enumerable: true,
+  get: function get() {
+    return _minLength.default;
+  }
+});
+Object.defineProperty(exports, "required", {
+  enumerable: true,
+  get: function get() {
+    return _required.default;
+  }
+});
+Object.defineProperty(exports, "requiredIf", {
+  enumerable: true,
+  get: function get() {
+    return _requiredIf.default;
+  }
+});
+Object.defineProperty(exports, "requiredUnless", {
+  enumerable: true,
+  get: function get() {
+    return _requiredUnless.default;
+  }
+});
+Object.defineProperty(exports, "sameAs", {
+  enumerable: true,
+  get: function get() {
+    return _sameAs.default;
+  }
+});
+Object.defineProperty(exports, "url", {
+  enumerable: true,
+  get: function get() {
+    return _url.default;
+  }
+});
+Object.defineProperty(exports, "or", {
+  enumerable: true,
+  get: function get() {
+    return _or.default;
+  }
+});
+Object.defineProperty(exports, "and", {
+  enumerable: true,
+  get: function get() {
+    return _and.default;
+  }
+});
+Object.defineProperty(exports, "not", {
+  enumerable: true,
+  get: function get() {
+    return _not.default;
+  }
+});
+Object.defineProperty(exports, "minValue", {
+  enumerable: true,
+  get: function get() {
+    return _minValue.default;
+  }
+});
+Object.defineProperty(exports, "maxValue", {
+  enumerable: true,
+  get: function get() {
+    return _maxValue.default;
+  }
+});
+Object.defineProperty(exports, "integer", {
+  enumerable: true,
+  get: function get() {
+    return _integer.default;
+  }
+});
+Object.defineProperty(exports, "decimal", {
+  enumerable: true,
+  get: function get() {
+    return _decimal.default;
+  }
+});
+exports.helpers = void 0;
+
+var _alpha = _interopRequireDefault(__webpack_require__(/*! ./alpha */ "./node_modules/vuelidate/lib/validators/alpha.js"));
+
+var _alphaNum = _interopRequireDefault(__webpack_require__(/*! ./alphaNum */ "./node_modules/vuelidate/lib/validators/alphaNum.js"));
+
+var _numeric = _interopRequireDefault(__webpack_require__(/*! ./numeric */ "./node_modules/vuelidate/lib/validators/numeric.js"));
+
+var _between = _interopRequireDefault(__webpack_require__(/*! ./between */ "./node_modules/vuelidate/lib/validators/between.js"));
+
+var _email = _interopRequireDefault(__webpack_require__(/*! ./email */ "./node_modules/vuelidate/lib/validators/email.js"));
+
+var _ipAddress = _interopRequireDefault(__webpack_require__(/*! ./ipAddress */ "./node_modules/vuelidate/lib/validators/ipAddress.js"));
+
+var _macAddress = _interopRequireDefault(__webpack_require__(/*! ./macAddress */ "./node_modules/vuelidate/lib/validators/macAddress.js"));
+
+var _maxLength = _interopRequireDefault(__webpack_require__(/*! ./maxLength */ "./node_modules/vuelidate/lib/validators/maxLength.js"));
+
+var _minLength = _interopRequireDefault(__webpack_require__(/*! ./minLength */ "./node_modules/vuelidate/lib/validators/minLength.js"));
+
+var _required = _interopRequireDefault(__webpack_require__(/*! ./required */ "./node_modules/vuelidate/lib/validators/required.js"));
+
+var _requiredIf = _interopRequireDefault(__webpack_require__(/*! ./requiredIf */ "./node_modules/vuelidate/lib/validators/requiredIf.js"));
+
+var _requiredUnless = _interopRequireDefault(__webpack_require__(/*! ./requiredUnless */ "./node_modules/vuelidate/lib/validators/requiredUnless.js"));
+
+var _sameAs = _interopRequireDefault(__webpack_require__(/*! ./sameAs */ "./node_modules/vuelidate/lib/validators/sameAs.js"));
+
+var _url = _interopRequireDefault(__webpack_require__(/*! ./url */ "./node_modules/vuelidate/lib/validators/url.js"));
+
+var _or = _interopRequireDefault(__webpack_require__(/*! ./or */ "./node_modules/vuelidate/lib/validators/or.js"));
+
+var _and = _interopRequireDefault(__webpack_require__(/*! ./and */ "./node_modules/vuelidate/lib/validators/and.js"));
+
+var _not = _interopRequireDefault(__webpack_require__(/*! ./not */ "./node_modules/vuelidate/lib/validators/not.js"));
+
+var _minValue = _interopRequireDefault(__webpack_require__(/*! ./minValue */ "./node_modules/vuelidate/lib/validators/minValue.js"));
+
+var _maxValue = _interopRequireDefault(__webpack_require__(/*! ./maxValue */ "./node_modules/vuelidate/lib/validators/maxValue.js"));
+
+var _integer = _interopRequireDefault(__webpack_require__(/*! ./integer */ "./node_modules/vuelidate/lib/validators/integer.js"));
+
+var _decimal = _interopRequireDefault(__webpack_require__(/*! ./decimal */ "./node_modules/vuelidate/lib/validators/decimal.js"));
+
+var helpers = _interopRequireWildcard(__webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js"));
+
+exports.helpers = helpers;
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/integer.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/integer.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = (0, _common.regex)('integer', /(^[0-9]*$)|(^-[0-9]+$)/);
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/ipAddress.js":
+/*!************************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/ipAddress.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = (0, _common.withParams)({
+  type: 'ipAddress'
+}, function (value) {
+  if (!(0, _common.req)(value)) {
+    return true;
+  }
+
+  if (typeof value !== 'string') {
+    return false;
+  }
+
+  var nibbles = value.split('.');
+  return nibbles.length === 4 && nibbles.every(nibbleValid);
+});
+
+exports.default = _default;
+
+var nibbleValid = function nibbleValid(nibble) {
+  if (nibble.length > 3 || nibble.length === 0) {
+    return false;
+  }
+
+  if (nibble[0] === '0' && nibble !== '0') {
+    return false;
+  }
+
+  if (!nibble.match(/^\d+$/)) {
+    return false;
+  }
+
+  var numeric = +nibble | 0;
+  return numeric >= 0 && numeric <= 255;
+};
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/macAddress.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/macAddress.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = function _default() {
+  var separator = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : ':';
+  return (0, _common.withParams)({
+    type: 'macAddress'
+  }, function (value) {
+    if (!(0, _common.req)(value)) {
+      return true;
+    }
+
+    if (typeof value !== 'string') {
+      return false;
+    }
+
+    var parts = typeof separator === 'string' && separator !== '' ? value.split(separator) : value.length === 12 || value.length === 16 ? value.match(/.{2}/g) : null;
+    return parts !== null && (parts.length === 6 || parts.length === 8) && parts.every(hexValid);
+  });
+};
+
+exports.default = _default;
+
+var hexValid = function hexValid(hex) {
+  return hex.toLowerCase().match(/^[0-9a-f]{2}$/);
+};
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/maxLength.js":
+/*!************************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/maxLength.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = function _default(length) {
+  return (0, _common.withParams)({
+    type: 'maxLength',
+    max: length
+  }, function (value) {
+    return !(0, _common.req)(value) || (0, _common.len)(value) <= length;
+  });
+};
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/maxValue.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/maxValue.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = function _default(max) {
+  return (0, _common.withParams)({
+    type: 'maxValue',
+    max: max
+  }, function (value) {
+    return !(0, _common.req)(value) || (!/\s/.test(value) || value instanceof Date) && +value <= +max;
+  });
+};
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/minLength.js":
+/*!************************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/minLength.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = function _default(length) {
+  return (0, _common.withParams)({
+    type: 'minLength',
+    min: length
+  }, function (value) {
+    return !(0, _common.req)(value) || (0, _common.len)(value) >= length;
+  });
+};
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/minValue.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/minValue.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = function _default(min) {
+  return (0, _common.withParams)({
+    type: 'minValue',
+    min: min
+  }, function (value) {
+    return !(0, _common.req)(value) || (!/\s/.test(value) || value instanceof Date) && +value >= +min;
+  });
+};
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/not.js":
+/*!******************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/not.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = function _default(validator) {
+  return (0, _common.withParams)({
+    type: 'not'
+  }, function (value, vm) {
+    return !(0, _common.req)(value) || !validator.call(this, value, vm);
+  });
+};
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/numeric.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/numeric.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = (0, _common.regex)('numeric', /^[0-9]*$/);
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/or.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/or.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = function _default() {
+  for (var _len = arguments.length, validators = new Array(_len), _key = 0; _key < _len; _key++) {
+    validators[_key] = arguments[_key];
+  }
+
+  return (0, _common.withParams)({
+    type: 'or'
+  }, function () {
+    var _this = this;
+
+    for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+      args[_key2] = arguments[_key2];
+    }
+
+    return validators.length > 0 && validators.reduce(function (valid, fn) {
+      return valid || fn.apply(_this, args);
+    }, false);
+  });
+};
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/required.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/required.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = (0, _common.withParams)({
+  type: 'required'
+}, function (value) {
+  if (typeof value === 'string') {
+    return (0, _common.req)(value.trim());
+  }
+
+  return (0, _common.req)(value);
+});
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/requiredIf.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/requiredIf.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = function _default(prop) {
+  return (0, _common.withParams)({
+    type: 'requiredIf',
+    prop: prop
+  }, function (value, parentVm) {
+    return (0, _common.ref)(prop, this, parentVm) ? (0, _common.req)(value) : true;
+  });
+};
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/requiredUnless.js":
+/*!*****************************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/requiredUnless.js ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = function _default(prop) {
+  return (0, _common.withParams)({
+    type: 'requiredUnless',
+    prop: prop
+  }, function (value, parentVm) {
+    return !(0, _common.ref)(prop, this, parentVm) ? (0, _common.req)(value) : true;
+  });
+};
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/sameAs.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/sameAs.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var _default = function _default(equalTo) {
+  return (0, _common.withParams)({
+    type: 'sameAs',
+    eq: equalTo
+  }, function (value, parentVm) {
+    return value === (0, _common.ref)(equalTo, this, parentVm);
+  });
+};
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/validators/url.js":
+/*!******************************************************!*\
+  !*** ./node_modules/vuelidate/lib/validators/url.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _common = __webpack_require__(/*! ./common */ "./node_modules/vuelidate/lib/validators/common.js");
+
+var urlRegex = /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/i;
+
+var _default = (0, _common.regex)('url', urlRegex);
+
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/vval.js":
+/*!********************************************!*\
+  !*** ./node_modules/vuelidate/lib/vval.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.patchChildren = patchChildren;
+exports.h = h;
+
+function isUndef(v) {
+  return v === null || v === undefined;
+}
+
+function isDef(v) {
+  return v !== null && v !== undefined;
+}
+
+function sameVval(oldVval, vval) {
+  return vval.tag === oldVval.tag && vval.key === oldVval.key;
+}
+
+function createVm(vval) {
+  var Vm = vval.tag;
+  vval.vm = new Vm({
+    data: vval.args
+  });
+}
+
+function updateVval(vval) {
+  var keys = Object.keys(vval.args);
+
+  for (var i = 0; i < keys.length; i++) {
+    keys.forEach(function (k) {
+      vval.vm[k] = vval.args[k];
+    });
+  }
+}
+
+function createKeyToOldIdx(children, beginIdx, endIdx) {
+  var i, key;
+  var map = {};
+
+  for (i = beginIdx; i <= endIdx; ++i) {
+    key = children[i].key;
+    if (isDef(key)) map[key] = i;
+  }
+
+  return map;
+}
+
+function updateChildren(oldCh, newCh) {
+  var oldStartIdx = 0;
+  var newStartIdx = 0;
+  var oldEndIdx = oldCh.length - 1;
+  var oldStartVval = oldCh[0];
+  var oldEndVval = oldCh[oldEndIdx];
+  var newEndIdx = newCh.length - 1;
+  var newStartVval = newCh[0];
+  var newEndVval = newCh[newEndIdx];
+  var oldKeyToIdx, idxInOld, elmToMove;
+
+  while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
+    if (isUndef(oldStartVval)) {
+      oldStartVval = oldCh[++oldStartIdx];
+    } else if (isUndef(oldEndVval)) {
+      oldEndVval = oldCh[--oldEndIdx];
+    } else if (sameVval(oldStartVval, newStartVval)) {
+      patchVval(oldStartVval, newStartVval);
+      oldStartVval = oldCh[++oldStartIdx];
+      newStartVval = newCh[++newStartIdx];
+    } else if (sameVval(oldEndVval, newEndVval)) {
+      patchVval(oldEndVval, newEndVval);
+      oldEndVval = oldCh[--oldEndIdx];
+      newEndVval = newCh[--newEndIdx];
+    } else if (sameVval(oldStartVval, newEndVval)) {
+      patchVval(oldStartVval, newEndVval);
+      oldStartVval = oldCh[++oldStartIdx];
+      newEndVval = newCh[--newEndIdx];
+    } else if (sameVval(oldEndVval, newStartVval)) {
+      patchVval(oldEndVval, newStartVval);
+      oldEndVval = oldCh[--oldEndIdx];
+      newStartVval = newCh[++newStartIdx];
+    } else {
+      if (isUndef(oldKeyToIdx)) oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx);
+      idxInOld = isDef(newStartVval.key) ? oldKeyToIdx[newStartVval.key] : null;
+
+      if (isUndef(idxInOld)) {
+        createVm(newStartVval);
+        newStartVval = newCh[++newStartIdx];
+      } else {
+        elmToMove = oldCh[idxInOld];
+
+        if (sameVval(elmToMove, newStartVval)) {
+          patchVval(elmToMove, newStartVval);
+          oldCh[idxInOld] = undefined;
+          newStartVval = newCh[++newStartIdx];
+        } else {
+          createVm(newStartVval);
+          newStartVval = newCh[++newStartIdx];
+        }
+      }
+    }
+  }
+
+  if (oldStartIdx > oldEndIdx) {
+    addVvals(newCh, newStartIdx, newEndIdx);
+  } else if (newStartIdx > newEndIdx) {
+    removeVvals(oldCh, oldStartIdx, oldEndIdx);
+  }
+}
+
+function addVvals(vvals, startIdx, endIdx) {
+  for (; startIdx <= endIdx; ++startIdx) {
+    createVm(vvals[startIdx]);
+  }
+}
+
+function removeVvals(vvals, startIdx, endIdx) {
+  for (; startIdx <= endIdx; ++startIdx) {
+    var ch = vvals[startIdx];
+
+    if (isDef(ch)) {
+      ch.vm.$destroy();
+      ch.vm = null;
+    }
+  }
+}
+
+function patchVval(oldVval, vval) {
+  if (oldVval === vval) {
+    return;
+  }
+
+  vval.vm = oldVval.vm;
+  updateVval(vval);
+}
+
+function patchChildren(oldCh, ch) {
+  if (isDef(oldCh) && isDef(ch)) {
+    if (oldCh !== ch) updateChildren(oldCh, ch);
+  } else if (isDef(ch)) {
+    addVvals(ch, 0, ch.length - 1);
+  } else if (isDef(oldCh)) {
+    removeVvals(oldCh, 0, oldCh.length - 1);
+  }
+}
+
+function h(tag, key, args) {
+  return {
+    tag: tag,
+    key: key,
+    args: args
+  };
+}
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/withParams.js":
+/*!**************************************************!*\
+  !*** ./node_modules/vuelidate/lib/withParams.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var withParams = process.env.BUILD === 'web' ? __webpack_require__(/*! ./withParamsBrowser */ "./node_modules/vuelidate/lib/withParamsBrowser.js").withParams : __webpack_require__(/*! ./params */ "./node_modules/vuelidate/lib/params.js").withParams;
+var _default = withParams;
+exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../process/browser.js */ "./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./node_modules/vuelidate/lib/withParamsBrowser.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/vuelidate/lib/withParamsBrowser.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.withParams = void 0;
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var root = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : {};
+
+var fakeWithParams = function fakeWithParams(paramsOrClosure, maybeValidator) {
+  if (_typeof(paramsOrClosure) === 'object' && maybeValidator !== undefined) {
+    return maybeValidator;
+  }
+
+  return paramsOrClosure(function () {});
+};
+
+var withParams = root.vuelidate ? root.vuelidate.withParams : fakeWithParams;
+exports.withParams = withParams;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
 /***/ "./node_modules/vuex/dist/vuex.esm.js":
 /*!********************************************!*\
   !*** ./node_modules/vuex/dist/vuex.esm.js ***!
@@ -87800,10 +93347,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var vue_native_websocket__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-native-websocket */ "./node_modules/vue-native-websocket/dist/build.js");
 /* harmony import */ var vue_native_websocket__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue_native_websocket__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _components_CustomerComponent_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/CustomerComponent.vue */ "./resources/js/components/CustomerComponent.vue");
-/* harmony import */ var _components_ConsultantComponent_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/ConsultantComponent.vue */ "./resources/js/components/ConsultantComponent.vue");
-/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./store */ "./resources/js/store/index.js");
-/* harmony import */ var _store_mutation_types__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./store/mutation-types */ "./resources/js/store/mutation-types.js");
+/* harmony import */ var vue_i18n__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue-i18n */ "./node_modules/vue-i18n/dist/vue-i18n.esm.js");
+/* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuelidate */ "./node_modules/vuelidate/lib/index.js");
+/* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(vuelidate__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _components_CustomerComponent_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/CustomerComponent.vue */ "./resources/js/components/CustomerComponent.vue");
+/* harmony import */ var _components_ConsultantComponent_vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/ConsultantComponent.vue */ "./resources/js/components/ConsultantComponent.vue");
+/* harmony import */ var _vue_i18n_locales_generated__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./vue-i18n-locales.generated */ "./resources/js/vue-i18n-locales.generated.js");
+/* harmony import */ var _store__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./store */ "./resources/js/store/index.js");
+/* harmony import */ var _store_mutation_types__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./store/mutation-types */ "./resources/js/store/mutation-types.js");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
@@ -87813,30 +93364,45 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 
+
+
+
 var mutations = {
-  SOCKET_ONOPEN: _store_mutation_types__WEBPACK_IMPORTED_MODULE_6__["SOCKET_ONOPEN"],
-  SOCKET_ONCLOSE: _store_mutation_types__WEBPACK_IMPORTED_MODULE_6__["SOCKET_ONCLOSE"],
-  SOCKET_ONERROR: _store_mutation_types__WEBPACK_IMPORTED_MODULE_6__["SOCKET_ONERROR"],
-  SOCKET_ONMESSAGE: _store_mutation_types__WEBPACK_IMPORTED_MODULE_6__["SOCKET_ONMESSAGE"],
-  SOCKET_RECONNECT: _store_mutation_types__WEBPACK_IMPORTED_MODULE_6__["SOCKET_RECONNECT"],
-  SOCKET_RECONNECT_ERROR: _store_mutation_types__WEBPACK_IMPORTED_MODULE_6__["SOCKET_RECONNECT_ERROR"]
+  SOCKET_ONOPEN: _store_mutation_types__WEBPACK_IMPORTED_MODULE_9__["SOCKET_ONOPEN"],
+  SOCKET_ONCLOSE: _store_mutation_types__WEBPACK_IMPORTED_MODULE_9__["SOCKET_ONCLOSE"],
+  SOCKET_ONERROR: _store_mutation_types__WEBPACK_IMPORTED_MODULE_9__["SOCKET_ONERROR"],
+  SOCKET_ONMESSAGE: _store_mutation_types__WEBPACK_IMPORTED_MODULE_9__["SOCKET_ONMESSAGE"],
+  SOCKET_RECONNECT: _store_mutation_types__WEBPACK_IMPORTED_MODULE_9__["SOCKET_RECONNECT"],
+  SOCKET_RECONNECT_ERROR: _store_mutation_types__WEBPACK_IMPORTED_MODULE_9__["SOCKET_RECONNECT_ERROR"]
 };
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_native_websocket__WEBPACK_IMPORTED_MODULE_2___default.a, 'ws://localhost:8081/one2one', {
-  store: _store__WEBPACK_IMPORTED_MODULE_5__["default"],
-  mutations: mutations,
-  reconnection: true,
-  reconnectionAttempts: 5,
-  reconnectionDelay: 3000,
-  format: 'json'
-});
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
-var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
-  el: '#chat-component',
-  components: {
-    'customer-component': _components_CustomerComponent_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
-    'consultant-component': _components_ConsultantComponent_vue__WEBPACK_IMPORTED_MODULE_4__["default"]
-  }
-});
+
+if (document.getElementById("chat-component")) {
+  vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_native_websocket__WEBPACK_IMPORTED_MODULE_2___default.a, 'ws://localhost:8081', {
+    // Vue.use(VueNativeSock, 'wss://status-socket-gotoconsult.fantasylab.io:8081', {
+    store: _store__WEBPACK_IMPORTED_MODULE_8__["default"],
+    mutations: mutations,
+    reconnection: true,
+    reconnectionAttempts: 5,
+    reconnectionDelay: 3000,
+    format: 'json'
+  });
+  vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
+  vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_i18n__WEBPACK_IMPORTED_MODULE_3__["default"]);
+  vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuelidate__WEBPACK_IMPORTED_MODULE_4___default.a);
+  var lang = document.documentElement.lang.substr(0, 2);
+  var i18n = new vue_i18n__WEBPACK_IMPORTED_MODULE_3__["default"]({
+    locale: lang,
+    messages: _vue_i18n_locales_generated__WEBPACK_IMPORTED_MODULE_7__["default"]
+  });
+  var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
+    el: '#chat-component',
+    i18n: i18n,
+    components: {
+      'customer-component': _components_CustomerComponent_vue__WEBPACK_IMPORTED_MODULE_5__["default"],
+      'consultant-component': _components_ConsultantComponent_vue__WEBPACK_IMPORTED_MODULE_6__["default"]
+    }
+  });
+}
 
 /***/ }),
 
@@ -87876,14 +93442,15 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /*!*********************************************************!*\
   !*** ./resources/js/components/ConsultantComponent.vue ***!
   \*********************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ConsultantComponent_vue_vue_type_template_id_4ec39da7___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ConsultantComponent.vue?vue&type=template&id=4ec39da7& */ "./resources/js/components/ConsultantComponent.vue?vue&type=template&id=4ec39da7&");
 /* harmony import */ var _ConsultantComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ConsultantComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/ConsultantComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _ConsultantComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _ConsultantComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -87913,7 +93480,7 @@ component.options.__file = "resources/js/components/ConsultantComponent.vue"
 /*!**********************************************************************************!*\
   !*** ./resources/js/components/ConsultantComponent.vue?vue&type=script&lang=js& ***!
   \**********************************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -88080,6 +93647,828 @@ var SOCKET_ONMESSAGE = 'Websocket message received';
 var SOCKET_RECONNECT = 'Websocket reconnected';
 var SOCKET_RECONNECT_ERROR = 'Websocket is having issues reconnecting..';
 
+
+/***/ }),
+
+/***/ "./resources/js/vue-i18n-locales.generated.js":
+/*!****************************************************!*\
+  !*** ./resources/js/vue-i18n-locales.generated.js ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  "en": {
+    "about": {
+      "what_solve": "What do we solve",
+      "passion": "We value Paasion",
+      "innovation": "Innovation and technology",
+      "find_consult": "Find a Consult",
+      "become_consult": "Become a Consult",
+      "get_started": "It's easy to get started",
+      "how_it_all": "How it all",
+      "started_in": "Started in"
+    },
+    "admin": {
+      "customers": "Customers",
+      "consultants": "Consultants",
+      "categories": "Categories",
+      "pages": "Pages",
+      "create_customer": "Create customer",
+      "create_consultant": "Create consultant",
+      "create_category": "Create category",
+      "create_page": "Create page",
+      "number": "number",
+      "customer": "Customer",
+      "consultant": "Consultant",
+      "category": "Category",
+      "reg_date": "REG. DATE",
+      "action": "Action",
+      "details": "Details",
+      "industry": "Industry",
+      "slug": "Slug",
+      "description": "Description",
+      "page_name": "Page name",
+      "status": "Status",
+      "published": "Published",
+      "settings": "Settings",
+      "personal_info": "Personal Info",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "phone": "Phone",
+      "save": "Save",
+      "add": "Add",
+      "mail_settings": "Mail Settings",
+      "old_email": "Old e-mail",
+      "new_email": "New e-mail",
+      "password_settings": "Password Settings",
+      "password": "Password",
+      "old_password": "Old Password",
+      "new_password": "New Password",
+      "confirm_password": "Confirm Password",
+      "set_password": "Set Password",
+      "company_name": "Company name",
+      "invoice_email": "Invoice e-mail",
+      "address": "Address",
+      "zip_code": "Zip code",
+      "zip_place": "Zip place",
+      "invoice_settings": "Invoice Settings",
+      "chat": "Chat",
+      "video": "Video",
+      "contact_settings": "Contact Settings",
+      "industry_expertise": "Industry Expertise",
+      "email": "E-mail",
+      "page_settings": "Page Settings",
+      "profile_image": "Profile Image",
+      "remove_image": "Remove Image",
+      "browse_photo": "Browse Photo",
+      "upload": "Upload",
+      "category_icon": "Category Icon",
+      "en_category_description": "English Category description (max 220 characters)",
+      "no_category_description": "Norwegian Category description (max 220 characters)",
+      "category_settings": "Category Settings",
+      "en_category_name": "Category Name (English)",
+      "no_category_name": "Category Name (Norwegian)",
+      "category_url": "Category URL",
+      "meta_information": "Meta Information",
+      "meta_title": "Meta title (max 55 characters)",
+      "meta_description": "Meta description (max 55 characters)",
+      "page_url": "Page URL",
+      "body": "Body"
+    },
+    "admin_sidebar": {
+      "customers": "Customers",
+      "consultants": "Consultants",
+      "categories": "Categories",
+      "pages": "Pages",
+      "settings": "Settings",
+      "logout": "Logout",
+      "profile": "My Profile"
+    },
+    "auth": {
+      "failed": "These credentials do not match our records.",
+      "throttle": "Too many login attempts. Please try again in {seconds} seconds."
+    },
+    "become_consultant": {
+      "our_consultant_service": "Our Consultant Service",
+      "our_consultant_services": "Our Consultant Services",
+      "become_consultant": "Become a consultant",
+      "create_consultant_account": "Create a Consultant Account",
+      "read_accept": "I have read and I accept",
+      "gotoconsult": "GoToConsult's",
+      "mandatory": "Mandatory Requirements",
+      "join_consultant": "Join as consultant and work from anywhere",
+      "happy_consultants": "Happy Consultants using GoToConsult",
+      "consultation_platform": "A Consultation Platform",
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "and": "and",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "industry_expertise": "Industry expertise",
+      "phone": "Phone",
+      "email": "E-mail",
+      "create_password": "Create password"
+    },
+    "category_info": {
+      "sortby": "Sort by",
+      "showing": "Showing",
+      "find_consultant": "Find a Consultant",
+      "read_more": "Read more"
+    },
+    "footer": {
+      "about_us": "About us",
+      "become_consultant": "Become a Consultant",
+      "categories": "Categories",
+      "find_consultant": "Find a Consultant",
+      "log_out": "Logout",
+      "settings": "Settings",
+      "invoices": "Invoices",
+      "prepaid_card": "Prepaid Card",
+      "my_consultants": "My Consultants",
+      "my_customers": "My Customers",
+      "login": "Login",
+      "create_account": "Create Account",
+      "terms_customer": "Terms for Customer",
+      "terms_provider": "Terms for Provider",
+      "contact": "Contact",
+      "get_started": "Get started",
+      "follow_us": "Follow us",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "linkedin": "Linkedin",
+      "copyright": "2019 Teletjenesten AS. All Rights Reserved",
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "description": "UI/UX Design & Full Stack developement: FantasyLab."
+    },
+    "header": {
+      "about_us": "About us",
+      "become_consultant": "Become a Consultant",
+      "categories": "Categories",
+      "find_consultant": "Find a Consultant",
+      "log_out": "Logout",
+      "settings": "Settings",
+      "invoices": "Invoices",
+      "prepaid_card": "Prepaid Card",
+      "my_consultants": "My Consultants",
+      "my_customers": "My Customers",
+      "login": "Login",
+      "customers": "Customers",
+      "consultants": "Consultants",
+      "pages": "Pages"
+    },
+    "home": {
+      "find_consultant": "Find a Consultant",
+      "become_consultant": "Become a Consultant",
+      "call": "Call",
+      "code": "Code",
+      "read_more": "Read more",
+      "lawyer": "Lawyer"
+    },
+    "login": {
+      "login": "Login",
+      "with_account": "with your GoToConsult account",
+      "password": "Password",
+      "email": "Email",
+      "forgot_password": "Forgot password",
+      "create_account": "Create Account",
+      "back_home": "Back to Home",
+      "privacy": "Privacy",
+      "terms": "Terms"
+    },
+    "member": _defineProperty({
+      "about_us": "About us",
+      "become_consultant": "Become a Consultant",
+      "categories": "Categories",
+      "find_consultant": "Find a Consultant",
+      "log_out": "Logout",
+      "settings": "Settings",
+      "profile": "My Profile",
+      "profile_settings": "Profile Settings",
+      "communication-payment": "Communication & Payment",
+      "invoice_settings": "INVOICE SETTINGS",
+      "prepaid_card": "Prepaid Card",
+      "dashboard": "Dashboard",
+      "my-sessions": "My Sessions",
+      "wallet": "My Wallet",
+      "my-transaction": "My Transactions",
+      "login": "Login",
+      "available": "Available",
+      "offline": "Offline",
+      "in_call": "In a call",
+      "end_session": "End session",
+      "details": "Details",
+      "ratings": "Ratings",
+      "completed_chats": "completed chats",
+      "last_online": "last online",
+      "rate_session": "Rate this session",
+      "send": "Send",
+      "sms": "SMS",
+      "in_app": "In-app",
+      "payment_method": "Payment Methods",
+      "payment_transactions": "Payment Transactions",
+      "contact_information": "Contact information",
+      "payment_information": "Payment information",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "email": "E-mail",
+      "card_number": "Card Number",
+      "expiry_date": "Expiry Date",
+      "expiry_month": "Expiry Month",
+      "expiry_year": "Expiry Year",
+      "address": "Address",
+      "zip_code": "Zip Code",
+      "zip_place": "Zip Place",
+      "add_card": "Add Card",
+      "current_balance": "My Current Balance",
+      "consultant": "Consultant",
+      "status": "Status",
+      "search": "Search invoice number",
+      "number": "Number",
+      "price": "Price",
+      "date-time": "Date & Time",
+      "profile_image": "Profile image",
+      "upload": "Upload",
+      "profession": "Profession",
+      "company_name": "Company name",
+      "phone": "Phone",
+      "chat": "Chat",
+      "video": "Video",
+      "change_password": "CHANGE PASSWORD",
+      "old_password": "Old password",
+      "new_password": "New password",
+      "save": "Save",
+      "choose_card": "Buy GotoConsult Credits",
+      "pay_klarna": "Pay with Klarna",
+      "pay_vipps": "Pay with Vipps",
+      "save_payment": "Save for next time",
+      "debit_credit": "Debit / credit card",
+      "submit": "Submit",
+      "currency": "Currency",
+      "get_started": "Get started",
+      "close": "Close",
+      "currency_settings": "Currency settings",
+      "password_settings": "Password settings",
+      "other": "Other",
+      "gotoconsult-credit": "GotoConsult Credits",
+      "subtotal": "Subtotal",
+      "processing-fee": "Processing fee",
+      "total": "Total",
+      "time-spent": "Time Spent",
+      "minute": "Minute",
+      "minutes": "Minutes",
+      "start-session": "Start a Session",
+      "edit-profile": "Edit Profile",
+      "edit-profile-photo": "Edit Profile Photo",
+      "edit-profile-photo-text": "Your profile photo must be less than 2MB",
+      "about-me": "About Me",
+      "member-since": "GotoConsult member since",
+      "from": "From",
+      "lives-in": "Lives in",
+      "college": "College",
+      "country": "Country",
+      "region": "Region",
+      "timezone": "Timezone",
+      "price_minute": "Price per minute",
+      "saved_payment_method": "Saved Payment Method",
+      "hourly_rate_description": "You currently have no saved payment methods.",
+      "company_information": "Company Information",
+      "organization_number": "Organization Number",
+      "bank_account": "Bank Account",
+      "no-details": "No details added yet.",
+      "no-about-us": "No information added yet.",
+      "completed-sessions": "Completed Sessions",
+      "response-rate": "Response Rate",
+      "edit-details": "Edit Details",
+      "edit-information": "Edit Information",
+      "no-data-generated": "No data generated yet.",
+      "reviews": "Reviews",
+      "no-reviews": "No reviews yet.",
+      "view-more": "View More",
+      "session": "session",
+      "sessions": "sessions",
+      "no-consultants": "No consultants selected.",
+      "no-customers": "No customers selected.",
+      "no-consultants-des": "Select a consultant you would like to chat, voice or video call with.",
+      "no-customers-des": "Select a customer you would like to chat, voice or video call with.",
+      "selected": "You have selected",
+      "selected-des": "Let's get started with chat, voice or video call.",
+      "account-balance": "Your account balance is",
+      "balance-charge-question": "How many minutes do you want to use?",
+      "total-cost": "Total cost",
+      "btn-go-back": "Go Back",
+      "btn-continue-call": "Continue Call",
+      "btn-continue-video-call": "Continue Video Call",
+      "btn-continue-session": "Continue Session",
+      "btn-view-session": "View session",
+      "last-online": "last online",
+      "session-end-alert": "Your session ends in 15 seconds",
+      "chat-end": "Your chat has ended",
+      "rate-session": "Rate this session",
+      "continue": "Continue?",
+      "continue-btn": "Continue",
+      "minutes-question": "Do you want to continue session?",
+      "write-message": "Write message here....",
+      "incoming-chat": "Incoming chat request from",
+      "incoming-video": "Incoming video call from",
+      "incoming-call": "Incoming call from",
+      "session-continue": "Your session has ended.",
+      "start-call": "Start Call",
+      "start-video-call": "Start Video Call",
+      "start-conversation": "Start Conversation",
+      "write-review": "Write Review",
+      "write-review-msg": "Write your review here",
+      "submit-review": "Submit Review",
+      "continue-session": "Continue Session"
+    }, "start-session", "Start session"),
+    "pagination": {
+      "previous": "&laquo; Previous",
+      "next": "Next &raquo;"
+    },
+    "passwords": {
+      "reset": "Your password has been reset!",
+      "sent": "We have e-mailed your password reset link!",
+      "token": "This password reset token is invalid.",
+      "user": "We can't find a user with that e-mail address."
+    },
+    "register": {
+      "welcome_gotoconsult": "Welcome to GoToConsult",
+      "password": "Password",
+      "consultant": "I am a consultant",
+      "industry_expertise": "Industry expertise",
+      "email": "Email",
+      "create_password": "Create password",
+      "create_account": "Create an Account",
+      "login": "Login",
+      "back_home": "Back to Home",
+      "read_accept": "I have read and I accept GoToConsult’s",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "and": "and",
+      "phone": "Phone",
+      "benefits": "Benefits with GoToConsult",
+      "first_name": "First name",
+      "last_name": "Last name"
+    },
+    "validation": {
+      "accepted": "The {attribute} must be accepted.",
+      "active_url": "The {attribute} is not a valid URL.",
+      "after": "The {attribute} must be a date after {date}.",
+      "after_or_equal": "The {attribute} must be a date after or equal to {date}.",
+      "alpha": "The {attribute} may only contain letters.",
+      "alpha_dash": "The {attribute} may only contain letters, numbers, dashes and underscores.",
+      "alpha_num": "The {attribute} may only contain letters and numbers.",
+      "array": "The {attribute} must be an array.",
+      "before": "The {attribute} must be a date before {date}.",
+      "before_or_equal": "The {attribute} must be a date before or equal to {date}.",
+      "between": {
+        "numeric": "The {attribute} must be between {min} and {max}.",
+        "file": "The {attribute} must be between {min} and {max} kilobytes.",
+        "string": "The {attribute} must be between {min} and {max} characters.",
+        "array": "The {attribute} must have between {min} and {max} items."
+      },
+      "boolean": "The {attribute} field must be true or false.",
+      "confirmed": "The {attribute} confirmation does not match.",
+      "date": "The {attribute} is not a valid date.",
+      "date_equals": "The {attribute} must be a date equal to {date}.",
+      "date_format": "The {attribute} does not match the format {format}.",
+      "different": "The {attribute} and {other} must be different.",
+      "digits": "The {attribute} must be {digits} digits.",
+      "digits_between": "The {attribute} must be between {min} and {max} digits.",
+      "dimensions": "The {attribute} has invalid image dimensions.",
+      "distinct": "The {attribute} field has a duplicate value.",
+      "email": "The {attribute} must be a valid email address.",
+      "ends_with": "The {attribute} must end with one of the following: {values}",
+      "exists": "The selected {attribute} is invalid.",
+      "file": "The {attribute} must be a file.",
+      "filled": "The {attribute} field must have a value.",
+      "gt": {
+        "numeric": "The {attribute} must be greater than {value}.",
+        "file": "The {attribute} must be greater than {value} kilobytes.",
+        "string": "The {attribute} must be greater than {value} characters.",
+        "array": "The {attribute} must have more than {value} items."
+      },
+      "gte": {
+        "numeric": "The {attribute} must be greater than or equal {value}.",
+        "file": "The {attribute} must be greater than or equal {value} kilobytes.",
+        "string": "The {attribute} must be greater than or equal {value} characters.",
+        "array": "The {attribute} must have {value} items or more."
+      },
+      "image": "The {attribute} must be an image.",
+      "in": "The selected {attribute} is invalid.",
+      "in_array": "The {attribute} field does not exist in {other}.",
+      "integer": "The {attribute} must be an integer.",
+      "ip": "The {attribute} must be a valid IP address.",
+      "ipv4": "The {attribute} must be a valid IPv4 address.",
+      "ipv6": "The {attribute} must be a valid IPv6 address.",
+      "json": "The {attribute} must be a valid JSON string.",
+      "lt": {
+        "numeric": "The {attribute} must be less than {value}.",
+        "file": "The {attribute} must be less than {value} kilobytes.",
+        "string": "The {attribute} must be less than {value} characters.",
+        "array": "The {attribute} must have less than {value} items."
+      },
+      "lte": {
+        "numeric": "The {attribute} must be less than or equal {value}.",
+        "file": "The {attribute} must be less than or equal {value} kilobytes.",
+        "string": "The {attribute} must be less than or equal {value} characters.",
+        "array": "The {attribute} must not have more than {value} items."
+      },
+      "max": {
+        "numeric": "The {attribute} may not be greater than {max}.",
+        "file": "The {attribute} may not be greater than {max} kilobytes.",
+        "string": "The {attribute} may not be greater than {max} characters.",
+        "array": "The {attribute} may not have more than {max} items."
+      },
+      "mimes": "The {attribute} must be a file of type: {values}.",
+      "mimetypes": "The {attribute} must be a file of type: {values}.",
+      "min": {
+        "numeric": "The {attribute} must be at least {min}.",
+        "file": "The {attribute} must be at least {min} kilobytes.",
+        "string": "The {attribute} must be at least {min} characters.",
+        "array": "The {attribute} must have at least {min} items."
+      },
+      "not_in": "The selected {attribute} is invalid.",
+      "not_regex": "The {attribute} format is invalid.",
+      "numeric": "The {attribute} must be a number.",
+      "present": "The {attribute} field must be present.",
+      "regex": "The {attribute} format is invalid.",
+      "required": "The {attribute} field is required.",
+      "required_if": "The {attribute} field is required when {other} is {value}.",
+      "required_unless": "The {attribute} field is required unless {other} is in {values}.",
+      "required_with": "The {attribute} field is required when {values} is present.",
+      "required_with_all": "The {attribute} field is required when {values} are present.",
+      "required_without": "The {attribute} field is required when {values} is not present.",
+      "required_without_all": "The {attribute} field is required when none of {values} are present.",
+      "same": "The {attribute} and {other} must match.",
+      "size": {
+        "numeric": "The {attribute} must be {size}.",
+        "file": "The {attribute} must be {size} kilobytes.",
+        "string": "The {attribute} must be {size} characters.",
+        "array": "The {attribute} must contain {size} items."
+      },
+      "starts_with": "The {attribute} must start with one of the following: {values}",
+      "string": "The {attribute} must be a string.",
+      "timezone": "The {attribute} must be a valid zone.",
+      "unique": "The {attribute} has already been taken.",
+      "uploaded": "The {attribute} failed to upload.",
+      "url": "The {attribute} format is invalid.",
+      "uuid": "The {attribute} must be a valid UUID.",
+      "custom": {
+        "attribute-name": {
+          "rule-name": "custom-message"
+        }
+      },
+      "attributes": []
+    }
+  },
+  "no": {
+    "about": {
+      "what_solve": "Hva løser vi",
+      "passion": "Vi verdsetter lidenskap",
+      "innovation": "Innovasjon og teknologi",
+      "find_consult": "Finn en konsulent",
+      "become_consult": "Bli en konsulent",
+      "get_started": "Det er lett å komme i gang",
+      "how_it_all": "Hvordan det hele",
+      "started_in": "Startet i"
+    },
+    "admin": {
+      "customers": "kunder",
+      "consultants": "konsulenter",
+      "categories": "kategorier",
+      "pages": "sider",
+      "create_customer": "skape kunde",
+      "create_consultant": "Lag konsulent",
+      "create_category": "Opprett kategori",
+      "create_page": "Lag side",
+      "number": "Nummer",
+      "customer": "Kunde",
+      "consultant": "Konsulent",
+      "category": "Kategori",
+      "reg_date": "REG. DATO",
+      "action": "Handling",
+      "details": "detaljer",
+      "industry": "Industri",
+      "description": "Beskrivelse",
+      "page_name": "Sidenavn",
+      "status": "Status",
+      "published": "publisert",
+      "settings": "innstillinger",
+      "personal_info": "Personlig informasjon",
+      "first_name": "Fornavn",
+      "last_name": "Etternavn",
+      "phone": "Telefon",
+      "save": "Lagre",
+      "add": "Legge",
+      "mail_settings": "E-postinnstillinger",
+      "old_email": "Gammel e-post",
+      "new_email": "Ny epost",
+      "password_settings": "Passord Innstillinger",
+      "old_password": "gammelt passord",
+      "new_password": "Nytt passord",
+      "password": "passord",
+      "confirm_password": "bekreft passord",
+      "set_password": "Lag et passord",
+      "company_name": "Selskapsnavn",
+      "invoice_email": "Faktura e-post",
+      "address": "Adresse",
+      "zip_code": "Post kode",
+      "zip_place": "Glidelås sted",
+      "invoice_settings": "Fakturainnstillinger",
+      "chat": "Chat",
+      "video": "Video",
+      "contact_settings": "Kontaktinnstillinger",
+      "industry_expertise": "Bransjeekspertise",
+      "email": "E-post",
+      "page_settings": "Sideinnstillinger",
+      "profile_image": "Profilbilde",
+      "remove_image": "Fjern bilde",
+      "browse_photo": "Bla gjennom foto",
+      "upload": "Laste opp",
+      "category_icon": "Kategori Ikon",
+      "en_category_description": "Engelsk kategoribeskrivelse (maks 220 tegn)",
+      "no_category_description": "Norsk kategoribeskrivelse (maks 220 tegn)",
+      "category_settings": "Kategori Innstillinger",
+      "en_category_name": "Kategori navn (Engelsk)",
+      "no_category_name": "Kategori navn (Norsk)",
+      "category_url": "URL-kategori",
+      "meta_information": "Metainformasjon",
+      "meta_title": "Metatittel (maks 55 tegn)",
+      "meta_description": "Meta Beskrivelse (maks 55 tegn)",
+      "page_url": "side url",
+      "body": "Kropp"
+    },
+    "admin_sidebar": {
+      "customers": "kunder",
+      "consultants": "konsulenter",
+      "categories": "kategorier",
+      "pages": "sider",
+      "settings": "innstillinger",
+      "logout": "Logg ut",
+      "profile": "Min profil"
+    },
+    "become_consultant": {
+      "our_consultant_service": "Vår konsulenttjeneste",
+      "our_consultant_services": "Våre konsulenttjenester",
+      "become_consultant": "Bli konsulent",
+      "create_consultant_account": "Opprett en konsulentkonto",
+      "read_accept": "Jeg har lest og godtar det",
+      "gotoconsult": "GoToConsult's",
+      "mandatory": "Obligator cows",
+      "join_consultant": "Bli med som consul og jobb hvor som helst",
+      "happy_consultants": "Glade consultant som broker GoToConsult",
+      "consultation_platform": "En konsultasjonsplattform",
+      "terms": "Vilkår",
+      "privacy": "Personvern",
+      "and": "og",
+      "first_name": "Fornavn",
+      "last_name": "Etternavn",
+      "industry_expertise": "Bransjekompetanse",
+      "phone": "phone",
+      "email": "E - post",
+      "create_password": "Lag passord"
+    },
+    "category_info": {
+      "sortby": "Sorter etter",
+      "showing": "Viser",
+      "find_consultant": "Finn en konsulent",
+      "read_more": "Les mer",
+      "lawyer": "advokat"
+    },
+    "footer": {
+      "about_us": "Om oss",
+      "become_consultant": "Bli konsulent",
+      "categories": "Kategorier",
+      "find_consultant": "Finn konsulent",
+      "log_out": "Logg ut",
+      "settings": "innstillinger",
+      "invoices": "fakturaer",
+      "prepaid_card": "forhåndsbetalt kort",
+      "my_consultants": "consulent mines",
+      "my_customers": "kundene mines",
+      "login": "Logg Inn",
+      "create_account": "Opprett konto",
+      "terms_customer": "Vilkår for kunde",
+      "terms_provider": "Vilkår for leverandør",
+      "contact": "Kontakt",
+      "get_started": "Kom i gang",
+      "follow_us": "Følg oss",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "linkedin": "Linkedin",
+      "copyright": "2019 Calf AS.  Alle rettigheter forbeholdt",
+      "terms": "vilkår",
+      "privacy": "personvern",
+      "description": "UI / UX Design & Full Stack-utvikling: FantasyLab."
+    },
+    "header": {
+      "about_us": "Om oss",
+      "become_consultant": "Bli konsulent",
+      "categories": "Kategorier",
+      "find_consultant": "Finn en konsulent",
+      "log_out": "Logg ut",
+      "settings": "Innstillinger",
+      "invoices": "Fakuraer",
+      "prepaid_card": "Kontantkort",
+      "my_consultants": "Mine konsulenter",
+      "my_customers": "Mine kunder",
+      "login": "Logg Inn",
+      "customers": "Kunder",
+      "consultants": "Konsulenter",
+      "pages": "Sider"
+    },
+    "home": {
+      "find_consultant": "Finn en konsulent",
+      "find_advisor": "Finn din rådgiver",
+      "become_consultant": "Bli konsulent",
+      "call": "ring",
+      "code": "kode",
+      "read_more": "les mer",
+      "lawyer": "advokat"
+    },
+    "login": {
+      "login": "Logg Inn",
+      "with_account": "med GoToConsult-kontoen din",
+      "password": "Passord",
+      "email": "Email",
+      "forgot_password": "Glemt passord",
+      "create_account": "Opprett konto",
+      "back_home": "Tilbake til forsiden",
+      "privacy": "Personvern",
+      "terms": "Vilkår"
+    },
+    "member": _defineProperty({
+      "about_us": "About us",
+      "become_consultant": "Bli konsulent",
+      "categories": "Categories",
+      "find_consultant": "Finn en konsulent",
+      "log_out": "Logg ut",
+      "settings": "Innstillinger",
+      "profile": "Min Profil",
+      "profile_settings": "PROFILINNESTILLINGER",
+      "communication-payment": "Kommunikasjon og betaling",
+      "invoice_settings": "FAKTURAINNSTILLINGER",
+      "dashboard": "Oversikt",
+      "my-sessions": "Mine møter",
+      "wallet": "Mine lommebok",
+      "my-transaction": "Transaksjonene mine",
+      "login": "Logg Inn",
+      "available": "Tilgjengelig",
+      "offline": "Offline",
+      "in_call": "I en samtale",
+      "end_session": "Avslutt økt",
+      "details": "Detaljer",
+      "ratings": "Rangeringer",
+      "completed_chats": "Fullførte samtaler",
+      "last_online": "Sist på nettet",
+      "rate_session": "Ranger denne økten",
+      "send": "Sende",
+      "sms": "Tekstmelding",
+      "in_app": "In-app",
+      "payment_method": "Betalingsmetode",
+      "payment_transactions": "Betalingstransaksjoner",
+      "contact_information": "Kontaktinformasjon",
+      "payment_information": "Betalingsinformasjon",
+      "first_name": "Fornavn",
+      "last_name": "Etternavn",
+      "email": "E-postaddresse",
+      "card_number": "Kortnummer",
+      "expiry_date": "Utløpsdato",
+      "expiry_month": "Utløpsmåned",
+      "expiry_year": "Utløpsår",
+      "address": "Adresse",
+      "zip_code": "Post kode",
+      "zip_place": "Zip sted",
+      "add_card": "Legg til kort",
+      "current_balance": "Min nåværende saldo",
+      "consultant": "Konsulent",
+      "status": "Status",
+      "search": "Søk på fakturanummer",
+      "number": "Nummer",
+      "price": "Pris",
+      "date": "Dato tid",
+      "profile_image": "Profilbilde",
+      "upload": "Last opp",
+      "profession": "Yrke",
+      "company_name": "Selskapsnavn",
+      "invoice_email": "Faktura-e-post",
+      "phone": "Postnummer",
+      "chat": "Chat",
+      "video": "Video",
+      "change_password": "BYTT PASSORD",
+      "old_password": "Gammelt passord",
+      "new_password": "Nytt passord",
+      "save": "Lagre",
+      "choose_card": "Kjøp GotoConsult-kreditter",
+      "pay_klarna": "Betal Klarna",
+      "pay_vipps": "Betal med Vipps",
+      "save_payment": "Lagre for neste gang",
+      "debit_credit": "Debet / kredittkort",
+      "submit": "Sende inn",
+      "currency": "Valuta",
+      "get_started": "Kom i gang",
+      "close": "Lukk",
+      "currency_settings": "valuta innstillinger",
+      "password_settings": "Passord innstillinger",
+      "other": "Annen",
+      "gotoconsult-credit": "GotoConsult-Kreditter",
+      "subtotal": "Delsum",
+      "processing-fee": "Behandlingsgebyr",
+      "total": "Total",
+      "time-spent": "Tid brukt",
+      "minute": "Minutt",
+      "minutes": "Minutter",
+      "start-session": "Start en økt",
+      "edit-profile": "Rediger profil",
+      "edit-profile-photo": "Rediger profilfoto",
+      "edit-profile-photo-text": "Profilbildet ditt må være mindre enn 2 MB",
+      "about-me": "Om meg",
+      "member-since": "GotoConsult medlem siden",
+      "from": "Fra",
+      "lives-in": "Bor i",
+      "college": "Høyskole",
+      "country": "Land",
+      "region": "Region",
+      "timezone": "Tidssone",
+      "price_minute": "Pris per minutt",
+      "saved_payment_method": "Lagret betalingsmåte",
+      "hourly_rate_description": "Du har for øyeblikket ingen lagrede betalingsmetoder.",
+      "company_information": "firmainformasjon",
+      "organization_number": "Organisasjonsnummer",
+      "bank_account": "Bankkonto",
+      "no-details": "Ingen detaljer lagt til enda.",
+      "no-about-us": "Ingen informasjon lagt til enda.",
+      "completed-sessions": "Fullførte økter",
+      "response-rate": "Svarprosent",
+      "edit-details": "Rediger detaljer",
+      "edit-information": "Rediger informasjon",
+      "no-data-generated": "Ingen data generert ennå.",
+      "reviews": "Anmeldelser",
+      "no-reviews": "Ingen anmeldelser ennå.",
+      "view-more": "Se mer",
+      "session": "økt",
+      "sessions": "økter",
+      "no-consultants": "Ingen konsulenter valgt.",
+      "no-consultants-des": "Velg en konsulent du vil chatte, tale- eller videosamtale med.",
+      "no-customers": "Ingen kunder valgt.",
+      "no-customers-des": "Velg en kunde du vil chatte, tale- eller videosamtale med.",
+      "selected": "Du har valgt",
+      "selected-des": "La oss komme i gang med chat, tale eller videosamtale.",
+      "account-balance": "Kontosaldoen din er",
+      "balance-charge-question": "Hvor mange minutter vil du bruke?",
+      "total-cost": "Totalkostnad",
+      "btn-go-back": "Gå tilbake",
+      "btn-view-session": "Vis økt",
+      "btn-continue-call": "Fortsett samtalen",
+      "btn-continue-video-call": "Fortsett videosamtale",
+      "btn-continue-session": "Fortsett økten",
+      "last-online": "sist på nettet",
+      "session-end-alert": "Økten din avsluttes om 15 sekunder",
+      "chat-end": "Chatten din er avsluttet",
+      "rate-session": "Ranger denne økten",
+      "continue": "Fortsette?",
+      "continue-btn": "Fortsette",
+      "minutes-question": "Vil du fortsette økten?",
+      "write-message": "Skriv melding her ....",
+      "incoming-chat": "Inngående chatforespørsel fra",
+      "incoming-video": "Inngående videosamtale fra",
+      "incoming-call": "Innkommende samtale fra",
+      "session-continue": "Økten din er avsluttet.",
+      "start-call": "Start samtalen",
+      "start-video-call": "Start videosamtale",
+      "start-conversation": "Start samtale",
+      "write-review": "Skriv anmeldelse",
+      "write-review-msg": "Skriv din anmeldelse her",
+      "submit-review": "Send inn anmeldelse",
+      "continue-session": "Fortsett økten"
+    }, "start-session", "Start økten"),
+    "register": {
+      "welcome_gotoconsult": "Velkommen til GoToConsult",
+      "password": "Passord",
+      "consultant": "Jeg er en konsulent",
+      "industry_expertise": "Bransjekompetanse",
+      "email": "e-post",
+      "create_password": "Lag passord",
+      "create_account": "Opprett en konto",
+      "login": "Logg Inn",
+      "back_home": "Tilbake til hjemmet",
+      "read_accept": "Jeg har lest og godtar GoToConsults",
+      "privacy": "Personvern",
+      "terms": "Vilkår",
+      "and": "og",
+      "phone": "Phone",
+      "benefits": "Fordeler med GoToConsult",
+      "first_name": "Fornavn",
+      "last_name": "Etternavn"
+    }
+  }
+});
 
 /***/ }),
 

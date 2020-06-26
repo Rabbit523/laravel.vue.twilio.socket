@@ -28,7 +28,7 @@ Class Klarna {
      
         $order = [
             "purchase_country" => 'no',
-            "purchase_currency" => "nok",
+            "purchase_currency" => $request['currency'],
             "locale" => 'nb-no',
             "order_amount" => $request['price'] * 100,
             "order_tax_amount" => $request['price'] * 100 / 125 * 25,
@@ -49,7 +49,7 @@ Class Klarna {
             "merchant_urls" => [
               "terms" => getenv('APP_URL') . "/terms",
               "checkout" => getenv('APP_URL') . "/klarna_checkout?sid={checkout.order.id}",
-              "confirmation" => "http://gotoconsult.fantasylab.io/klarna_confirmation?sid={checkout.order.id}&uid={$user->id}&amount={$request['price']}",
+              "confirmation" => getenv('APP_URL') . "/klarna_confirmation?sid={checkout.order.id}&uid={$user->id}&amount={$request['price']}&currency={$request['currency']}",
               "push" => getenv('APP_URL') . "/api/klarna/push?checkout_uri={checkout.order.id}"
             ],
             "options" => [

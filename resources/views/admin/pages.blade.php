@@ -6,8 +6,8 @@
     @include('elements.admin_sidebar')
     <div class="content-wrapper adminprof">
 	    <div class="content_holesecion">
-		    <div class="page-list d-flex flex-column">
-                <div class="pages-heading d-flex">
+		    <div class="page-list">
+                <div class="pages-heading">
                     <h2 class="mr-auto mt-auto mb-auto">@lang('admin.pages')</h2>
                     <a href="{{ $lang == 'en' ? url('/create-page') : url('/no/opprett-side') }}"><button class="btn">@lang('admin.create_page')</button></a>
                 </div>
@@ -36,11 +36,10 @@
     </div>
 </div>
 @endsection
-
 @section('scripts')
 <script>
-    $(document).ready(function() {
-		$('#example').DataTable();
-    });
+	jQuery(function(){
+		new gotoconsult.Controllers.page();
+	});
 </script>
 @endsection

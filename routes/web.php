@@ -10,7 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::middleware('web')->group(function () {
     Route::middleware('checkLocale')->group(function () {
         Route::get('/', function () {
@@ -22,22 +21,24 @@ Route::middleware('web')->group(function () {
             }
         });
         Route::get('/', 'Client\PagesController@index');
+        Route::get('/features', 'Client\PagesController@features');
         Route::get('/become-consultant', 'Client\PagesController@become_consultant');
         Route::get('/about', 'Client\PagesController@about_us');
-        Route::get('/faq', 'Client\PagesController@faq');
         Route::get('/privacy', 'Client\PagesController@privacy');
         Route::get('/terms-customer', 'Client\PagesController@terms_customer');
-        Route::get('/terms-provider', 'Client\PagesController@terms_provider');
+        Route::get('/terms-consultant', 'Client\PagesController@terms_provider');
         Route::get('/category/{type}', 'Client\PagesController@category_info');
+        Route::get('/category-search', 'Client\PagesController@categorySearch');
         
         Route::get('/no', 'Client\PagesController@index');
+        Route::get('/no/funksjoner', 'Client\PagesController@noFeatures');
         Route::get('/no/bli-konsulent', 'Client\PagesController@become_consultant');
         Route::get('/no/om-oss', 'Client\PagesController@about_us');
-        Route::get('/no/faq', 'Client\PagesController@faq');
         Route::get('/no/personvern', 'Client\PagesController@privacy');
         Route::get('/no/vilkar-kunde', 'Client\PagesController@terms_customer');
-        Route::get('/no/vilkar-tilbyder', 'Client\PagesController@terms_provider');
+        Route::get('/no/vilkar-konsulent', 'Client\PagesController@terms_provider');
         Route::get('/no/kategori/{type}', 'Client\PagesController@category_info');
+        Route::get('/no/kategori-sok', 'Client\PagesController@nocategorySearch');
 
         Route::post("/site-lang", 'Client\PagesController@updateLang');
         //authentication routers
@@ -52,6 +53,8 @@ Route::middleware('web')->group(function () {
         Route::get('logout', 'Auth\LoginController@logout')->name('logout');
 
         //admin routers
+        Route::get('/admin-dashboard', 'Server\PagesController@adminDashboard');
+        Route::get('/dashboard-search', 'Server\PagesController@adminDashboardSearch');
         Route::get('/pages', 'Server\PagesController@pages');
         Route::get('/create-page', 'Server\PagesController@createPage');
         Route::get('/edit-page/{id}', 'Server\PagesController@editPage');
@@ -66,6 +69,8 @@ Route::middleware('web')->group(function () {
         Route::get('/edit-category/{id}', 'Server\PagesController@editCategory');
         Route::get('/settings', 'Server\PagesController@settting');
 
+        Route::get('/no/admin-dashbord', 'Server\PagesController@noAdminDashboard');
+        Route::get('/no/dashboard-sok', 'Server\PagesController@noAdminDashboardSearch');
         Route::get('/no/sider', 'Server\PagesController@pages');
         Route::get('/no/opprett-side', 'Server\PagesController@createPage');
         Route::get('/no/rediger-side/{id}', 'Server\PagesController@editPage');
@@ -81,17 +86,29 @@ Route::middleware('web')->group(function () {
         Route::get('/no/innstillinger', 'Server\PagesController@settting');
         
         //member routers
-        Route::get('/find-consultant', 'Client\PagesController@find_consultant');
-        Route::get('/find-customer', 'Client\PagesController@find_customer');
-        Route::get('/prepaid-card', 'Client\PagesController@prepaid_card');
-        Route::get('/invoice', 'Client\PagesController@invoice');
-        Route::get('/member-settings', 'Client\PagesController@member_settings');
+        Route::get('/find-consultant', 'Client\PagesController@findConsultant');
+        Route::get('/find-consultant-search', 'Client\PagesController@findConsultantSearch');
+        Route::get('/dashboard', 'Client\PagesController@dashboard');
+        Route::get('/sessions', 'Client\PagesController@session');
+        Route::get('/wallet', 'Client\PagesController@wallet');
+        Route::get('/wallet-search', 'Client\PagesController@walletSearch');
+        Route::get('/transactions ', 'Client\PagesController@transactions');
+        Route::get('/transaction-search ', 'Client\PagesController@transactionSearch');
+        Route::get('/profile', 'Client\PagesController@profile');
+        Route::get('/profile/{id}', 'Client\PagesController@singleProfile');
+        Route::get('/member-settings', 'Client\PagesController@settings');
 
-        Route::get('/no/finn-konsulent', 'Client\PagesController@find_consultant');
-        Route::get('/no/finn-kunde', 'Client\PagesController@find_customer');
-        Route::get('/no/kontantkort', 'Client\PagesController@prepaid_card');
-        Route::get('/no/fakturaer', 'Client\PagesController@invoice');
-        Route::get('/no/kontoinnstillinger', 'Client\PagesController@member_settings');
+        Route::get('/no/finn-konsulent', 'Client\PagesController@noFindConsultant');
+        Route::get('/no/finn-konsulent-sok', 'Client\PagesController@noFindConsultantSearch');
+        Route::get('/no/oversikt', 'Client\PagesController@noDashboard');
+        Route::get('/no/moter', 'Client\PagesController@noSession');
+        Route::get('/no/lommebok', 'Client\PagesController@noWallet');
+        Route::get('/no/lommebok-sok', 'Client\PagesController@noWalletSearch');
+        Route::get('/no/transaksjoner ', 'Client\PagesController@noTransactions');
+        Route::get('/no/transaksjoner-sok ', 'Client\PagesController@noTransactionSearch');
+        Route::get('/no/profil', 'Client\PagesController@noProfile');
+        Route::get('/no/profil/{id}', 'Client\PagesController@noSingleProfile');
+        Route::get('/no/kontoinnstillinger', 'Client\PagesController@noSettings');
 
         Route::post('/klarna_checkout', 'Client\PagesController@klarna_checkout');
         Route::get('/klarna_confirmation', 'Client\PagesController@klarna_confirmation');
@@ -109,16 +126,15 @@ Route::middleware('web')->group(function () {
 
         Route::post('/create_consultant', 'Api\ApiController@createConsultant');
         Route::post('/update_consultant', 'Api\ApiController@updateConsultant');
-        Route::post('/member_image_upload', 'Api\ApiController@memberImageUpload');
-        Route::post('/update_member_setting', 'Api\ApiController@updateMemberSetting');
         Route::post('/create_customer', 'Api\ApiController@createCustomer');
         Route::post('/update_customer', 'Api\ApiController@updateCustomer');
 
         Route::post('/api/klarna_checkout', 'Api\Klarna@createCheckout');
         Route::get('/api/klarna/push/{checkout_uri}', 'Api\Klarna@push');
-
-        Route::post('/api/vipps_checkout', 'Api\VippsCheckout@createCheckout');
-        Route::get('/api/vipps/fallback-result-page/{checkout_uri}', 'Api\VippsCheckout@push');
+        
+        Route::post('/api/brain_token', 'Api\BraintreeController@create_token');
+        Route::post('/api/credit_checkout', 'Api\BraintreeController@createCheckout');
+        Route::post('/api/balance_manage', 'Api\BraintreeController@balance_manage');
 
         Route::post('/support/call','Api\VoiceController@voiceHook');
     });
