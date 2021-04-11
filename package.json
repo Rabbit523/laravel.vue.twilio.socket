@@ -25,7 +25,7 @@
     },
     "dependencies": {
         "detect-touch-device": "^1.1.5",
-        "twilio-client": "^1.9.7",
+        "twilio-client": "^1.14.0",
         "twilio-video": "^1.20.1",
         "vue-cute-rate": "^1.0.2",
         "vue-i18n": "^8.17.4",
