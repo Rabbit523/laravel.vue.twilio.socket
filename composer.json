@@ -14,7 +14,7 @@
         "jenssegers/agent": "^2.6",
         "klarna/kco_rest": "^4.2",
         "laravel/cashier-braintree": "^3.1",
-        "laravel/framework": "5.8.35",
+        "laravel/framework": "5.8.38",
         "laravel/tinker": "^1.0",
         "martinlindhe/laravel-vue-i18n-generator": "^0.1.46",
         "php-http/guzzle6-adapter": "^2.0",
