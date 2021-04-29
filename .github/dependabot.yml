@@ -1,0 +1,23 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: mem
+    versions:
+    - 4.3.0
+- package-ecosystem: composer
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: twilio/sdk
+    versions:
+    - 6.21.0
+  - dependency-name: filp/whoops
+    versions:
+    - 2.12.0
