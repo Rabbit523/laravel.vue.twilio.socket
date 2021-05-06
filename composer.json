@@ -18,7 +18,7 @@
         "laravel/tinker": "^1.0",
         "martinlindhe/laravel-vue-i18n-generator": "^0.1.46",
         "php-http/guzzle6-adapter": "^2.0",
-        "twilio/sdk": "^5.42",
+        "twilio/sdk": "^6.23",
         "uxweb/sweet-alert": "^2.0"
     },
     "require-dev": {
